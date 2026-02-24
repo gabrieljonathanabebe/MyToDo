@@ -40,15 +40,23 @@ class ListMenuState(AppStateBase):
                 app.flash('error', 'Error during validation.')    
         elif cmd == '2':
             try:
-                target_id = prompts.prompt_target_id()
-                ok = app.service.delete_task(app.current_todo, int(target_id))
-                app.flash('success', f'Task {target_id} deleted.')
+                task_id = prompts.prompt_target_id()
+                ok = app.service.delete_task(app.current_todo, int(task_id))
+                if ok:
+                    app.flash('success', f'Task {task_id} deleted.')
+                else:
+                    app.flash('error', f'ID {task_id} not found.')
             except ValueError:
                 app.flash('error', f'Please enter a number.')
         elif cmd == '3':
             app.service.repo.save_todo(app.current_todo)
         elif cmd == '4':
-            app.service.sort_todo(app.current_todo)
+            key, reverse = prompts.prompt_sort_key()
+            ok = app.service.sort_todo(app.current_todo, key, reverse)
+            if ok:
+                app.flash('success', f'Sorting by {key}.')
+            else:
+                app.flash('error', f'Key "{key}" not found.')
         elif cmd == '5':
             app.service.assign_new_ids(app.current_todo)
         elif cmd == 'b':

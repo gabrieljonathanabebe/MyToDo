@@ -45,7 +45,15 @@ def serialize_value(value: Any) -> str:
 
 def from_storage(df: pd.DataFrame) -> list[Task]:
     df.columns = get_fields()
-    rows = df.to_dict(orient='records')
+    df = df.replace({pd.NA : None})
+    raw_rows = df.to_dict(orient='records')
+    rows = []
+    for raw_row in raw_rows:
+        row = {
+            key: value if pd.notna(value) else None 
+            for key, value in raw_row.items()
+        }
+        rows.append(row)
     return [Task.model_validate(r) for r in rows]
 
 

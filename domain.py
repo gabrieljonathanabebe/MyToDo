@@ -24,14 +24,18 @@ class ToDoList:
         self.tasks.append(new)
         return new
     
-    def delete_task(self, target_id: int) -> bool:
+    def delete_task(self, task_id: int) -> bool:
         length_before = len(self.tasks)
-        self.tasks = [t for t in self.tasks if t.id != target_id]
+        self.tasks = [t for t in self.tasks if t.id != task_id]
         return len(self.tasks) != length_before
     
     def sort_todo(self, key: str, reverse: bool = False) -> bool:
         try:
-            self.tasks.sort(key=lambda t: getattr(t, key), reverse=reverse)
+            with_value = [t for t in self.tasks if getattr(t, key) is not None]
+            without_value = [t for t in self.tasks if getattr(t, key) is None]
+            with_value.sort(key=lambda t: getattr(t, key), reverse=reverse)
+            without_value.sort(key=lambda t: t.id)
+            self.tasks = with_value + without_value
             return True
         except AttributeError:
             return False

@@ -12,3 +12,9 @@ def prompt_new_task() -> tuple[str, str, str | None]:
 
 def prompt_target_id() -> str:
     return _validate_input('Select target id:')
+
+def prompt_sort_key() -> tuple[str, bool]:
+    key = _validate_input('Sort key:').lower().replace(' ', '_')
+    order = _validate_input('Sorting reverse (y/n)?')
+    reverse = True if order == 'y' else False
+    return key, reverse
