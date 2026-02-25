@@ -66,7 +66,11 @@ def to_storage(tasks: list[Task]) -> pd.DataFrame:
             for field, value in base.items()
         }
         rows.append(serialized)
-    df = pd.DataFrame(rows)
+    if not rows:
+        fields = get_fields()
+        df = pd.DataFrame(columns=fields)
+    else:
+        df = pd.DataFrame(rows)
     df.columns = get_labels()
     return df
 

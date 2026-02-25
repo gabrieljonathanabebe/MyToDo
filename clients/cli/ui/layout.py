@@ -38,6 +38,9 @@ def multi_cell_line(
         line = [style(l) for l in line]
     return '| ' + ' | '.join(line) + ' |'
 
+def empty_line(width: int) -> str:
+    return single_cell_line('Empty', width, 'center', style=bold)
+
 
 # ===== MENU LAYOUT =============================================
 def menu_border(width: int) -> str:

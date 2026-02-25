@@ -1,7 +1,6 @@
 import adapters
 from models import Task
-from .layout import table_border, table_row, table_title, table_header
-from .style import italic, bold
+from .layout import table_border, table_row, table_title, table_header, empty_line
 
 
 def make_table(title: str, tasks: list[Task]) -> list[str]:
@@ -17,6 +16,8 @@ def make_table(title: str, tasks: list[Task]) -> list[str]:
     table.append(table_border(widths))
     table.append(table_header(labels, widths))
     table.append(table_border(widths))
+    if not tasks:
+        table.append(empty_line(table_width))
     for task in tasks:
         serialized_task = adapters.to_display(task)
         cells = [serialized_task[field] for field in fields]

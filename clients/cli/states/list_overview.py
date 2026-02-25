@@ -21,12 +21,15 @@ class ListOverviewState(AppStateBase):
         print('\n'.join(display_menu))
 
     def handle_input(self, app: AppLike, cmd: str):
-        if cmd in app.service.repo.list_todo_titles().keys():
-            app.current_todo = app.service.repo.open_todo(cmd)
-            app.goto('list_menu')
+        if cmd not in self.options.keys():
+            app.current_todo = app.service.repo.open_todo_by_choice(cmd)
+            if app.current_todo is None:
+                app.flash('error', f'To-Do with ID {cmd} not found.')
+            else:
+                app.goto('list_menu')
         elif cmd == 'b':
             app.goto('main')
         elif cmd == '0':
             app.goto('exit')
         else:
-            app.flash('error', 'Unknown command')
+            app.flash('error', 'Unknown command.')

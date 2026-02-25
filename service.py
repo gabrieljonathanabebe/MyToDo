@@ -40,3 +40,9 @@ class ToDoService:
     def assign_new_ids(self, todo: ToDoList) -> None:
         todo.assign_new_ids()
         self.repo.save_todo(todo)
+
+    # ===== NEW TO-DO ============================================
+    def new_todo(self, title: str) -> ToDoList:
+        todo = ToDoList(title)
+        self.repo.save_todo(todo)
+        return todo

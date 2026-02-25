@@ -18,3 +18,11 @@ def prompt_sort_key() -> tuple[str, bool]:
     order = _validate_input('Sorting reverse (y/n)?')
     reverse = True if order == 'y' else False
     return key, reverse
+
+
+def prompt_todo_title() -> str:
+    return _validate_input('Select title for new ToDo:')
+
+def prompt_open_existing_list(title: str) -> bool:
+    confirmed = _validate_input(f'{title} already exists. Open(y/n)?')
+    return (confirmed == 'y')
