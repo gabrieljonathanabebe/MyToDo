@@ -14,7 +14,7 @@ class ToDoApp:
         repo = CsvRepository(self.DATA_DIR)
         self.service = ToDoService(repo)
         self.running = True
-        self.goto('main')
+        self.goto('overview')
         self.flash_msg = None
         self.current_todo = None
 

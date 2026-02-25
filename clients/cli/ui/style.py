@@ -22,8 +22,11 @@ def colorize_yellow(msg: str) -> None:
 def colorize_green(msg: str) -> None:
     colorize(ansi.GREEN, msg)
 
-def colorize_cyan(msg: str) -> None:
-    colorize(ansi.CYAN, msg)
+def colorize_blue(msg: str) -> None:
+    colorize(ansi.BLUE, msg)
+
+def colorize_bg_blue(msg: str) -> None:
+    colorize(ansi.BG_BLUE, msg)
 
 
 # ===== INFOS ====================================
@@ -37,4 +40,7 @@ def success(msg: str) -> None:
     colorize_green(msg)
 
 def info(msg: str) -> None:
-    colorize_cyan(msg)
+    colorize_blue(msg)
+
+def hint(msg: str) -> None:
+    colorize_bg_blue(msg)

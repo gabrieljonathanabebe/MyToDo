@@ -9,27 +9,29 @@ class ListMenuState(AppStateBase):
     def __init__(self):
         self.name = 'LIST MENU'
         self.options = {
-            '1': 'Add Task',
-            '2': 'Delete Task',
-            '3': 'Save',
-            '4': 'Sort',
-            '5': 'Assign new IDs',
+            'a': 'Add Task',
+            'd': 'Delete Task',
+            's': 'Sort',
+            'n': 'Assign new IDs',
             'b': 'Back',
-            '0': 'Exit'
+            'x': 'Exit'
         }
+
+    def _render_options(self) -> None:
+        ui.info('\n Press:')
+        for cmd, label in self.options.items():
+            ui.info(f'  - {cmd} for {label}')
     
     def render(self, app: AppLike):
         display_table = ui.make_table(
             title=app.current_todo.title,
             tasks=app.current_todo.tasks
         )
-        display_menu = ui.make_menu(self.name, self.WIDTH, options=self.options)
         print('\n'.join(display_table))
-        print('\n'.join(display_menu))
-
+        self._render_options()
 
     def handle_input(self, app: AppLike, cmd):
-        if cmd == '1':
+        if cmd == 'a':
             try:
                 task, priority, due = prompts.prompt_new_task()
                 new_task = app.service.add_task(
@@ -38,7 +40,7 @@ class ListMenuState(AppStateBase):
                 app.flash('success', f'Task {new_task.id} added.')
             except ValidationError as e:
                 app.flash('error', 'Error during validation.')    
-        elif cmd == '2':
+        elif cmd == 'd':
             try:
                 task_id = prompts.prompt_target_id()
                 ok = app.service.delete_task(app.current_todo, int(task_id))
@@ -48,20 +50,18 @@ class ListMenuState(AppStateBase):
                     app.flash('error', f'ID {task_id} not found.')
             except ValueError:
                 app.flash('error', f'Please enter a number.')
-        elif cmd == '3':
-            app.service.repo.save_todo(app.current_todo)
-        elif cmd == '4':
+        elif cmd == 's':
             key, reverse = prompts.prompt_sort_key()
             ok = app.service.sort_todo(app.current_todo, key, reverse)
             if ok:
                 app.flash('success', f'Sorting by {key}.')
             else:
                 app.flash('error', f'Key "{key}" not found.')
-        elif cmd == '5':
+        elif cmd == 'n':
             app.service.assign_new_ids(app.current_todo)
         elif cmd == 'b':
             app.goto('overview')
-        elif cmd == '0':
+        elif cmd == 'x':
             app.goto('exit')
         else:
             app.flash('error', 'Unknown command')

@@ -49,13 +49,13 @@ def menu_border(width: int) -> str:
 def menu_title(title: str, width: int) -> str:
     return single_cell_line(title.upper(), width, 'center', style=bold)
 
-def menu_options(options: dict[str, str], width: int) -> list[str]:
-    display_options = []
-    display_options.append(single_cell_line('Options:', width, style=bold))
-    for cmd, label in options.items():
+def menu_data(data: dict[str, str], width: int) -> list[str]:
+    display_data = []
+    display_data.append(single_cell_line('Options:', width, style=bold))
+    for cmd, label in data.items():
         line = single_cell_line(f' {cmd} → {label}', width, style=italic)
-        display_options.append(line)
-    return display_options
+        display_data.append(line)
+    return display_data
 
 
 
