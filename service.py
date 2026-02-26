@@ -2,8 +2,9 @@ from typing import Optional
 from datetime import date
 
 from domain import ToDoList
-from models import Task, Priority
+from models import Task
 from repository import CsvRepository
+from results import Result, Code
 
 
 class ToDoService:
@@ -13,11 +14,21 @@ class ToDoService:
     def list_todo_titles(self) -> dict[str, str]:
         return self.repo.list_todo_titles()
     
-    def open_todo_by_choice(self, choice: str) -> ToDoList | None:
-        return self.repo.open_todo_by_choice(choice)
+    def open_todo_by_choice(self, choice: str) -> Result[ToDoList]:
+        titles = self.repo.list_todo_titles()
+        title = titles.get(choice)
+        if title is None:
+            return Result(Code.NOT_FOUND, 'Invalid selection.')
+        todo = self.repo.load_todo(title)
+        if todo is None:
+            return Result(Code.NOT_FOUND, 'List file not found.')
+        return Result(Code.OK, data=todo)
     
-    def open_todo_by_title(self, title: str) -> ToDoList | None:
-        return self.repo.open_todo_by_title(title)
+    def open_todo_by_title(self, title: str) -> Result[ToDoList]:
+        todo = self.repo.load_todo(title)
+        if todo is None:
+            return Result(Code.NOT_FOUND, 'List file not found')
+        return Result(Code.OK, data=todo)
 
 
     # ===== DOMAIN SERVICES ===================================

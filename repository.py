@@ -23,18 +23,12 @@ class CsvRepository:
     def list_todo_titles(self) -> dict[str, str]:
         todo_titles = sorted([t.stem for t in self.DATA_DIR.glob('*.csv')])
         return {str(i + 1): title for i, title in enumerate(todo_titles)}
-    
-    def open_todo_by_choice(self, choice: str) -> ToDoList | None:
+        
+    def delete_todo_by_choice(self, choice: str) -> bool:
         listed_todo_titles = self.list_todo_titles()
         selected_title = listed_todo_titles.get(choice)
-        if selected_title is None:
-            return None
-        return self.load_todo(selected_title)
-    
-    def open_todo_by_title(self, title: str) -> ToDoList | None:
-        listed_todo_titles = self.list_todo_titles()
-        if title in listed_todo_titles.values():
-            return self.load_todo(title)
+        path = self.DATA_DIR / f'{selected_title}.csv'
+        pass
 
     def load(title: str, DATA_DIR: Path) -> ToDoList:
         path = DATA_DIR / f'{title}.csv'

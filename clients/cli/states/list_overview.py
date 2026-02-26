@@ -42,7 +42,8 @@ class ListOverviewState(AppStateBase):
         if title in self.listed_todo_titles.values():
             confirmed = prompts.prompt_open_existing_list(title)
             if confirmed:
-                app.current_todo = app.service.open_todo_by_title(title)
+                res = app.service.open_todo_by_title(title)
+                app.current_todo = res.data
                 app.goto('list_menu')
             return
         new_todo = app.service.new_todo(title)
@@ -56,12 +57,12 @@ class ListOverviewState(AppStateBase):
     def handle_input(self, app: AppLike, cmd: str) -> None:
         cmd = cmd.strip().lower()
         if cmd.isdigit():
-            todo = app.service.open_todo_by_choice(cmd)
-            if todo:
-                app.current_todo = todo
-                app.goto('list_menu')
-            else:
-                app.flash('error', 'Invalid section')
+            res = app.service.open_todo_by_choice(cmd)
+            if not res.ok:
+                app.flash('error', res.msg)
+                return
+            app.current_todo = res.data
+            app.goto('list_menu')
             return
         entry = self.options.get(cmd)
         if not entry:
