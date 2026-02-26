@@ -79,11 +79,9 @@ class ListMenuState(AppStateBase):
 
     def _cmd_sort_todo(self, app: AppLike) -> None:
         key_input, reverse_input = prompts.prompt_sort_key()
-        ok = app.service.sort_todo(app.current_todo, key_input, reverse_input)
-        if not ok:
-            app.flash('error', f'Key "{key_input}" not found.')
-            return
-        app.flash('success', f'Sorting by {key_input}')
+        res = app.service.sort_todo(app.current_todo, key_input, reverse_input)
+        level = 'success' if res.ok else 'error'
+        app.flash(level, res.msg)
 
     def _cmd_assign_new_ids(self, app: AppLike) -> None:
         count = app.service.assign_new_ids(app.current_todo)

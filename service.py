@@ -44,12 +44,12 @@ class ToDoService:
         self.repo.save_todo(todo)
         return new_task
 
-    def sort_todo(self, todo: ToDoList, key: str, reverse: bool) -> bool:
+    def sort_todo(self, todo: ToDoList, key: str, reverse: bool) -> Result[None]:
         ok = todo.sort_todo(key, reverse)
         if not ok:
-            return False
+            return Result(Code.INVALID_INPUT, f'Key "{key}" not found.')
         self.repo.save_todo(todo)
-        return True
+        return Result(Code.OK, f'Sorting by {key}')
     
     def delete_task(self, todo: ToDoList, target_id: int) -> bool:
         ok = todo.delete_task(target_id)
