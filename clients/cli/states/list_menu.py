@@ -1,3 +1,5 @@
+from typing import Callable
+
 from pydantic import ValidationError
 
 from .base import AppStateBase, AppLike
@@ -9,18 +11,40 @@ class ListMenuState(AppStateBase):
     def __init__(self):
         self.name = 'LIST MENU'
         self.options = {
-            'a': 'Add Task',
-            'd': 'Delete Task',
-            's': 'Sort',
-            'n': 'Assign new IDs',
-            'b': 'Back',
-            'x': 'Exit'
+            'a': {
+                'label': 'Add Task',
+                'handler': self._cmd_add_task
+            },
+            'd': {
+                'label': 'Delete Task',
+                'handler': self._cmd_delete_task
+            },
+            's': {
+                'label': 'Sort',
+                'handler': self._cmd_sort_todo
+            },
+            'n': {
+                'label': 'Assign new IDs',
+                'handler': self._cmd_assign_new_ids
+            },
+            'b': {
+                'label': 'Back',
+                'handler': self._cmd_back
+            },
+            'x': {
+                'label': 'Exit',
+                'handler': self._cmd_exit
+            },
         }
 
+
+    # ===== RENDER-METHODS ==========================================
     def _render_options(self) -> None:
+        menu_labels = {cmd: meta['label'] for cmd, meta in self.options.items()}
         ui.info('\n Press:')
-        for cmd, label in self.options.items():
+        for cmd, label in menu_labels.items():
             ui.info(f'  - {cmd} for {label}')
+        ui.info('')
     
     def render(self, app: AppLike):
         display_table = ui.make_table(
@@ -30,38 +54,53 @@ class ListMenuState(AppStateBase):
         print('\n'.join(display_table))
         self._render_options()
 
-    def handle_input(self, app: AppLike, cmd):
-        if cmd == 'a':
-            try:
-                task, priority, due = prompts.prompt_new_task()
-                new_task = app.service.add_task(
-                    app.current_todo, task, priority, due
-                )
-                app.flash('success', f'Task {new_task.id} added.')
-            except ValidationError as e:
-                app.flash('error', 'Error during validation.')    
-        elif cmd == 'd':
-            try:
-                task_id = prompts.prompt_target_id()
-                ok = app.service.delete_task(app.current_todo, int(task_id))
-                if ok:
-                    app.flash('success', f'Task {task_id} deleted.')
-                else:
-                    app.flash('error', f'ID {task_id} not found.')
-            except ValueError:
-                app.flash('error', f'Please enter a number.')
-        elif cmd == 's':
-            key, reverse = prompts.prompt_sort_key()
-            ok = app.service.sort_todo(app.current_todo, key, reverse)
-            if ok:
-                app.flash('success', f'Sorting by {key}.')
-            else:
-                app.flash('error', f'Key "{key}" not found.')
-        elif cmd == 'n':
-            app.service.assign_new_ids(app.current_todo)
-        elif cmd == 'b':
-            app.goto('overview')
-        elif cmd == 'x':
-            app.goto('exit')
-        else:
+
+    # ===== HANDLER-HELPER ==========================================
+    def _cmd_add_task(self, app: AppLike) -> None:
+        try:
+            task_input, priority_input, due_input = prompts.prompt_new_task()
+            new_task = app.service.add_task(
+                app.current_todo, task_input, priority_input, due_input
+            )
+            app.flash('success', f'Task {new_task.id} added.')
+        except ValidationError:
+            app.flash('error', f'Error during validation.')
+
+    def _cmd_delete_task(self, app: AppLike) -> None:
+        try:
+            task_id_input = prompts.prompt_target_id()
+            ok = app.service.delete_task(app.current_todo, int(task_id_input))
+            if not ok:
+                app.flash('error', f'ID {task_id_input} not found.')
+                return
+            app.flash('success', f'Task {task_id_input} deleted.')
+        except ValueError:
+            app.flash('error', 'Please enter a number.')
+
+    def _cmd_sort_todo(self, app: AppLike) -> None:
+        key_input, reverse_input = prompts.prompt_sort_key()
+        ok = app.service.sort_todo(app.current_todo, key_input, reverse_input)
+        if not ok:
+            app.flash('error', f'Key "{key_input}" not found.')
+            return
+        app.flash('success', f'Sorting by {key_input}')
+
+    def _cmd_assign_new_ids(self, app: AppLike) -> None:
+        app.service.assign_new_ids(app.current_todo)
+
+    def _cmd_back(self, app: AppLike) -> None:
+        app.goto('overview')
+
+    def _cmd_exit(self, app: AppLike) -> None:
+        app.goto('exit')
+
+
+    # ===== HANDLER =================================================
+    def handle_input(self, app: AppLike, cmd: str):
+        cmd = cmd.strip().lower()
+        entry = self.options.get(cmd)
+        if not entry:
             app.flash('error', 'Unknown command')
+            return
+        handler: Callable[[AppLike], None] = entry['handler']
+        handler(app)
