@@ -9,6 +9,16 @@ from repository import CsvRepository
 class ToDoService:
     def __init__(self, repo: CsvRepository):
         self.repo = repo
+    # ===== REPO WRAPPER ======================================
+    def list_todo_titles(self) -> dict[str, str]:
+        return self.repo.list_todo_titles()
+    
+    def open_todo_by_choice(self, choice: str) -> ToDoList | None:
+        return self.repo.open_todo_by_choice(choice)
+    
+    def open_todo_by_title(self, title: str) -> ToDoList | None:
+        return self.repo.open_todo_by_title(title)
+
 
     # ===== DOMAIN SERVICES ===================================
     def add_task(

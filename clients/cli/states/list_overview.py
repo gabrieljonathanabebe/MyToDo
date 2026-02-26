@@ -28,7 +28,7 @@ class ListOverviewState(AppStateBase):
         ui.info('')
         
     def render(self, app: AppLike):
-        self.listed_todo_titles = app.service.repo.list_todo_titles()
+        self.listed_todo_titles = app.service.list_todo_titles()
         display_menu = ui.make_menu(
             self.name, self.WIDTH, data=self.listed_todo_titles
         )
@@ -42,7 +42,7 @@ class ListOverviewState(AppStateBase):
         if title in self.listed_todo_titles.values():
             confirmed = prompts.prompt_open_existing_list(title)
             if confirmed:
-                app.current_todo = app.service.repo.open_todo_by_title(title)
+                app.current_todo = app.service.open_todo_by_title(title)
                 app.goto('list_menu')
             return
         new_todo = app.service.new_todo(title)
@@ -56,7 +56,7 @@ class ListOverviewState(AppStateBase):
     def handle_input(self, app: AppLike, cmd: str) -> None:
         cmd = cmd.strip().lower()
         if cmd.isdigit():
-            todo = app.service.repo.open_todo_by_choice(cmd)
+            todo = app.service.open_todo_by_choice(cmd)
             if todo:
                 app.current_todo = todo
                 app.goto('list_menu')
