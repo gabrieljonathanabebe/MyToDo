@@ -86,7 +86,8 @@ class ListMenuState(AppStateBase):
         app.flash('success', f'Sorting by {key_input}')
 
     def _cmd_assign_new_ids(self, app: AppLike) -> None:
-        app.service.assign_new_ids(app.current_todo)
+        count = app.service.assign_new_ids(app.current_todo)
+        app.flash('success', f'Reassigned {count} IDs.')
 
     def _cmd_back(self, app: AppLike) -> None:
         app.goto('overview')

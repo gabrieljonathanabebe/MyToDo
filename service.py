@@ -37,9 +37,10 @@ class ToDoService:
         self.repo.save_todo(todo)
         return True
     
-    def assign_new_ids(self, todo: ToDoList) -> None:
-        todo.assign_new_ids()
+    def assign_new_ids(self, todo: ToDoList) -> int:
+        count = todo.assign_new_ids()
         self.repo.save_todo(todo)
+        return count
 
     # ===== NEW TO-DO ============================================
     def new_todo(self, title: str) -> ToDoList:

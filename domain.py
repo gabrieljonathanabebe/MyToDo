@@ -40,6 +40,7 @@ class ToDoList:
         except AttributeError:
             return False
 
-    def assign_new_ids(self) -> None:
+    def assign_new_ids(self) -> int:
         for i, t in enumerate(self.tasks, 1):
             t.id = i
+        return len(self.tasks)
