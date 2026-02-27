@@ -57,35 +57,25 @@ class ListMenuState(AppStateBase):
 
     # ===== HANDLER-HELPER ==========================================
     def _cmd_add_task(self, app: AppLike) -> None:
-        try:
-            task_input, priority_input, due_input = prompts.prompt_new_task()
-            new_task = app.service.add_task(
-                app.current_todo, task_input, priority_input, due_input
-            )
-            app.flash('success', f'Task {new_task.id} added.')
-        except ValidationError:
-            app.flash('error', f'Error during validation.')
+        description_input, priority_input, due_input = prompts.prompt_new_task()
+        res = app.service.add_task(
+            app.current_todo, description_input, priority_input, due_input
+        )
+        app.flash('success' if res.ok else 'error', res.msg)
 
     def _cmd_delete_task(self, app: AppLike) -> None:
-        try:
-            task_id_input = prompts.prompt_target_id()
-            ok = app.service.delete_task(app.current_todo, int(task_id_input))
-            if not ok:
-                app.flash('error', f'ID {task_id_input} not found.')
-                return
-            app.flash('success', f'Task {task_id_input} deleted.')
-        except ValueError:
-            app.flash('error', 'Please enter a number.')
+        task_id_input = prompts.prompt_target_id()
+        res = app.service.delete_task(app.current_todo, task_id_input)
+        app.flash('success' if res.ok else 'error', res.msg)
 
     def _cmd_sort_todo(self, app: AppLike) -> None:
         key_input, reverse_input = prompts.prompt_sort_key()
         res = app.service.sort_todo(app.current_todo, key_input, reverse_input)
-        level = 'success' if res.ok else 'error'
-        app.flash(level, res.msg)
+        app.flash('success' if res.ok else 'error', res.msg)
 
     def _cmd_assign_new_ids(self, app: AppLike) -> None:
-        count = app.service.assign_new_ids(app.current_todo)
-        app.flash('success', f'Reassigned {count} IDs.')
+        res = app.service.assign_new_ids(app.current_todo)
+        app.flash('success', res.msg)
 
     def _cmd_back(self, app: AppLike) -> None:
         app.goto('overview')

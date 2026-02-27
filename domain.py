@@ -12,11 +12,11 @@ class ToDoList:
         return (max((t.id for t in self.tasks), default=0) + 1)
     
     def add_task(
-        self, task: str, priority: str, due: str | None
+        self, description: str, priority: str, due: str | None
     ) -> Task:
         new = Task(
             id=self.next_id(),
-            task=task,
+            description=description,
             priority=priority,
             status=Status.open,
             due=due
@@ -29,16 +29,12 @@ class ToDoList:
         self.tasks = [t for t in self.tasks if t.id != task_id]
         return len(self.tasks) != length_before
     
-    def sort_todo(self, key: str, reverse: bool = False) -> bool:
-        try:
-            with_value = [t for t in self.tasks if getattr(t, key) is not None]
-            without_value = [t for t in self.tasks if getattr(t, key) is None]
-            with_value.sort(key=lambda t: getattr(t, key), reverse=reverse)
-            without_value.sort(key=lambda t: t.id)
-            self.tasks = with_value + without_value
-            return True
-        except AttributeError:
-            return False
+    def sort_todo(self, key: str, reverse: bool = False) -> None:
+        with_value = [t for t in self.tasks if getattr(t, key) is not None]
+        without_value = [t for t in self.tasks if getattr(t, key) is None]
+        with_value.sort(key=lambda t: getattr(t, key), reverse=reverse)
+        without_value.sort(key=lambda t: t.id)
+        self.tasks = with_value + without_value
 
     def assign_new_ids(self) -> int:
         for i, t in enumerate(self.tasks, 1):

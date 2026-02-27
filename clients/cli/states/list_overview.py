@@ -12,6 +12,10 @@ class ListOverviewState(AppStateBase):
                 'label': 'New To-Do',
                 'handler': self._cmd_new,
             },
+            'd': {
+                'label': 'Delete To-Do',
+                'handler': self._cmd_delete
+            },
             'x': {
                 'label': 'Exit',
                 'handler': self._cmd_exit
@@ -28,9 +32,10 @@ class ListOverviewState(AppStateBase):
         ui.info('')
         
     def render(self, app: AppLike):
-        self.listed_todo_titles = app.service.list_todo_titles()
+        res = app.service.list_todos()
+        self.todos = res.data
         display_menu = ui.make_menu(
-            self.name, self.WIDTH, data=self.listed_todo_titles
+            self.name, self.WIDTH, data=self.todos
         )
         print('\n'.join(display_menu))
         self._render_options()
@@ -39,15 +44,22 @@ class ListOverviewState(AppStateBase):
     # ===== HANDLER-HELPER ==========================================
     def _cmd_new(self, app: AppLike) -> None:
         title = prompts.prompt_todo_title()
-        if title in self.listed_todo_titles.values():
+        res = app.service.new_todo(title)
+        if not res.ok:
             confirmed = prompts.prompt_open_existing_list(title)
             if confirmed:
                 res = app.service.open_todo_by_title(title)
                 app.current_todo = res.data
                 app.goto('list_menu')
             return
-        new_todo = app.service.new_todo(title)
-        app.flash('success', f'{new_todo.title} created.')
+        app.flash('success', res.msg)
+        app.current_todo = res.data
+        app.goto('list_menu')
+
+    def _cmd_delete(self, app: AppLike) -> None:
+        choice = prompts.prompt_delete_task()
+        res = app.service.delete_todo_by_choice(choice)
+        app.flash('success' if res.ok else 'error', res.msg)
 
     def _cmd_exit(self, app: AppLike) -> None:
         app.goto('exit')
@@ -70,4 +82,3 @@ class ListOverviewState(AppStateBase):
             return
         handler: Callable[[AppLike], None] = entry['handler']
         handler(app)
-            

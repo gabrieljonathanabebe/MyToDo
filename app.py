@@ -40,13 +40,13 @@ class ToDoApp:
             if self.flash_msg:
                 kind, msg = self.flash_msg
                 if kind == 'success':
-                    ui.success('\n' + msg + '\n')
+                    ui.success(msg + '\n')
                 elif kind == 'info':
-                    ui.info('\n' + msg + '\n')
+                    ui.info(msg + '\n')
                 elif kind == 'warning':
-                    ui.warning('\n' + msg + '\n')
+                    ui.warning(msg + '\n')
                 else:
-                    ui.error('\n' + msg + '\n')
+                    ui.error(msg + '\n')
                 self.flash_msg = None
             if not self.running:
                 break

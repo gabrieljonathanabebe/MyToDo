@@ -20,15 +20,16 @@ class CsvRepository:
         df = adapters.to_storage(todo.tasks)
         df.to_csv(path, index=False)
 
-    def list_todo_titles(self) -> dict[str, str]:
-        todo_titles = sorted([t.stem for t in self.DATA_DIR.glob('*.csv')])
-        return {str(i + 1): title for i, title in enumerate(todo_titles)}
-        
-    def delete_todo_by_choice(self, choice: str) -> bool:
-        listed_todo_titles = self.list_todo_titles()
-        selected_title = listed_todo_titles.get(choice)
-        path = self.DATA_DIR / f'{selected_title}.csv'
-        pass
+    def list_todos(self) -> dict[str, str]:
+        todos = sorted([t.stem for t in self.DATA_DIR.glob('*.csv')])
+        return {str(i + 1): title for i, title in enumerate(todos)}
+
+    def delete_todo(self, title: str) -> bool:
+        path = self.DATA_DIR / f'{title}.csv'
+        if not path.exists():
+            return False
+        path.unlink()
+        return True
 
     def load(title: str, DATA_DIR: Path) -> ToDoList:
         path = DATA_DIR / f'{title}.csv'
