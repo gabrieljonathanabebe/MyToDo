@@ -1,5 +1,5 @@
-import adapters
-from models import Task
+from todoapp.infra import adapters
+from todoapp.domain.models import Task
 from .layout import table_border, table_row, table_title, table_header, empty_line
 
 

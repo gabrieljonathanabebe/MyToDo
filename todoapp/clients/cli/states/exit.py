@@ -1,5 +1,4 @@
 from .base import AppStateBase, AppLike
-from clients.cli import ui
 
 class ExitState(AppStateBase):
     def render(self, app: AppLike):

@@ -1,6 +1,6 @@
 from typing import Optional
 
-from models import Task, Status
+from .models import Task, Status
 
 
 class ToDoList:

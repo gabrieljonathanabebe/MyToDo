@@ -1,8 +1,8 @@
 import pandas as pd
 from pathlib import Path
 
-import adapters
-from domain import ToDoList
+from todoapp.infra import adapters
+from todoapp.domain.todo_list import ToDoList
 
 
 class CsvRepository:

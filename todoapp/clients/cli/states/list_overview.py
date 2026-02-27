@@ -1,8 +1,8 @@
 from typing import Callable
 
+from todoapp.clients.cli import ui, prompts
 from .base import AppStateBase, AppLike
-from clients.cli import ui
-import prompts
+
 
 class ListOverviewState(AppStateBase):
     def __init__(self):

@@ -4,7 +4,7 @@ from typing import Any
 from datetime import date
 from enum import Enum
 
-from models import Task
+from todoapp.domain.models import Task
 
 # ===== HELPER ==================================================
 def get_meta() -> dict[str, dict[str, Any]]:

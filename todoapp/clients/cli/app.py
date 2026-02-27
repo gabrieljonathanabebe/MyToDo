@@ -2,16 +2,15 @@ import os
 from pathlib import Path
 import time
 
-from service import ToDoService
-from domain import ToDoList
-from repository import CsvRepository
-from clients.cli.states import router
-from clients.cli import ui
+from todoapp.core.config import DATA_DIR
+from todoapp.core.service import ToDoService
+from todoapp.infra.csv_repository import CsvRepository
+from todoapp.clients.cli.states import router
+from todoapp.clients.cli import ui
 
 class ToDoApp:
     def __init__(self):
-        self.DATA_DIR = Path.cwd() / 'data'
-        repo = CsvRepository(self.DATA_DIR)
+        repo = CsvRepository(DATA_DIR)
         self.service = ToDoService(repo)
         self.running = True
         self.goto('overview')
@@ -23,11 +22,6 @@ class ToDoApp:
 
     def flash(self, kind: str, msg: str) -> None:
         self.flash_msg = (kind, msg)
-
-    def new_list(self):
-        title = input('Select a title for your new To-Do List: ')
-        todo_list = ToDoList(title)
-        pass # <-- will be completed
     
     def clear_display(self) -> None:
         time.sleep(0.1)

@@ -1,10 +1,7 @@
 from typing import Callable
 
-from pydantic import ValidationError
-
+from todoapp.clients.cli import ui, prompts
 from .base import AppStateBase, AppLike
-from clients.cli import ui
-import prompts
 
 
 class ListMenuState(AppStateBase):

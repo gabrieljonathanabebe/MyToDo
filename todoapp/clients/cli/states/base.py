@@ -2,8 +2,8 @@ from __future__ import annotations
 from typing import Optional, Protocol, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from domain import ToDoList
-    from service import ToDoService
+    from todoapp.domain.todo_list import ToDoList
+    from todoapp.core.service import ToDoService
 
 class AppLike(Protocol):
     service: ToDoService

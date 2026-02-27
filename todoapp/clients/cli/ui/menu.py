@@ -1,5 +1,4 @@
 from .layout import menu_border, menu_title, menu_data
-from .style import italic, bold
 
 
 def make_menu(
