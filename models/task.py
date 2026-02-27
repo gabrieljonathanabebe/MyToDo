@@ -2,7 +2,7 @@ from datetime import date
 from typing import Optional
 from enum import Enum
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 
 class Priority(int, Enum):
@@ -29,10 +29,10 @@ class Task(BaseModel):
         }
     )
 
-    task: str = Field(
+    description: str = Field(
         ...,
         json_schema_extra={
-            'label': 'Task',
+            'label': 'Description',
             'align': 'left',
             'width': 25,
             'prompt': True,
@@ -78,7 +78,9 @@ class Task(BaseModel):
         if self.due is None:
             return None
         return (self.due - date.today()).days
-
-
-
-
+    
+    @field_validator('description')
+    def validate_description(cls, desc: str) -> str:
+        if not desc.strip():
+            raise ValueError('Description must not be empty.')
+        return desc
