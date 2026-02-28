@@ -24,6 +24,10 @@ class ListMenuState(AppStateBase):
                 'label': 'Assign new IDs',
                 'handler': self._cmd_assign_new_ids
             },
+            't': {
+                'label': 'Toggle status',
+                'handler': self._cmd_toggle_status
+            },
             'b': {
                 'label': 'Back',
                 'handler': self._cmd_back
@@ -73,6 +77,11 @@ class ListMenuState(AppStateBase):
     def _cmd_assign_new_ids(self, app: AppLike) -> None:
         res = app.service.assign_new_ids(app.current_todo)
         app.flash('success', res.msg)
+
+    def _cmd_toggle_status(self, app: AppLike) -> None:
+        task_id_input = prompts.prompt_target_id()
+        res = app.service.toggle_status(app.current_todo, task_id_input)
+        app.flash('success' if res.ok else 'error', res.msg)
 
     def _cmd_back(self, app: AppLike) -> None:
         app.goto('overview')

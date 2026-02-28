@@ -11,7 +11,7 @@ class ToDoService:
         self.repo = repo
 
 
-    # ===== REPO WRAPPER ======================================
+    # ===== REPO SERVICES =====================================
     def list_todos(self) -> Result[dict[str, str]]:
         return Result(Code.OK, data=self.repo.list_todos())
 
@@ -83,6 +83,16 @@ class ToDoService:
         count = todo.assign_new_ids()
         self.repo.save_todo(todo)
         return Result(Code.OK, f'Reassigned {count} IDs.')
+    
+    def toggle_status(self, todo: ToDoList, task_id: str) -> Result[None]:
+        try:
+            ok = todo.toggle_status(int(task_id))
+            if not ok:
+                return Result(Code.NOT_FOUND, f'Task {task_id} not found.')
+            self.repo.save_todo(todo)
+            return Result(Code.OK, f'Toggle status for Task {task_id}.')
+        except ValueError:
+            return Result(Code.INVALID_INPUT, f'"{task_id} is not a valid input.')
 
     # ===== NEW TO-DO ============================================
     def new_todo(self, title: str) -> Result[ToDoList]:

@@ -40,3 +40,10 @@ class ToDoList:
         for i, t in enumerate(self.tasks, 1):
             t.id = i
         return len(self.tasks)
+    
+    def toggle_status(self, task_id: int) -> bool:
+        task = next((t for t in self.tasks if t.id == task_id), None)
+        if task is None:
+            return False
+        task.status = Status.done if task.status == Status.open else Status.open
+        return True
