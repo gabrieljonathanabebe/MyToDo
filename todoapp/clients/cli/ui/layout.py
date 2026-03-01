@@ -1,23 +1,42 @@
 from typing import Callable
+import re
+
 from .style import italic, bold
 
 
+ANSI_RE = re.compile(r'\x1b\[[0-9;]*m')
+
+
 # ===== PRIMITIVES ==============================================
+def strip_ansi(s: str) -> str:
+    return ANSI_RE.sub('', s)
+
+def visible_len(s: str) -> int:
+    return len(strip_ansi(s))
+
 def clip(text: str, width: int) -> str:
-    if '\x1b[' in text:
+    inner_width = width - 2
+    if visible_len(text) <= inner_width:
         return text
-    if len(text) + 2 > width:
-        text = text[:width - 5] + '...'
-    return text
+    plain = strip_ansi(text)
+    return plain[:inner_width - 3] + '...'
 
 def padding(text: str, width: int, align: str = 'left') -> str:
+    inner_width = width - 2
     text = clip(text, width)
-    if align == 'center':
-        return text.center(width - 2)
-    elif align == 'right':
-        return text.rjust(width - 2)
+    vis_len = visible_len(text)
+    if vis_len < inner_width:
+        pad = inner_width - vis_len
     else:
-        return text.ljust(width - 2)
+        pad = 0
+    if align == 'right':
+        return (' ' * pad) + text
+    elif align == 'center':
+        left = pad // 2
+        right = pad - left
+        return (' ' * left) + text + (' ' * right)
+    else:
+        return text + (' ' * pad)
     
 def single_cell_line(
     text: str, width: int, align: str = 'left',

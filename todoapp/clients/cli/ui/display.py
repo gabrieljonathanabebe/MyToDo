@@ -3,6 +3,7 @@ from datetime import date
 from enum import Enum
 
 from todoapp.domain.models import Task
+from . import display_spec
 from .formatters import format_status
 
 
@@ -18,9 +19,12 @@ def serialize_display_value(value: Any) -> str:
 def to_display_row(task: Task) -> dict[str, str]:
     base = task.model_dump()
     base['days_left'] = task.days_left
-    row = {
-        field: serialize_display_value(value)
-        for field, value in base.items()
-    }
-    row['status'] = format_status(task.status)
+    row = {}
+    for field in display_spec.get_fields():
+        value = base.get(field)
+        formatter = display_spec.get_formatter(field)
+        if formatter:
+            row[field] = formatter(getattr(task, field))
+        else:
+            row[field] = serialize_display_value(value)
     return row
