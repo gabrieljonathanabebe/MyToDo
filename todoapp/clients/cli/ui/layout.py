@@ -4,6 +4,8 @@ from .style import italic, bold
 
 # ===== PRIMITIVES ==============================================
 def clip(text: str, width: int) -> str:
+    if '\x1b[' in text:
+        return text
     if len(text) + 2 > width:
         text = text[:width - 5] + '...'
     return text

@@ -6,34 +6,7 @@ from enum import Enum
 
 from todoapp.domain.models import Task
 
-# ===== HELPER ==================================================
-def get_meta() -> dict[str, dict[str, Any]]:
-    fields = Task.model_fields
-    meta = {}
-    for name, field in fields.items():
-        metadata = field.json_schema_extra
-        meta[name] = metadata
-    return meta
-
-def get_display_spec() -> list[tuple[str, str, str]]:
-    meta = get_meta()
-    return [
-        (
-            field,
-            label.get('label', ''),
-            label.get('align', 'center'),
-            label.get('width', 10)
-        ) 
-        for field, label in meta.items()
-    ] + [('days_left', 'Days left', 'center', 13)]
-
-def get_fields() -> list[str]:
-    return list(get_meta().keys())
-
-def get_labels() -> list[str]:
-    meta = get_meta()
-    return [label.get('label', '') for _, label in meta.items()]
-
+# ===== SERIALIZER ==================================================
 def serialize_value(value: Any) -> str:
     if value is None:
         return ''
@@ -43,9 +16,10 @@ def serialize_value(value: Any) -> str:
         return value.strftime('%Y-%m-%d')
     return str(value)
 
+# ===== STORAGE =====================================================
 def from_storage(df: pd.DataFrame) -> list[Task]:
-    df.columns = get_fields()
     df = df.replace({pd.NA : None})
+    df.columns = [c.strip().lower() for c in df.columns]
     raw_rows = df.to_dict(orient='records')
     rows = []
     for raw_row in raw_rows:
@@ -55,7 +29,6 @@ def from_storage(df: pd.DataFrame) -> list[Task]:
         }
         rows.append(row)
     return [Task.model_validate(r) for r in rows]
-
 
 def to_storage(tasks: list[Task]) -> pd.DataFrame:
     rows = []
@@ -67,17 +40,6 @@ def to_storage(tasks: list[Task]) -> pd.DataFrame:
         }
         rows.append(serialized)
     if not rows:
-        fields = get_fields()
-        df = pd.DataFrame(columns=fields)
-    else:
-        df = pd.DataFrame(rows)
-    df.columns = get_labels()
-    return df
-
-def to_display(task: Task) -> dict:
-    base = task.model_dump()
-    base['days_left'] = task.days_left
-    return {
-        field: serialize_value(value)
-        for field, value in base.items()
-    }
+        fields = list(Task.model_fields.keys())
+        return pd.DataFrame(columns=fields)
+    return pd.DataFrame(rows)
