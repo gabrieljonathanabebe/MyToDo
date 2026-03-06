@@ -4,7 +4,6 @@ from enum import Enum
 
 from todoapp.domain.models import Task
 from . import display_spec
-from .formatters import format_status
 
 
 def serialize_display_value(value: Any) -> str:
