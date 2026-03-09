@@ -3,7 +3,9 @@ from datetime import date
 import pytest
 
 from todoapp.domain.todo_list import ToDoList
-from todoapp.domain.models import Task, Priority, Status
+from todoapp.core.service import ToDoService
+from todoapp.domain.models import Priority, Status
+from tests.fakes import FakeRepo
 import tests.factories as factories
 
 
@@ -19,4 +21,13 @@ def todo_with_five_tasks() -> ToDoList:
         statuses=[Status.open, Status.open, Status.done],
         dues=[date(2026, 5, 11), None, date(2026, 4, 1)]
     )
-    return ToDoList('To-Do with tasks', tasks)
+    return ToDoList('To-Do with five tasks', tasks)
+
+
+@pytest.fixture
+def repo() -> FakeRepo:
+    return FakeRepo()
+
+@pytest.fixture
+def service(repo: FakeRepo) -> ToDoService:
+    return ToDoService(repo)
