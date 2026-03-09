@@ -2,12 +2,12 @@ from pydantic import ValidationError
 
 from todoapp.domain.todo_list import ToDoList
 from todoapp.domain.models import Task
-from todoapp.infra.csv_repository import CsvRepository
+from .repository import ToDoRepository
 from .results import Result, Code
 
 
 class ToDoService:
-    def __init__(self, repo: CsvRepository):
+    def __init__(self, repo: ToDoRepository):
         self.repo = repo
 
 
