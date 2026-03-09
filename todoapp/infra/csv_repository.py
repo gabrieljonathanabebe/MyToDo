@@ -30,10 +30,3 @@ class CsvRepository:
             return False
         path.unlink()
         return True
-
-    def load(title: str, DATA_DIR: Path) -> ToDoList:
-        path = DATA_DIR / f'{title}.csv'
-        df = pd.read_csv(path)
-        tasks = adapters.from_storage(df)
-        todo = ToDoList(title, tasks=tasks)
-        return todo
