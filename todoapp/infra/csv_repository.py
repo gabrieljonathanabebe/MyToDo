@@ -9,8 +9,10 @@ class CsvRepository:
     def __init__(self, DATA_DIR: Path):
         self.DATA_DIR = DATA_DIR
 
-    def load_todo(self, title: str) -> ToDoList:
+    def load_todo(self, title: str) -> ToDoList | None:
         path = self.DATA_DIR / f'{title}.csv'
+        if not path.exists():
+            return None
         df = pd.read_csv(path)
         tasks = adapters.from_storage(df)
         return ToDoList(title, tasks=tasks)

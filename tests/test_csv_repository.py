@@ -27,8 +27,7 @@ def test_save_and_load_roundtrip(tmp_path: Path) -> None:
 
 def test_load_todo_missing_file(tmp_path: Path) -> None:
     repo = CsvRepository(tmp_path)
-    with pytest.raises(FileNotFoundError):
-        repo.load_todo('missing')
+    assert repo.load_todo('missing') is None
 
 def test_list_todos(tmp_path: Path) -> None:
     # arange
