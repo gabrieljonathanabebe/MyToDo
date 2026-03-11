@@ -97,7 +97,7 @@ class ToDoService:
     # ===== NEW TO-DO ============================================
     def new_todo(self, title: str) -> Result[ToDoList]:
         if title in self.list_todos().data.values():
-            return Result(Code.ALREADY_EXISTS)
+            return Result(Code.ALREADY_EXISTS, f'{title} already exists.')
         new_todo = ToDoList(title)
         self.repo.save_todo(new_todo)
         return Result(Code.CREATED, f'{new_todo.title} created.', data=new_todo)

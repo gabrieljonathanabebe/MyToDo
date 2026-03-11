@@ -46,7 +46,7 @@ class ListOverviewState(AppStateBase):
         title = prompts.prompt_todo_title()
         res = app.service.new_todo(title)
         if not res.ok:
-            confirmed = prompts.prompt_open_existing_list(title)
+            confirmed = prompts.prompt_open_existing_list(res.msg)
             if confirmed:
                 res = app.service.open_todo_by_title(title)
                 app.current_todo = res.data
