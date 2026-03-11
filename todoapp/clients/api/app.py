@@ -1,8 +1,9 @@
-from fastapi import Depends, FastAPI, HTTPException, status
+from fastapi import Depends, FastAPI, status
 
 from todoapp.clients.api.deps import get_service
 import todoapp.clients.api.schemas as api_sc
 import todoapp.clients.api.adapters as api_ad
+import todoapp.clients.api.http_errors as http_errors
 from todoapp.core.service import ToDoService
 from todoapp.core.results import Code
 
@@ -40,15 +41,7 @@ def create_todo(
     res = service.new_todo(body.title)
     if res.code == Code.CREATED and res.data is not None:
         return api_sc.ToDoResponse(title=res.data.title)
-    if res.code == Code.ALREADY_EXISTS:
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail='ToDo already exists.'
-        )
-    raise HTTPException(
-        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        detail='Unexpected service result.'
-    )
+    http_errors.raise_for_result(res)
 
 
 @app.get('/todos/{title}', response_model=api_sc.ToDoDetailResponse)
@@ -59,10 +52,7 @@ def get_todo_by_title(
     res = service.open_todo_by_title(title)
     if res.code == Code.OK and res.data is not None:
         return api_ad.to_todo_detail_response(res.data)
-    raise HTTPException(
-        status_code=status.HTTP_404_NOT_FOUND,
-        detail='ToDo not found.'
-    )
+    http_errors.raise_for_result(res)
 
 
 @app.post(
@@ -74,13 +64,10 @@ def create_task(
     title: str,
     body: api_sc.CreateTaskRequest,
     service: ToDoService = Depends(get_service)
-):
+) -> api_sc.TaskResponse:
     todo_res = service.open_todo_by_title(title)
     if todo_res.code != Code.OK or todo_res.data is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail='ToDo not found.'
-        )
+        http_errors.raise_for_result(todo_res)
     res = service.add_task(
         todo_res.data,
         description=body.description,
@@ -89,12 +76,4 @@ def create_task(
     )
     if res.code == Code.OK and res.data is not None:
         return api_ad.to_task_response(res.data)
-    if res.code == Code.INVALID_INPUT:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=res.msg
-        )
-    raise HTTPException(
-        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        detail='Unexpected service result.'
-    )
+    http_errors.raise_for_result(res)
