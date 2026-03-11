@@ -1,13 +1,8 @@
 from fastapi import Depends, FastAPI, HTTPException, status
 
 from todoapp.clients.api.deps import get_service
-from todoapp.clients.api.schemas import (
-    CreateToDoRequest,
-    ToDoResponse,
-    TaskResponse,
-    ToDoDetailResponse,
-    CreateTaskRequest
-)
+import todoapp.clients.api.schemas as api_sc
+import todoapp.clients.api.adapters as api_ad
 from todoapp.core.service import ToDoService
 from todoapp.core.results import Code
 
@@ -34,15 +29,17 @@ def get_todos(service: ToDoService = Depends(get_service)) -> dict[str, str]:
 
 
 @app.post(
-    '/todos', response_model=ToDoResponse, status_code=status.HTTP_201_CREATED
+    '/todos',
+    response_model=api_sc.ToDoResponse,
+    status_code=status.HTTP_201_CREATED
 )
 def create_todo(
-    body: CreateToDoRequest,
+    body: api_sc.CreateToDoRequest,
     service: ToDoService = Depends(get_service)
-) -> ToDoResponse:
+) -> api_sc.ToDoResponse:
     res = service.new_todo(body.title)
     if res.code == Code.CREATED and res.data is not None:
-        return ToDoResponse(title=res.data.title)
+        return api_sc.ToDoResponse(title=res.data.title)
     if res.code == Code.ALREADY_EXISTS:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
@@ -54,28 +51,14 @@ def create_todo(
     )
 
 
-@app.get('/todos/{title}', response_model=ToDoDetailResponse)
+@app.get('/todos/{title}', response_model=api_sc.ToDoDetailResponse)
 def get_todo_by_title(
     title: str,
     service: ToDoService = Depends(get_service)
-) -> ToDoDetailResponse:
+) -> api_sc.ToDoDetailResponse:
     res = service.open_todo_by_title(title)
     if res.code == Code.OK and res.data is not None:
-        tasks = [
-            TaskResponse(
-                id=task.id,
-                description=task.description,
-                priority=int(task.priority),
-                status=task.status.value,
-                due=task.due,
-                days_left=task.days_left
-            )
-            for task in res.data.tasks
-        ]
-        return ToDoDetailResponse(
-            title=res.data.title,
-            tasks=tasks
-        )
+        return api_ad.to_todo_detail_response(res.data)
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
         detail='ToDo not found.'
@@ -84,12 +67,12 @@ def get_todo_by_title(
 
 @app.post(
     '/todos/{title}/tasks',
-    response_model=TaskResponse,
+    response_model=api_sc.TaskResponse,
     status_code=status.HTTP_201_CREATED
 )
 def create_task(
     title: str,
-    body: CreateTaskRequest,
+    body: api_sc.CreateTaskRequest,
     service: ToDoService = Depends(get_service)
 ):
     todo_res = service.open_todo_by_title(title)
@@ -105,14 +88,7 @@ def create_task(
         due=body.due.isoformat() if body.due else None
     )
     if res.code == Code.OK and res.data is not None:
-        return TaskResponse(
-            id=res.data.id,
-            description=res.data.description,
-            priority=int(res.data.priority),
-            status=res.data.status.value,
-            due=res.data.due,
-            days_left=res.data.days_left
-        )
+        return api_ad.to_task_response(res.data)
     if res.code == Code.INVALID_INPUT:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
