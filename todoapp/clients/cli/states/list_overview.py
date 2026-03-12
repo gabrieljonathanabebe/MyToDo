@@ -33,7 +33,11 @@ class ListOverviewState(AppStateBase):
         
     def render(self, app: AppLike):
         res = app.service.list_todos()
-        self.todos = res.data
+        items = res.data or []
+        self.todos = {
+            str(i + 1): item.title
+            for i, item in enumerate(items)
+        }
         display_menu = ui.make_menu(
             self.name, self.WIDTH, data=self.todos
         )
