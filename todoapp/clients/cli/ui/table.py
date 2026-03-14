@@ -19,6 +19,7 @@ def make_table(title: str, tasks: list[Task]) -> list[str]:
     table.append(table_border(widths))
     if not tasks:
         table.append(empty_line(table_width))
+        table.append(table_border(widths))
         return table
     for task in tasks:
         serialized_task = display.to_display_row(task)
