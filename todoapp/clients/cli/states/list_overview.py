@@ -2,6 +2,7 @@ from typing import Callable
 
 from todoapp.clients.cli import ui, prompts
 from .base import AppStateBase, AppLike
+from todoapp.core.results import Code
 
 
 class ListOverviewState(AppStateBase):
@@ -21,6 +22,17 @@ class ListOverviewState(AppStateBase):
                 'handler': self._cmd_exit
             }
         }
+
+
+    # ===== HELPER===================================================
+    def _resolve_choice(self, choice: str) -> str | None:
+        try:
+            index = int(choice) - 1
+        except ValueError:
+            return None
+        if index < 0 or index >= len(self.todo_items):
+            return None
+        return self.todo_items[index].id
     
     
     # ===== RENDER-METHODS ==========================================
@@ -33,10 +45,10 @@ class ListOverviewState(AppStateBase):
         
     def render(self, app: AppLike):
         res = app.service.list_todos()
-        items = res.data or []
+        self.todo_items = res.data or []
         self.todos = {
             str(i + 1): item.title
-            for i, item in enumerate(items)
+            for i, item in enumerate(self.todo_items)
         }
         display_menu = ui.make_menu(
             self.name, self.WIDTH, data=self.todos
@@ -49,20 +61,24 @@ class ListOverviewState(AppStateBase):
     def _cmd_new(self, app: AppLike) -> None:
         title = prompts.prompt_todo_title()
         res = app.service.new_todo(title)
-        if not res.ok:
+        if res.code == Code.ALREADY_EXISTS:
             confirmed = prompts.prompt_open_existing_list(res.msg)
-            if confirmed:
-                res = app.service.open_todo_by_title(title)
+            if confirmed and res.data is not None:
                 app.current_todo = res.data
                 app.goto('list_menu')
             return
+        if not res.ok:
+            app.flash('error', res.msg)
         app.flash('success', res.msg)
         app.current_todo = res.data
         app.goto('list_menu')
 
     def _cmd_delete(self, app: AppLike) -> None:
         choice = prompts.prompt_delete_task()
-        res = app.service.delete_todo_by_choice(choice)
+        todo_id = self._resolve_choice(choice)
+        if todo_id is None:
+            app.flash('error', 'Invalid selection.')
+        res = app.service.delete_todo(todo_id)
         app.flash('success' if res.ok else 'error', res.msg)
 
     def _cmd_exit(self, app: AppLike) -> None:
@@ -73,7 +89,11 @@ class ListOverviewState(AppStateBase):
     def handle_input(self, app: AppLike, cmd: str) -> None:
         cmd = cmd.strip().lower()
         if cmd.isdigit():
-            res = app.service.open_todo_by_choice(cmd)
+            todo_id = self._resolve_choice(cmd)
+            if todo_id is None:
+                app.flash('error', 'Invalid selection.')
+                return
+            res = app.service.open_todo(todo_id)
             if not res.ok:
                 app.flash('error', res.msg)
                 return

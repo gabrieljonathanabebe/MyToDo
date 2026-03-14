@@ -1,7 +1,10 @@
+from datetime import datetime, timezone
+from uuid import uuid4
+
 from pydantic import ValidationError
 
 from todoapp.domain.todo_list import ToDoList
-from todoapp.domain.models import Task, ToDoListItem
+from todoapp.domain.models import Task, ToDoMeta
 from .repository import ToDoRepository
 from .results import Result, Code
 
@@ -12,42 +15,22 @@ class ToDoService:
 
 
     # ===== REPO SERVICES =====================================
-    def list_todos(self) -> Result[list[ToDoListItem]]:
+    def list_todos(self) -> Result[list[ToDoMeta]]:
         return Result(Code.OK, data=self.repo.list_todos())
-
-    def open_todo_by_choice(self, choice: str) -> Result[ToDoList]:
-        items = self.list_todos().data or []
-        try:
-            index = int(choice) - 1
-        except ValueError:
-            return Result(Code.INVALID_INPUT, 'Invalid selection.')
-        if index < 0 or index >= len(items):
-            return Result(Code.NOT_FOUND, 'Invalid selection.')
-        item = items[index]
-        todo = self.repo.load_todo(item.title)
+    
+    def open_todo(self, todo_id: str) -> Result[ToDoList]:
+        todo = self.repo.load_todo(todo_id)
         if todo is None:
             return Result(Code.NOT_FOUND, 'ToDo not found.')
         return Result(Code.OK, data=todo)
     
-    def open_todo_by_title(self, title: str) -> Result[ToDoList]:
-        todo = self.repo.load_todo(title)
-        if todo is None:
-            return Result(Code.NOT_FOUND, 'ToDo not found')
-        return Result(Code.OK, data=todo)
-    
-    def delete_todo_by_choice(self, choice: str) -> Result[None]:
-        items = self.list_todos().data or []
-        try:
-            index = int(choice) - 1
-        except ValueError:
-            return Result(Code.INVALID_INPUT, 'Invalid selection.')
-        if index < 0 or index >= len(items):
-            return Result(Code.NOT_FOUND, 'Invalid selection.')
-        item = items[index]
-        deleted = self.repo.delete_todo(item.title)
-        if not deleted:
+    def delete_todo(self, todo_id: str) -> Result[None]:
+        meta = self.repo.get_todo_meta_by_id(todo_id)
+        if meta is None:
             return Result(Code.NOT_FOUND, 'ToDo not found.')
-        return Result(Code.OK, f'{item.title} deleted.')
+        if not self.repo.delete_todo(todo_id):
+            return Result(Code.NOT_FOUND, 'ToDo not found.')
+        return Result(Code.OK, f'ToDo "{meta.title}" deleted.')
 
 
     # ===== DOMAIN SERVICES ===================================
@@ -106,9 +89,22 @@ class ToDoService:
 
     # ===== NEW TO-DO ============================================
     def new_todo(self, title: str) -> Result[ToDoList]:
-        if title in [item.title for item in self.list_todos().data]:
-            return Result(Code.ALREADY_EXISTS, f'{title} already exists.')
-        new_todo = ToDoList(title)
+        existing_meta = self.repo.get_todo_meta_by_title(title)
+        if existing_meta is not None:
+            existing_todo = self.repo.load_todo(existing_meta.id)
+            if existing_todo is None:
+                return Result(Code.NOT_FOUND, 'ToDo not found.')
+            return Result(
+                Code.ALREADY_EXISTS,
+                f'{title} already exists.',
+                data=existing_todo
+            )
+        new_todo = ToDoList(
+            title=title,
+            todo_id=str(uuid4()),
+            created_at=datetime.now(timezone.utc),
+            tasks=[]
+        )
         self.repo.save_todo(new_todo)
-        self.repo.register_todo(title)
+        self.repo.register_todo_meta(new_todo)
         return Result(Code.CREATED, f'{new_todo.title} created.', data=new_todo)

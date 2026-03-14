@@ -1,12 +1,21 @@
 from typing import Optional
+from datetime import datetime
 
 from .models import Task, Status
 
 
 class ToDoList:
-    def __init__(self, title: str, tasks: Optional[list[Task]] = None):
-        self.title: str = title
-        self.tasks: list[Task] = tasks or []
+    def __init__(
+        self,
+        title: str,
+        todo_id: str | None = None,
+        tasks: Optional[list[Task]] = None,
+        created_at: datetime | None = None
+    ):
+        self.title = title
+        self.id = todo_id
+        self.tasks = tasks or []
+        self.created_at = created_at
 
     def next_id(self) -> int:
         return (max((t.id for t in self.tasks), default=0) + 1)
