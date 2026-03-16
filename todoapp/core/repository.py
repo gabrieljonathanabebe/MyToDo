@@ -16,6 +16,9 @@ class ToDoRepository(Protocol):
     def list_todos(self) -> list[ToDoMeta]:
         ...
 
+    def update_todo_meta(self, todo: ToDoList) -> None:
+        ...
+
     def register_todo_meta(self, todo: ToDoList) -> None:
         ...
 

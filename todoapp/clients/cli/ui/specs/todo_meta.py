@@ -18,10 +18,20 @@ TODO_META_SPEC = TableSpec({
         width=25,
         formatter=formatters.format_title
     ),
+    'task_count': ColumnSpec(
+        label='Tasks',
+        width=7,
+        align='center'
+    ),
     'created_at': ColumnSpec(
         label='Created',
-        width=12,
+        width=14,
         align='center'
+    ),
+    'updated_at': ColumnSpec(
+        label='Updated',
+        width=14,
+        formatter=formatters.format_relative_datetime
     )
 })
 

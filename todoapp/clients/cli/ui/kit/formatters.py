@@ -1,3 +1,5 @@
+from datetime import datetime, timezone
+
 from todoapp.domain.models import Status, Priority
 from .style import red, yellow, green
 
@@ -22,3 +24,27 @@ def format_priority(priority: Priority) -> str:
 # ===== TODO FORRMATTER ========================================
 def format_title(title: str) -> str:
     return title[:1].upper() + title[1:] if title else title
+
+
+def format_relative_datetime(dt: datetime) -> str:
+    now = datetime.now(timezone.utc)
+    delta = now - dt
+    total_seconds = int(delta.total_seconds())
+    minutes = total_seconds // 60
+    hours = total_seconds // 3600
+    days = delta.days
+    weeks = days // 7
+    months = days // 30
+    if total_seconds < 60:
+        return 'just now'
+    if minutes < 60:
+        return f'{minutes} min ago'
+    if hours < 24:
+        return f'{hours} h ago'
+    if days < 7:
+        return f'{days} d ago'
+    if weeks < 5:
+        return f'{weeks} wk ago'
+    if months < 12:
+        return f'{months} mo ago'
+    return dt.strftime('%Y-%m-%d')

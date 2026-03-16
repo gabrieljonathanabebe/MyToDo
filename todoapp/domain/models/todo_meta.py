@@ -12,12 +12,16 @@ if TYPE_CHECKING:
 class ToDoMeta(BaseModel):
     id: str
     title: str
+    task_count: int
     created_at: datetime
+    updated_at: datetime
 
     @classmethod
     def from_todo(cls, todo: ToDoList) -> ToDoMeta:
         return cls(
             id=todo.id,
             title=todo.title,
-            created_at=todo.created_at
+            task_count=len(todo.tasks),
+            created_at=todo.created_at,
+            updated_at=todo.updated_at
         )

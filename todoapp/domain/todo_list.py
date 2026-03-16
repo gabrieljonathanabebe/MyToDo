@@ -1,7 +1,10 @@
-from typing import Optional
-from datetime import datetime
+from __future__ import annotations
 
-from .models import Task, Status
+from typing import Optional
+from uuid import uuid4
+from datetime import datetime, timezone
+
+from .models import ToDoMeta, Task, Status
 
 
 class ToDoList:
@@ -10,12 +13,40 @@ class ToDoList:
         title: str,
         todo_id: str | None = None,
         tasks: Optional[list[Task]] = None,
-        created_at: datetime | None = None
+        created_at: datetime | None = None,
+        updated_at: datetime | None = None
     ):
         self.title = title
         self.id = todo_id
         self.tasks = tasks or []
         self.created_at = created_at
+        self.updated_at = updated_at
+
+    @classmethod
+    def create_new(cls, title: str) -> ToDoList:
+        now = datetime.now(timezone.utc)
+        return cls(
+            title=title,
+            todo_id=str(uuid4()),
+            tasks=[],
+            created_at=now,
+            updated_at=now
+        )
+    
+    @classmethod
+    def from_meta(
+        cls,
+        todo_meta: ToDoMeta,
+        tasks: Optional[list[Task]] = None
+    ) -> ToDoList:
+        return cls(
+            title=todo_meta.title,
+            todo_id=todo_meta.id,
+            tasks=tasks or [],
+            created_at=todo_meta.created_at,
+            updated_at=todo_meta.updated_at
+        )
+
 
     def next_id(self) -> int:
         return (max((t.id for t in self.tasks), default=0) + 1)

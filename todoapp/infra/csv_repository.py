@@ -27,23 +27,39 @@ class CsvRepository:
 
     def _load_todo_meta(self) -> list[ToDoMeta]:
         path = self._meta_path()
+        # if metadata for todos already exists
         if path.exists():
             with path.open('r', encoding='utf-8') as f:
                 data = json.load(f)
             return meta_ad.from_storage(data)
+        # if metadata for todos not exists
         items: list[ToDoMeta] = []
         for csv_file in sorted(self.DATA_DIR.glob('*.csv')):
+            df = pd.read_csv(csv_file)
             title = csv_file.stem
+            tasks = task_ad.from_storage(df)
             created_ts = csv_file.stat().st_mtime
             created_at = datetime.fromtimestamp(created_ts, tz=timezone.utc)
-            meta = ToDoMeta(
-                id=str(uuid4()),
+            todo = ToDoList(
                 title=title,
-                created_at=created_at
+                todo_id=str(uuid4()),
+                tasks=tasks,
+                created_at=created_at,
+                updated_at=created_at
             )
-            items.append(meta)
+            items.append(ToDoMeta.from_todo(todo))
         self._save_todo_meta(items)
         return items
+    
+    def update_todo_meta(self, todo: ToDoList) -> None:
+        items = self._load_todo_meta()
+        updated_items = []
+        for item in items:
+            if item.id == todo.id:
+                updated_items.append(ToDoMeta.from_todo(todo))
+            else:
+                updated_items.append(item)
+        self._save_todo_meta(updated_items)
     
     def register_todo_meta(self, todo: ToDoList) -> None:
         items = self._load_todo_meta()
@@ -61,20 +77,15 @@ class CsvRepository:
     
     # ===== TODO METHODS ==================================================
     def load_todo(self, todo_id: str) -> ToDoList | None:
-        item = self.get_todo_meta_by_id(todo_id)
-        if item is None:
+        todo_meta = self.get_todo_meta_by_id(todo_id)
+        if todo_meta is None:
             return None
-        path = self.DATA_DIR / f'{item.title}.csv'
+        path = self.DATA_DIR / f'{todo_meta.title}.csv'
         if not path.exists():
             return None
         df = pd.read_csv(path)
         tasks = task_ad.from_storage(df)
-        return ToDoList(
-            title=item.title,
-            todo_id=item.id,
-            created_at=item.created_at,
-            tasks=tasks
-        )
+        return ToDoList.from_meta(todo_meta, tasks)
     
     def save_todo(self, todo: ToDoList) -> None:
         path = self.DATA_DIR / f'{todo.title}.csv'
