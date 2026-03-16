@@ -48,7 +48,7 @@ def single_cell_line(
     return '| ' + line + ' |'
 
 def multi_cell_line(
-    cells: list[str], widths: list[str], aligns: list[str],
+    cells: list[str], widths: list[int], aligns: list[str],
     style: Callable[[str], str] | None = None
 ) -> str:
     line = [

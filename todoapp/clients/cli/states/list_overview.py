@@ -46,14 +46,14 @@ class ListOverviewState(AppStateBase):
     def render(self, app: AppLike):
         res = app.service.list_todos()
         self.todo_items = res.data or []
-        self.todos = {
-            str(i + 1): item.title
-            for i, item in enumerate(self.todo_items)
-        }
-        display_menu = ui.make_menu(
-            self.name, self.WIDTH, data=self.todos
+        display_table = ui.make_table(
+            title=self.name,
+            objects=self.todo_items,
+            spec=ui.TODO_META_SPEC,
+            adapter=ui.todo_meta_to_row,
+            use_ui_index=True
         )
-        print('\n'.join(display_menu))
+        print('\n'.join(display_table))
         self._render_options()
 
 

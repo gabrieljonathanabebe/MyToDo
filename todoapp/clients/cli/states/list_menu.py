@@ -50,7 +50,10 @@ class ListMenuState(AppStateBase):
     def render(self, app: AppLike):
         display_table = ui.make_table(
             title=app.current_todo.title,
-            tasks=app.current_todo.tasks
+            objects=app.current_todo.tasks,
+            spec=ui.TASK_SPEC,
+            adapter=ui.task_to_row,
+            use_ui_index=False
         )
         print('\n'.join(display_table))
         self._render_options()
