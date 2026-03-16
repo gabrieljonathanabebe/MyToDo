@@ -1,6 +1,7 @@
 from typing import Callable
 import re
 
+import todoapp.clients.cli.ui.kit.formatters as formatters
 from .style import italic, bold
 
 
@@ -63,30 +64,15 @@ def empty_line(width: int) -> str:
     return single_cell_line('Empty', width, 'center', style=bold)
 
 
-# ===== MENU LAYOUT =============================================
-def menu_border(width: int) -> str:
-    return '+' + '-' * width + '+'
-
-def menu_title(title: str, width: int) -> str:
-    return single_cell_line(title.upper(), width, 'center', style=bold)
-
-def menu_data(data: dict[str, str], width: int) -> list[str]:
-    display_data = []
-    display_data.append(single_cell_line('Options:', width, style=bold))
-    for cmd, label in data.items():
-        line = single_cell_line(f' {cmd} → {label}', width, style=italic)
-        display_data.append(line)
-    return display_data
-
-
-
 
 # ===== TABLE LAYOUT ============================================
 def table_border(widths: list[int]) -> str:
     return '+' + '+'.join(['-' * w for w in widths]) + '+'
 
 def table_title(title: str, width: int) -> str:
-    return single_cell_line(title.capitalize(), width, 'center', style=bold)
+    return single_cell_line(
+        formatters.format_title(title), width, 'center', style=bold
+    )
 
 def table_header(labels: list[str], widths: list[str]) -> str:
     return multi_cell_line(

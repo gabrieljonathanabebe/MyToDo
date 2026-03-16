@@ -1,6 +1,8 @@
 from todoapp.domain.models import Status, Priority
 from .style import red, yellow, green
 
+
+# ===== TASK FORRMATTER ========================================
 def format_status(status: Status) -> str:
     if status == Status.done:
         return green(status.value)
@@ -16,3 +18,7 @@ def format_priority(priority: Priority) -> str:
         return yellow(priority.value)
     if priority == Priority.high:
         return red(priority.value)
+    
+# ===== TODO FORRMATTER ========================================
+def format_title(title: str) -> str:
+    return title[:1].upper() + title[1:] if title else title
