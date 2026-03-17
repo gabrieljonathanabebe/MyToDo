@@ -6,7 +6,7 @@ import pandas as pd
 from pathlib import Path
 
 import todoapp.infra.adapters.task as task_ad
-import todoapp.infra.adapters.todo_summary as meta_ad
+import todoapp.infra.adapters.todo_summary as summary_ad
 from todoapp.domain.todo_list import ToDoList
 from todoapp.domain.models import ToDoSummary
 
@@ -21,7 +21,7 @@ class CsvRepository:
     
     def _save_todo_summary(self, items: list[ToDoSummary]) -> None:
         path = self._meta_path()
-        data = meta_ad.to_storage(items)
+        data = summary_ad.to_storage(items)
         with path.open('w', encoding='utf-8') as f:
             json.dump(data, f, indent=2)
 
@@ -31,7 +31,7 @@ class CsvRepository:
         if path.exists():
             with path.open('r', encoding='utf-8') as f:
                 data = json.load(f)
-            return meta_ad.from_storage(data)
+            return summary_ad.from_storage(data)
         # if metadata for todos not exists
         items: list[ToDoSummary] = []
         for csv_file in sorted(self.DATA_DIR.glob('*.csv')):
