@@ -1,5 +1,3 @@
-from typing import Any, Callable
-
 from todoapp.domain.models import Task
 from .base import ColumnSpec, TableSpec
 import todoapp.clients.cli.ui.kit.formatters as formatters

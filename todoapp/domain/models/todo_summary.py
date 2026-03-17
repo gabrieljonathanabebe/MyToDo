@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from todoapp.domain.todo_list import ToDoList
 
 
-class ToDoMeta(BaseModel):
+class ToDoSummary(BaseModel):
     id: str
     title: str
     task_count: int
@@ -17,7 +17,7 @@ class ToDoMeta(BaseModel):
     updated_at: datetime
 
     @classmethod
-    def from_todo(cls, todo: ToDoList) -> ToDoMeta:
+    def from_todo(cls, todo: ToDoList) -> ToDoSummary:
         return cls(
             id=todo.id,
             title=todo.title,

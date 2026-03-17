@@ -1,2 +1,2 @@
 from .task import Task, Priority, Status
-from .todo_meta import ToDoMeta
+from .todo_summary import ToDoSummary

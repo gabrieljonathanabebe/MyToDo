@@ -4,7 +4,7 @@ from typing import Optional
 from uuid import uuid4
 from datetime import datetime, timezone
 
-from .models import ToDoMeta, Task, Status
+from .models import ToDoSummary, Task, Status
 
 
 class ToDoList:
@@ -34,17 +34,17 @@ class ToDoList:
         )
     
     @classmethod
-    def from_meta(
+    def from_summary(
         cls,
-        todo_meta: ToDoMeta,
+        todo_summary: ToDoSummary,
         tasks: Optional[list[Task]] = None
     ) -> ToDoList:
         return cls(
-            title=todo_meta.title,
-            todo_id=todo_meta.id,
+            title=todo_summary.title,
+            todo_id=todo_summary.id,
             tasks=tasks or [],
-            created_at=todo_meta.created_at,
-            updated_at=todo_meta.updated_at
+            created_at=todo_summary.created_at,
+            updated_at=todo_summary.updated_at
         )
 
 

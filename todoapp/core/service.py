@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from pydantic import ValidationError
 
 from todoapp.domain.todo_list import ToDoList
-from todoapp.domain.models import Task, ToDoMeta
+from todoapp.domain.models import Task, ToDoSummary
 from .repository import ToDoRepository
 from .results import Result, Code
 
@@ -14,7 +14,7 @@ class ToDoService:
 
 
     # ===== TODO QUERIES ===============================================
-    def list_todos(self) -> Result[list[ToDoMeta]]:
+    def list_todos(self) -> Result[list[ToDoSummary]]:
         return Result(Code.OK, data=self.repo.list_todos())
     
     def open_todo(self, todo_id: str) -> Result[ToDoList]:
@@ -24,7 +24,7 @@ class ToDoService:
         return Result(Code.OK, data=todo)
     
     def new_todo(self, title: str) -> Result[ToDoList]:
-        existing_meta = self.repo.get_todo_meta_by_title(title)
+        existing_meta = self.repo.get_todo_summary_by_title(title)
         if existing_meta is not None:
             existing_todo = self.repo.load_todo(existing_meta.id)
             if existing_todo is None:
@@ -41,7 +41,7 @@ class ToDoService:
         )
     
     def delete_todo(self, todo_id: str) -> Result[None]:
-        meta = self.repo.get_todo_meta_by_id(todo_id)
+        meta = self.repo.get_todo_summary_by_id(todo_id)
         if meta is None:
             return Result(Code.NOT_FOUND, 'ToDo not found.')
         if not self.repo.delete_todo(todo_id):
@@ -107,9 +107,9 @@ class ToDoService:
     # ===== INTERNAL PERSIST HELPER ========================================
     def _persist_new_todo(self, todo: ToDoList) -> None:
         self.repo.save_todo(todo)
-        self.repo.register_todo_meta(todo)
+        self.repo.register_todo_summary(todo)
 
     def _touch_and_save_todo(self, todo: ToDoList) -> None:
         todo.updated_at = datetime.now(timezone.utc)
         self.repo.save_todo(todo)
-        self.repo.update_todo_meta(todo)
+        self.repo.update_todo_summary(todo)

@@ -49,8 +49,8 @@ class ListOverviewState(AppStateBase):
         display_table = ui.make_table(
             title=self.name,
             objects=self.todo_items,
-            spec=ui.TODO_META_SPEC,
-            adapter=ui.todo_meta_to_row,
+            spec=ui.TODO_SUMMARY_SPEC,
+            adapter=ui.todo_summary_to_row,
             use_ui_index=True
         )
         print('\n'.join(display_table))

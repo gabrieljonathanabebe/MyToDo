@@ -1,13 +1,13 @@
-# todoapp/clients/cli/ui/specs/todo_meta.py
+# todoapp/clients/cli/ui/specs/todo_summary.py
 
-from todoapp.domain.models import ToDoMeta
+from todoapp.domain.models import ToDoSummary
 from .base import ColumnSpec, TableSpec
 import todoapp.clients.cli.ui.kit.formatters as formatters
 
 
-MODEL_FIELDS = list(ToDoMeta.model_fields.keys())
+MODEL_FIELDS = list(ToDoSummary.model_fields.keys())
 
-TODO_META_SPEC = TableSpec({
+TODO_SUMMARY_SPEC = TableSpec({
     'id': ColumnSpec(
         label='ID',
         width=5,
@@ -35,4 +35,4 @@ TODO_META_SPEC = TableSpec({
     )
 })
 
-TODO_META_SPEC.validate_spec(MODEL_FIELDS)
+TODO_SUMMARY_SPEC.validate_spec(MODEL_FIELDS)
