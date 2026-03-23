@@ -11,7 +11,7 @@ from todoapp.domain.todo_list import ToDoList
 from todoapp.domain.models import ToDoSummary
 
 
-class CsvRepository:
+class CsvToDoRepository:
     def __init__(self, DATA_DIR: Path):
         self.DATA_DIR = DATA_DIR
 

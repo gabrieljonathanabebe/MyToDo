@@ -1,19 +1,18 @@
 import os
-from pathlib import Path
 import time
 
-from todoapp.core.config import DATA_DIR
-from todoapp.core.service import ToDoService
-from todoapp.infra.csv_repository import CsvRepository
+import todoapp.core.factories as factories
 from todoapp.clients.cli.states import router
 from todoapp.clients.cli import ui
 
+
 class ToDoApp:
     def __init__(self):
-        repo = CsvRepository(DATA_DIR)
-        self.service = ToDoService(repo)
+        self.user_service = factories.build_user_service()
+        self.service = None
+        self.current_user = None
         self.running = True
-        self.goto('overview')
+        self.goto('login')
         self.flash_msg = None
         self.current_todo = None
 
@@ -30,7 +29,6 @@ class ToDoApp:
     def run(self):
         while self.running:
             self.clear_display()
-            self.state.render(self)
             if self.flash_msg:
                 kind, msg = self.flash_msg
                 if kind == 'success':
@@ -42,6 +40,7 @@ class ToDoApp:
                 else:
                     ui.error(msg + '\n')
                 self.flash_msg = None
+            self.state.render(self)
             if not self.running:
                 break
             cmd = input(f'> ').strip()

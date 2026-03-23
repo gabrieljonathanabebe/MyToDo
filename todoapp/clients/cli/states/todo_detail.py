@@ -1,12 +1,13 @@
-from typing import Callable
+# todoapp/clients/cli/states/todo_detail.py
 
 from todoapp.clients.cli import ui, prompts
 from .base import AppStateBase, AppLike
 
 
-class ListMenuState(AppStateBase):
+class ToDoDetailState(AppStateBase):
     def __init__(self):
-        self.name = 'LIST MENU'
+        super().__init__()
+        self.name = 'TODO DETAIL'
         self.options = {
             'a': {
                 'label': 'Add Task',
@@ -32,6 +33,10 @@ class ListMenuState(AppStateBase):
                 'label': 'Back',
                 'handler': self._cmd_back
             },
+            'lo': {
+                'label': 'Logout',
+                'handler': self._cmd_logout
+            },
             'x': {
                 'label': 'Exit',
                 'handler': self._cmd_exit
@@ -39,14 +44,7 @@ class ListMenuState(AppStateBase):
         }
 
 
-    # ===== RENDER-METHODS ==========================================
-    def _render_options(self) -> None:
-        menu_labels = {cmd: meta['label'] for cmd, meta in self.options.items()}
-        ui.info('\n Press:')
-        for cmd, label in menu_labels.items():
-            ui.info(f'  - {cmd} for {label}')
-        ui.info('')
-    
+    # ===== RENDER ============================================================
     def render(self, app: AppLike):
         display_table = ui.make_table(
             title=app.current_todo.title,
@@ -59,7 +57,7 @@ class ListMenuState(AppStateBase):
         self._render_options()
 
 
-    # ===== HANDLER-HELPER ==========================================
+    # ===== COMMANDS ==========================================================
     def _cmd_add_task(self, app: AppLike) -> None:
         description_input, priority_input, due_input = prompts.prompt_new_task()
         res = app.service.add_task(
@@ -87,18 +85,4 @@ class ListMenuState(AppStateBase):
         app.flash('success' if res.ok else 'error', res.msg)
 
     def _cmd_back(self, app: AppLike) -> None:
-        app.goto('overview')
-
-    def _cmd_exit(self, app: AppLike) -> None:
-        app.goto('exit')
-
-
-    # ===== HANDLER =================================================
-    def handle_input(self, app: AppLike, cmd: str):
-        cmd = cmd.strip().lower()
-        entry = self.options.get(cmd)
-        if not entry:
-            app.flash('error', 'Unknown command')
-            return
-        handler: Callable[[AppLike], None] = entry['handler']
-        handler(app)
+        app.goto('todo_summary')

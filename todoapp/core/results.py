@@ -11,6 +11,7 @@ class Code(str, Enum):
     NOT_FOUND = 'NOT_FOUND'
     ALREADY_EXISTS = 'ALREADY_EXISTS'
     IO_ERROR = 'IO_ERROR'
+    UNAUTHORIZED = 'UNAUTHORIZED'
 
 
 @dataclass

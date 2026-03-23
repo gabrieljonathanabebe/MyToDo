@@ -1,9 +1,10 @@
+# todoapp/clients/cli/states/exit.py
+
+from todoapp.clients.cli import ui
 from .base import AppStateBase, AppLike
+
 
 class ExitState(AppStateBase):
     def render(self, app: AppLike):
-        print('Goodbye 👋')
+        ui.success('Goodbye 👋')
         app.running = False
-
-    def handle_input(self, app, cmd: str):
-        pass

@@ -29,3 +29,10 @@ def prompt_open_existing_list(message: str) -> bool:
 
 def prompt_delete_task() -> str:
     return _validate_input('Enter To-Do to be deleted:')
+
+
+def prompt_username() -> str:
+    return _validate_input('Username:')
+
+def prompt_password() -> str:
+    return _validate_input('Password:')

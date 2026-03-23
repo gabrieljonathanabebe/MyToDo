@@ -4,8 +4,8 @@ from pydantic import ValidationError
 
 from todoapp.domain.todo_list import ToDoList
 from todoapp.domain.models import Task, ToDoSummary
-from .repository import ToDoRepository
-from .results import Result, Code
+from todoapp.core.protocols import ToDoRepository
+from todoapp.core.results import Result, Code
 
 
 class ToDoService:

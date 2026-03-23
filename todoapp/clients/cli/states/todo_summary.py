@@ -1,13 +1,14 @@
-from typing import Callable
+# todoapp/clients/cli/states/todo_summary.py
 
 from todoapp.clients.cli import ui, prompts
 from .base import AppStateBase, AppLike
 from todoapp.core.results import Code
 
 
-class ListOverviewState(AppStateBase):
+class ToDoSummaryState(AppStateBase):
     def __init__(self):
-        self.name = 'LIST OVERVIEW'
+        super().__init__()
+        self.name = 'TODO SUMMARIES'
         self.options = {
             'n': {
                 'label': 'New To-Do',
@@ -17,6 +18,10 @@ class ListOverviewState(AppStateBase):
                 'label': 'Delete To-Do',
                 'handler': self._cmd_delete
             },
+            'lo': {
+                'label': 'Logout',
+                'handler': self._cmd_logout
+            },
             'x': {
                 'label': 'Exit',
                 'handler': self._cmd_exit
@@ -24,7 +29,7 @@ class ListOverviewState(AppStateBase):
         }
 
 
-    # ===== HELPER===================================================
+    # ===== HELPER ============================================================
     def _resolve_choice(self, choice: str) -> str | None:
         try:
             index = int(choice) - 1
@@ -35,14 +40,7 @@ class ListOverviewState(AppStateBase):
         return self.todo_items[index].id
     
     
-    # ===== RENDER-METHODS ==========================================
-    def _render_options(self) -> None:
-        menu_labels = {cmd: meta['label'] for cmd, meta in self.options.items()}
-        ui.info('\n Press a digit to open or:')
-        for cmd, label in menu_labels.items():
-            ui.info(f'  - {cmd} for {label}')
-        ui.info('')
-        
+    # ===== RENDER ============================================================
     def render(self, app: AppLike):
         res = app.service.list_todos()
         self.todo_items = res.data or []
@@ -54,10 +52,10 @@ class ListOverviewState(AppStateBase):
             use_ui_index=True
         )
         print('\n'.join(display_table))
-        self._render_options()
+        self._render_options(intro='\n Press a digit to open or:')
 
 
-    # ===== HANDLER-HELPER ==========================================
+    # ===== COMMANDS ==========================================================
     def _cmd_new(self, app: AppLike) -> None:
         title = prompts.prompt_todo_title()
         res = app.service.new_todo(title)
@@ -65,27 +63,26 @@ class ListOverviewState(AppStateBase):
             confirmed = prompts.prompt_open_existing_list(res.msg)
             if confirmed and res.data is not None:
                 app.current_todo = res.data
-                app.goto('list_menu')
+                app.goto('todo_summary')
             return
         if not res.ok:
             app.flash('error', res.msg)
+            return
         app.flash('success', res.msg)
         app.current_todo = res.data
-        app.goto('list_menu')
+        app.goto('todo_summary')
 
     def _cmd_delete(self, app: AppLike) -> None:
         choice = prompts.prompt_delete_task()
         todo_id = self._resolve_choice(choice)
         if todo_id is None:
             app.flash('error', 'Invalid selection.')
+            return
         res = app.service.delete_todo(todo_id)
         app.flash('success' if res.ok else 'error', res.msg)
 
-    def _cmd_exit(self, app: AppLike) -> None:
-        app.goto('exit')
 
-
-    # ===== HANDLER =================================================
+    # ===== INPUT =============================================================
     def handle_input(self, app: AppLike, cmd: str) -> None:
         cmd = cmd.strip().lower()
         if cmd.isdigit():
@@ -98,11 +95,6 @@ class ListOverviewState(AppStateBase):
                 app.flash('error', res.msg)
                 return
             app.current_todo = res.data
-            app.goto('list_menu')
+            app.goto('todo_detail')
             return
-        entry = self.options.get(cmd)
-        if not entry:
-            app.flash('error', 'Unknown command.')
-            return
-        handler: Callable[[AppLike], None] = entry['handler']
-        handler(app)
+        super().handle_input(app, cmd)

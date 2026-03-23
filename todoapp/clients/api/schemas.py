@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import datetime, date
 
 from pydantic import BaseModel
 
@@ -9,6 +9,12 @@ class CreateToDoRequest(BaseModel):
 
 class ToDoResponse(BaseModel):
     title: str
+
+
+class ToDoListItemResponse(BaseModel):
+    id: str
+    title: str
+    created_at: datetime
 
 
 class TaskResponse(BaseModel):
