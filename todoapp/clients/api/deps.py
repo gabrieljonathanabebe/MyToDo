@@ -1,8 +1,11 @@
-import todoapp.core.config as cfg
-from todoapp.core.service import ToDoService
-from todoapp.infra.csv_repository import CsvRepository
+# todoapp/clients/api/deps.py
+
+import todoapp.core.factories as factories
+from todoapp.core.services import UserService, ToDoService
 
 
-def get_service() -> ToDoService:
-    repo = CsvRepository(cfg.DATA_DIR)
-    return ToDoService(repo)
+def get_user_service() -> UserService:
+    return factories.build_user_service()
+
+def get_todo_service(username: str) -> ToDoService:
+    return factories.build_todo_service(username)
