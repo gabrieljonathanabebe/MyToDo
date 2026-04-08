@@ -1,0 +1,215 @@
+/* todoapp/clients/web/src/styles/layout.css */
+
+
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.app-body {
+  display: flex;
+  flex: 1;
+  gap: 20px;
+  padding: 20px;
+}
+
+.app-header {
+  height: 76px;
+  margin: 20px 20px 0 20px;
+  padding: 0 var(--space-6);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(180deg,
+      var(--surface-top-soft) 0%,
+      var(--surface-bottom-soft) 100%);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  box-shadow:
+    inset 1px 1px 0 var(--edge-highlight),
+    inset -1px -1px 0 var(--edge-shadow),
+    var(--elevation-1);
+  backdrop-filter: var(--blur-md);
+  -webkit-backdrop-filter: var(--blur-md);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-mark {
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  background: linear-gradient(180deg,
+      rgba(79, 140, 255, 0.95) 0%,
+      rgba(59, 124, 255, 0.78) 100%);
+  box-shadow:
+    0 0 0 6px rgba(79, 140, 255, 0.10),
+    0 6px 18px rgba(79, 140, 255, 0.20);
+  flex-shrink: 0;
+}
+
+.brand-text {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--color-heading);
+}
+
+.sidebar {
+  width: 280px;
+  padding: var(--space-6);
+  background: linear-gradient(180deg,
+      var(--surface-top-soft) 0%,
+      var(--surface-bottom-soft) 100%);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  box-shadow:
+    inset 1px 1px 0 var(--edge-highlight),
+    inset -1px -1px 0 var(--edge-shadow),
+    var(--elevation-2);
+  backdrop-filter: var(--blur-md);
+  -webkit-backdrop-filter: var(--blur-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  overflow: hidden;
+}
+
+.sidebar-logo {
+  margin: 0 0 var(--space-6) 0;
+  font-size: 24px;
+  color: var(--color-primary);
+}
+
+.sidebar-user {
+  margin: 0;
+  color: var(--color-text-soft);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.sidebar-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sidebar-section-title {
+  margin: 0 0 var(--space-2) 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-soft);
+}
+
+.sidebar-link {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 12px 14px;
+  border: 1px solid transparent;
+  background: transparent;
+  border-radius: var(--radius-xl);
+  color: var(--color-text);
+  cursor: pointer;
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.sidebar-link:hover {
+  background: rgba(255, 255, 255, 0.46);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateX(2px);
+}
+
+.sidebar-link.active {
+  background: var(--color-primary-soft);
+  border-color: rgba(79, 140, 255, 0.18);
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.sidebar-link-content {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sidebar-link-icon {
+  flex-shrink: 0;
+  opacity: 0.82;
+  transform: translateY(0.5px);
+}
+
+.sidebar-todos {
+  min-height: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-todo-list {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+  padding-right: 4px;
+  max-height: 350px;
+}
+
+.sidebar-todo-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.sidebar-todo-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-todo-list::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.24);
+  border-radius: 999px;
+}
+
+.sidebar-todo-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.36);
+}
+
+.sidebar-todo-icon {
+  opacity: 0.5;
+}
+
+
+.main-content {
+  flex: 1;
+  padding: 8px 4px 4px 4px;
+  min-width: 0;
+}
+
+
+/* Toolbar */
+.page-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.page-toolbar-left,
+.page-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}

@@ -1,0 +1,110 @@
+/* todoapp/clients/web/src/styles/todo.css */
+
+
+.todo-lists {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.todo-card {
+  padding: 18px 20px;
+  box-shadow:
+    inset 1px 1px 0 var(--edge-highlight),
+    inset -1px -1px 0 var(--edge-shadow),
+    var(--elevation-1);
+}
+
+.todo-card-hover {
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.todo-card-hover:hover {
+  transform: translateY(-1px);
+  border-color: var(--color-border-strong);
+  box-shadow:
+    inset 1px 1px 0 var(--edge-highlight),
+    inset -1px -1px 0 var(--edge-shadow),
+    var(--elevation-2);
+}
+
+.todo-card-button {
+  all: unset;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  cursor: pointer;
+  border-radius: calc(var(--radius-xl) - 4px);
+  padding: 2px;
+  transition:
+    opacity var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.todo-card-button:hover {
+  transform: translateY(-0.5px);
+}
+
+.todo-card-button:focus-visible {
+  outline: 2px solid rgba(79, 140, 255, 0.35);
+  outline-offset: 2px;
+}
+
+.todo-card-left {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.todo-card-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  min-width: 120px;
+}
+
+.todo-card-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+}
+
+.todo-card-meta {
+  flex-wrap: wrap;
+  font-size: 12.5px;
+}
+
+.todo-card-delete {
+  all: unset;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  cursor: pointer;
+  color: var(--color-text-soft);
+  transition:
+    color var(--transition-fast),
+    background var(--transition-fast);
+  transform: var(--transition-fast);
+  box-shadow: var(--transition-fast);
+}
+
+.todo-card-delete:hover {
+  color: var(--color-danger);
+  background: rgba(239, 68, 68, 0.10);
+  transform: translateY(-0.5px);
+}
+
+.todo-card-delete:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.12);
+}
