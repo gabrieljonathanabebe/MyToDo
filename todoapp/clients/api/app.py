@@ -1,11 +1,21 @@
 # todoapp/clients/api/app.py
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from todoapp.clients.api.routes import auth, todo_summary, todo_detail
+import todoapp.core.config as cfg
 
 
 app = FastAPI(title='ToDoScope')
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=cfg.FRONTEND_ORIGINS,
+    allow_credentials=True,
+    allow_methods=['*'],
+    allow_headers=['*']
+)
 
 
 @app.get('/')

@@ -46,7 +46,7 @@ def create_task(
     res = service.add_task(
         todo_res.data,
         description=body.description,
-        priority=str(body.priority),
+        priority=str(body.priority.value),
         due=body.due.isoformat() if body.due else None
     )
     if res.ok and res.data is not None:

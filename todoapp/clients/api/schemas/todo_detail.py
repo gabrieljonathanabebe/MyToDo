@@ -3,11 +3,13 @@
 from datetime import date
 from pydantic import BaseModel
 
+from todoapp.domain.models import Priority
+
 
 # ===== REQUESTS ==============================================================
 class CreateTaskRequest(BaseModel):
     description: str
-    priority: int
+    priority: Priority
     due: date | None = None
 
 
@@ -15,7 +17,7 @@ class CreateTaskRequest(BaseModel):
 class TaskResponse(BaseModel):
     id: int
     description: str
-    priority: int
+    priority: str
     status: str
     due: date | None = None
     days_left: int | None = None

@@ -5,6 +5,7 @@ from todoapp.core.results import Result, Code
 
 HTTP_STATUS_BY_CODE = {
     Code.INVALID_INPUT: status.HTTP_400_BAD_REQUEST,
+    Code.UNAUTHORIZED: status.HTTP_401_UNAUTHORIZED,
     Code.NOT_FOUND: status.HTTP_404_NOT_FOUND,
     Code.ALREADY_EXISTS: status.HTTP_409_CONFLICT
 }

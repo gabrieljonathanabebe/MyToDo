@@ -9,7 +9,7 @@ def to_task_response(task: Task) -> TaskResponse:
     return TaskResponse(
         id=task.id,
         description=task.description,
-        priority=int(task.priority),
+        priority=task.priority.name,
         status=task.status.value,
         due=task.due,
         days_left=task.days_left
