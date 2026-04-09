@@ -16,3 +16,9 @@ export async function createTask(username, todoId, taskData) {
         body: JSON.stringify(taskData)
     })
 }
+
+export async function deleteTask(username, todoId, taskId) {
+    return apiRequest(`/users/${username}/todos/${todoId}/tasks/${taskId}`, {
+        method: 'DELETE'
+    })
+}

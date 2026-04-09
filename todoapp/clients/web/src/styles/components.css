@@ -406,3 +406,38 @@
 .state-icon-danger {
   color: var(--color-danger);
 }
+
+
+.icon-action {
+  all: unset;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  cursor: pointer;
+  color: var(--color-text-soft);
+  transition:
+    color var(--transition-fast),
+    background var(--transition-fast),
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.icon-action:hover {
+  transform: translateY(-0.5px);
+}
+
+.icon-action:focus-visible {
+  outline: none;
+}
+
+.icon-action-danger:hover {
+  color: var(--color-danger);
+  background: rgba(239, 68, 68, 0.10);
+}
+
+.icon-action-danger:focus-visible {
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.12);
+}

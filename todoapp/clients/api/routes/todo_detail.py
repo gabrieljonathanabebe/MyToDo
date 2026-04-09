@@ -52,3 +52,22 @@ def create_task(
     if res.ok and res.data is not None:
         return api_ad.to_task_response(res.data)
     http_errors.raise_for_result(res)
+
+
+@router.delete(
+    '/users/{username}/todos/{todo_id}/tasks/{task_id}',
+    status_code=status.HTTP_200_OK
+)
+def delete_task(
+    username: str,
+    todo_id: str,
+    task_id: str
+) -> dict[str, str]:
+    service = deps.get_todo_service(username)
+    todo_res = service.open_todo(todo_id)
+    if not todo_res.ok or todo_res.data is None:
+        http_errors.raise_for_result(todo_res)
+    res = service.delete_task(todo_res.data, task_id)
+    if res.ok:
+        return {'message': res.msg}
+    http_errors.raise_for_result(res)

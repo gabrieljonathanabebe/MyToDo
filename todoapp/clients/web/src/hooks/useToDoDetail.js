@@ -1,10 +1,10 @@
 // todoapp/clients/web/src/hooks/useToDoDetail.js
 
 import { useEffect, useState } from "react";
-import { fetchToDoDetail, createTask } from "../api/toDoDetail";
+import { fetchToDoDetail, createTask, deleteTask } from "../api/toDoDetail";
 
 
-export function useToDoDetail(currentUser, currentToDo) {
+export function useToDoDetail(currentUser, currentToDo, refreshTodos) {
   const [toDoDetail, setToDoDetail] = useState(null)
   const [error, setError] = useState('')
   const [description, setDescription] = useState('')
@@ -46,8 +46,21 @@ export function useToDoDetail(currentUser, currentToDo) {
       setPriority('2')
       setDue('')
       await loadToDoDetail()
+      await refreshTodos?.()
     } catch (err) {
       setCreateError(err.message)
+    }
+  }
+
+  async function handleDeleteTask(taskId) {
+    const confirmed = window.confirm('Do you really want to delete this task?')
+    if (!confirmed) return
+    try {
+      await deleteTask(currentUser.username, currentToDo.id, taskId)
+      await loadToDoDetail()
+      await refreshTodos?.()
+    } catch (err) {
+      setError(err.message)
     }
   }
 
@@ -62,5 +75,6 @@ export function useToDoDetail(currentUser, currentToDo) {
     setDue,
     createError,
     handleCreateTask,
+    handleDeleteTask,
   }
 }

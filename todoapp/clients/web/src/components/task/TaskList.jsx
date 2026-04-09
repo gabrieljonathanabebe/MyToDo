@@ -5,7 +5,7 @@ import TaskCard from "./TaskCard";
 import "../../styles/task.css"
 
 
-function TaskList({ tasks }) {
+function TaskList({ tasks, onDeleteTask }) {
   return (
     <Panel className="task-list-panel">
       <div className="task-list-header">
@@ -13,6 +13,7 @@ function TaskList({ tasks }) {
         <div className="task-list-header-right">
           <span>Priority</span>
           <span>Status</span>
+          <span className="task-list-header-action" aria-hidden="true"></span>
         </div>
       </div>
       {tasks.map((task, index) => (
@@ -21,7 +22,10 @@ function TaskList({ tasks }) {
           className={`task-list-item ${index !== tasks.length - 1 ? 'with-separator' : ''
             }`}
         >
-          <TaskCard task={task} />
+          <TaskCard
+            task={task}
+            onDeleteTask={onDeleteTask}
+          />
         </div>
       ))}
     </Panel>

@@ -1,11 +1,11 @@
 // todoapp/clients/web/src/components/task/TaskCard.jsx
 
-import { CalendarDays } from 'lucide-react'
+import { CalendarDays, Trash2 } from 'lucide-react'
 import { formatDaysLeft, formatDueDate } from "../../utils/formatters";
 import "../../styles/task.css"
 
 
-function TaskCard({ task }) {
+function TaskCard({ task, onDeleteTask }) {
   function renderPriorityBadge(priority) {
     if (priority === "low") {
       return <span className="badge badge-gray">Low</span>
@@ -32,6 +32,11 @@ function TaskCard({ task }) {
     return <span className="badge badge-gray">{status ?? '-'}</span>
   }
 
+  function handleDelete(e) {
+    e.stopPropagation()
+    onDeleteTask(task.id)
+  }
+
   return (
     <div className="task-card">
       <div className="task-card-left">
@@ -50,6 +55,15 @@ function TaskCard({ task }) {
       <div className="task-card-right">
         {renderPriorityBadge(task.priority)}
         {renderStatusBadge(task.status)}
+        <button
+          type='button'
+          className='icon-action icon-action-danger'
+          onClick={handleDelete}
+          aria-label={`Delete task ${task.description}`}
+          title='Delete Task'
+        >
+          <Trash2 size={16} strokeWidth={2} />
+        </button>
       </div>
     </div>
   )

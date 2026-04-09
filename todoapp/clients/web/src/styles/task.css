@@ -61,10 +61,19 @@
 }
 
 .task-list-header-right {
-  display: flex;
-  gap: 32px;
-  min-width: 220px;
-  justify-content: flex-end;
+  display: grid;
+  grid-template-columns: 64px 64px 32px;
+  column-gap: 16px;
+  align-items: center;
+  justify-content: end;
+}
+
+.task-list-header-right>span {
+  text-align: center;
+}
+
+.task-list-header-action {
+  width: 32px;
 }
 
 .task-list-item {
@@ -106,9 +115,9 @@
 }
 
 .task-card-right {
-  display: flex;
-  gap: 32px;
+  display: grid;
+  grid-template-columns: 64px 64px 32px;
+  column-gap: 16px;
   align-items: center;
-  min-width: 220px;
-  justify-content: flex-end;
+  justify-content: end;
 }

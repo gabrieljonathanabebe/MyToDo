@@ -60,7 +60,7 @@ function App() {
 					todos={todos}
 					loading={loading}
 					error={error}
-					loadTodos={loadTodos}
+					loadTodos={() => loadTodos(currentUser)}
 					onOpenToDo={openToDo}
 				/>
 			)
@@ -73,6 +73,7 @@ function App() {
 				<ToDoDetailPage
 					currentUser={currentUser}
 					currentToDo={currentToDo}
+					refreshTodos={() => loadTodos(currentUser)}
 				/>
 			)
 		}

@@ -80,31 +80,3 @@
   flex-wrap: wrap;
   font-size: 12.5px;
 }
-
-.todo-card-delete {
-  all: unset;
-  width: 32px;
-  height: 32px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 999px;
-  cursor: pointer;
-  color: var(--color-text-soft);
-  transition:
-    color var(--transition-fast),
-    background var(--transition-fast);
-  transform: var(--transition-fast);
-  box-shadow: var(--transition-fast);
-}
-
-.todo-card-delete:hover {
-  color: var(--color-danger);
-  background: rgba(239, 68, 68, 0.10);
-  transform: translateY(-0.5px);
-}
-
-.todo-card-delete:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.12);
-}

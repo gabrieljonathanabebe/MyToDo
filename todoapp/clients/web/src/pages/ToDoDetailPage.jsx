@@ -11,7 +11,7 @@ import ErrorState from '../components/common/ErrorState'
 import { usePagination } from '../hooks/usePagination'
 
 
-function ToDoDetailPage({ currentUser, currentToDo }) {
+function ToDoDetailPage({ currentUser, currentToDo, refreshTodos }) {
 	const {
 		toDoDetail,
 		error,
@@ -22,8 +22,9 @@ function ToDoDetailPage({ currentUser, currentToDo }) {
 		due,
 		setDue,
 		createError,
-		handleCreateTask
-	} = useToDoDetail(currentUser, currentToDo)
+		handleCreateTask,
+		handleDeleteTask,
+	} = useToDoDetail(currentUser, currentToDo, refreshTodos)
 
 	const tasks = toDoDetail?.tasks ?? []
 	const {
@@ -69,7 +70,10 @@ function ToDoDetailPage({ currentUser, currentToDo }) {
 				/>
 			) : (
 				<>
-					<TaskList tasks={paginatedTasks} />
+					<TaskList
+						tasks={paginatedTasks}
+						onDeleteTask={handleDeleteTask}
+					/>
 					<Pagination
 						page={page}
 						totalPages={totalPages}

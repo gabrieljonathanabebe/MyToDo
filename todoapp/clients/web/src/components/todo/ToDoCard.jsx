@@ -38,7 +38,7 @@ function ToDoCard({ todo, onOpenToDo, onDeleteToDo }) {
           <span className="badge badge-blue">{todo.task_count} tasks</span>
           <button
             type='button'
-            className='todo-card-delete'
+            className='icon-action icon-action-danger'
             onClick={handleDelete}
             aria-label={`Delete ${todo.title}`}
             title='Delete To-Do'
