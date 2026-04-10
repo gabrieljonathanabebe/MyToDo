@@ -1,7 +1,7 @@
 // todoapp/clients/web/src/hooks/useToDoDetail.js
 
 import { useEffect, useState } from "react";
-import { fetchToDoDetail, createTask, deleteTask } from "../api/toDoDetail";
+import { fetchToDoDetail, createTask, deleteTask, updateTaskStatus } from "../api/toDoDetail";
 
 
 export function useToDoDetail(currentUser, currentToDo, refreshTodos) {
@@ -12,6 +12,7 @@ export function useToDoDetail(currentUser, currentToDo, refreshTodos) {
   const [due, setDue] = useState('')
   const [createError, setCreateError] = useState('')
 
+  // ===== LOAD TODO DETAIL ===================================================
   async function loadToDoDetail() {
     if (!currentUser || !currentToDo) return
     setError('')
@@ -30,6 +31,7 @@ export function useToDoDetail(currentUser, currentToDo, refreshTodos) {
     loadToDoDetail()
   }, [currentUser, currentToDo])
 
+  // ===== HANDLE CREATE TASK =================================================
   async function handleCreateTask() {
     setCreateError('')
     if (!description.trim()) {
@@ -52,11 +54,37 @@ export function useToDoDetail(currentUser, currentToDo, refreshTodos) {
     }
   }
 
+  // ===== HANDLE DELETE TASK =================================================
   async function handleDeleteTask(taskId) {
     const confirmed = window.confirm('Do you really want to delete this task?')
     if (!confirmed) return
     try {
       await deleteTask(currentUser.username, currentToDo.id, taskId)
+      await loadToDoDetail()
+      await refreshTodos?.()
+    } catch (err) {
+      setError(err.message)
+    }
+  }
+
+  // ===== HANDLE TOGGLE TASK STATUS ==========================================
+  async function handleToggleTaskStatus(task) {
+    let newStatus
+    if (task.status === 'open') {
+      newStatus = 'done'
+    } else if (task.status === 'done') {
+      newStatus = 'open'
+    }
+    else {
+      newStatus === 'open'
+    }
+    try {
+      await updateTaskStatus(
+        currentUser.username,
+        currentToDo.id,
+        task.id,
+        newStatus
+      )
       await loadToDoDetail()
       await refreshTodos?.()
     } catch (err) {
@@ -76,5 +104,6 @@ export function useToDoDetail(currentUser, currentToDo, refreshTodos) {
     createError,
     handleCreateTask,
     handleDeleteTask,
+    handleToggleTaskStatus,
   }
 }

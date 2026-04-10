@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from pydantic import ValidationError
 
 from todoapp.domain.todo_list import ToDoList
-from todoapp.domain.models import Task, ToDoSummary
+from todoapp.domain.models import Task, ToDoSummary, Status
 from todoapp.core.protocols import ToDoRepository
 from todoapp.core.results import Result, Code
 
@@ -69,6 +69,40 @@ class ToDoService:
             return Result(
                 Code.INVALID_INPUT, f'{field.capitalize()}: {msg}'
             )
+        
+        
+    def delete_task(self, todo: ToDoList, target_id: str) -> Result[None]:
+        try:
+            ok = todo.delete_task(int(target_id))
+            if not ok:
+                return Result(Code.NOT_FOUND, f'ID {target_id} not found.')
+            self._touch_and_save_todo(todo)
+            return Result(Code.OK, f'Task {target_id} deleted.')
+        except ValueError:
+            return Result(
+                Code.INVALID_INPUT, f'"{target_id}" is not a valid input.'
+            )
+        
+
+    def set_task_status(
+        self, todo: ToDoList, task_id: str, status: str
+    ) -> Result[None]:
+        try:
+            target_id = int(task_id)
+        except ValueError:
+            return Result(Code.INVALID_INPUT, f'"{task_id}" is not a valid input.')
+        try:
+            target_status = Status(status)
+        except ValueError:
+            return Result(Code.INVALID_INPUT, f'"{status}" is not a valid status.')
+        ok = todo.set_status(target_id, target_status)
+        if not ok:
+            return Result(Code.NOT_FOUND, f'Task {task_id} not found.')
+        self._touch_and_save_todo(todo)
+        return Result(
+            Code.OK, f'Task {task_id} status updated to "{target_status.value}"'
+        )
+    
 
     def sort_todo(self, todo: ToDoList, key: str, reverse: bool) -> Result[None]:
         try:
@@ -78,15 +112,9 @@ class ToDoService:
         except AttributeError:
             return Result(Code.INVALID_INPUT, f'Key "{key}" not found.')
 
-    def delete_task(self, todo: ToDoList, target_id: str) -> Result[None]:
-        try:
-            ok = todo.delete_task(int(target_id))
-            if not ok:
-                return Result(Code.NOT_FOUND, f'ID {target_id} not found.')
-            self._touch_and_save_todo(todo)
-            return Result(Code.OK, f'Task {target_id} deleted.')
-        except ValueError:
-            return Result(Code.INVALID_INPUT, f'"{target_id}" is not a valid input.')
+
+        
+
     
     def assign_new_ids(self, todo: ToDoList) -> Result[None]:
         count = todo.assign_new_ids()

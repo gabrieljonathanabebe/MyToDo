@@ -22,3 +22,14 @@ export async function deleteTask(username, todoId, taskId) {
         method: 'DELETE'
     })
 }
+
+export async function updateTaskStatus(username, todoId, taskId, status) {
+    return apiRequest(`/users/${username}/todos/${todoId}/tasks/${taskId}/status`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ status }),
+    })
+}
+

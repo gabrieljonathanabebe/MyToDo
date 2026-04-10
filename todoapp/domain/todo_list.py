@@ -69,6 +69,13 @@ class ToDoList:
         self.tasks = [t for t in self.tasks if t.id != task_id]
         return len(self.tasks) != length_before
     
+    def set_status(self, task_id: int, status: Status) -> bool:
+        task = next((t for t in self.tasks if t.id == task_id), None)
+        if task is None:
+            return False
+        task.status = status
+        return True
+    
     def sort_todo(self, key: str, reverse: bool = False) -> None:
         with_value = [t for t in self.tasks if getattr(t, key) is not None]
         without_value = [t for t in self.tasks if getattr(t, key) is None]

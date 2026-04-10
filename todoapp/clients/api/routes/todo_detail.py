@@ -6,6 +6,7 @@ from todoapp.clients.api import deps, http_errors
 import todoapp.clients.api.adapters as api_ad
 from todoapp.clients.api.schemas import (
     CreateTaskRequest,
+    UpdateTaskStatusRequest,
     TaskResponse,
     ToDoDetailResponse
 )
@@ -68,6 +69,30 @@ def delete_task(
     if not todo_res.ok or todo_res.data is None:
         http_errors.raise_for_result(todo_res)
     res = service.delete_task(todo_res.data, task_id)
+    if res.ok:
+        return {'message': res.msg}
+    http_errors.raise_for_result(res)
+
+
+@router.patch(
+    '/users/{username}/todos/{todo_id}/tasks/{task_id}/status',
+    status_code=status.HTTP_200_OK
+)
+def update_task_status(
+    username: str,
+    todo_id: str,
+    task_id: str,
+    body: UpdateTaskStatusRequest
+) -> dict[str, str]:
+    service = deps.get_todo_service(username)
+    todo_res = service.open_todo(todo_id)
+    if not todo_res.ok or todo_res.data is None:
+        http_errors.raise_for_result(todo_res)
+    res = service.set_task_status(
+        todo_res.data,
+        task_id=task_id,
+        status=body.status.value
+    )
     if res.ok:
         return {'message': res.msg}
     http_errors.raise_for_result(res)

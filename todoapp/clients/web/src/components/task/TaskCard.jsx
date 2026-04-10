@@ -1,11 +1,11 @@
 // todoapp/clients/web/src/components/task/TaskCard.jsx
 
-import { CalendarDays, Trash2 } from 'lucide-react'
+import { CalendarDays, Trash2, Circle, CheckCircle } from 'lucide-react'
 import { formatDaysLeft, formatDueDate } from "../../utils/formatters";
 import "../../styles/task.css"
 
 
-function TaskCard({ task, onDeleteTask }) {
+function TaskCard({ task, onDeleteTask, onToggleStatus }) {
   function renderPriorityBadge(priority) {
     if (priority === "low") {
       return <span className="badge badge-gray">Low</span>
@@ -37,19 +37,43 @@ function TaskCard({ task, onDeleteTask }) {
     onDeleteTask(task.id)
   }
 
+  function handleToggle(e) {
+    e.stopPropagation()
+    onToggleStatus(task)
+  }
+
   return (
     <div className="task-card">
       <div className="task-card-left">
-        <h3 className="task-card-title">{task.description}</h3>
-        <div className="task-card-meta meta-row">
-          <span className="meta-item">
-            <CalendarDays className="meta-icon" size={14} strokeWidth={2} />
-            {formatDueDate(task.due)}
-          </span>
-          <span className="meta-separator">|</span>
-          <span className="meta-item">
-            {formatDaysLeft(task.days_left)}
-          </span>
+        <button
+          type="button"
+          className={`icon-action ${task.status === 'done'
+              ? 'icon-action-success'
+              : 'icon-action-neutral'
+            }`}
+          onClick={handleToggle}
+          aria-label={`Toggle status for ${task.description}`}
+        >
+          {task.status === 'done' ? (
+            <CheckCircle size={18} strokeWidth={2} />
+          ) : (
+            <Circle size={18} strokeWidth={2} />
+          )}
+        </button>
+
+        <div className="task-card-content">
+          <h3 className="task-card-title">{task.description}</h3>
+
+          <div className="task-card-meta meta-row">
+            <span className="meta-item">
+              <CalendarDays className="meta-icon" size={14} strokeWidth={2} />
+              {formatDueDate(task.due)}
+            </span>
+            <span className="meta-separator">|</span>
+            <span className="meta-item">
+              {formatDaysLeft(task.days_left)}
+            </span>
+          </div>
         </div>
       </div>
       <div className="task-card-right">

@@ -5,7 +5,7 @@ import TaskCard from "./TaskCard";
 import "../../styles/task.css"
 
 
-function TaskList({ tasks, onDeleteTask }) {
+function TaskList({ tasks, onDeleteTask, onToggleStatus }) {
   return (
     <Panel className="task-list-panel">
       <div className="task-list-header">
@@ -25,6 +25,7 @@ function TaskList({ tasks, onDeleteTask }) {
           <TaskCard
             task={task}
             onDeleteTask={onDeleteTask}
+            onToggleStatus={onToggleStatus}
           />
         </div>
       ))}

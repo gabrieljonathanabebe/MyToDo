@@ -2,4 +2,9 @@
 
 from .auth import LoginRequest, RegisterRequest, UserResponse
 from .todo_summary import CreateToDoRequest, ToDoSummaryResponse
-from .todo_detail import CreateTaskRequest, TaskResponse, ToDoDetailResponse
+from .todo_detail import (
+    CreateTaskRequest,
+    UpdateTaskStatusRequest,
+    TaskResponse,
+    ToDoDetailResponse,
+)

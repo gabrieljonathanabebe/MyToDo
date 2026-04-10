@@ -24,6 +24,7 @@ function ToDoDetailPage({ currentUser, currentToDo, refreshTodos }) {
 		createError,
 		handleCreateTask,
 		handleDeleteTask,
+		handleToggleTaskStatus,
 	} = useToDoDetail(currentUser, currentToDo, refreshTodos)
 
 	const tasks = toDoDetail?.tasks ?? []
@@ -73,6 +74,7 @@ function ToDoDetailPage({ currentUser, currentToDo, refreshTodos }) {
 					<TaskList
 						tasks={paginatedTasks}
 						onDeleteTask={handleDeleteTask}
+						onToggleStatus={handleToggleTaskStatus}
 					/>
 					<Pagination
 						page={page}

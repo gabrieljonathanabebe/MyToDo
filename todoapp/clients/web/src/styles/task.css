@@ -58,6 +58,7 @@
 
 .task-list-header-left {
   flex: 1;
+  padding-left: 40px;
 }
 
 .task-list-header-right {
@@ -96,9 +97,27 @@
 }
 
 .task-card-left {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  column-gap: 12px;
+  align-items: start;
+}
+
+.task-card-left>.icon-action {
+  align-self: start;
+}
+
+.task-card-main-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.task-card-content {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
+  min-width: 0;
 }
 
 .task-card-title {
