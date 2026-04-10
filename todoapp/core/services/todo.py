@@ -70,7 +70,7 @@ class ToDoService:
                 Code.INVALID_INPUT, f'{field.capitalize()}: {msg}'
             )
         
-        
+
     def delete_task(self, todo: ToDoList, target_id: str) -> Result[None]:
         try:
             ok = todo.delete_task(int(target_id))
@@ -104,9 +104,9 @@ class ToDoService:
         )
     
 
-    def sort_todo(self, todo: ToDoList, key: str, reverse: bool) -> Result[None]:
+    def sort_tasks(self, todo: ToDoList, key: str, reverse: bool) -> Result[None]:
         try:
-            todo.sort_todo(key, reverse)
+            todo.sort_tasks(key, reverse)
             self._touch_and_save_todo(todo)
             return Result(Code.OK, f'Sorting by {key}')
         except AttributeError:

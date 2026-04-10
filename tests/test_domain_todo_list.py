@@ -65,13 +65,13 @@ def test_delete_missing_task_returns_false(
     ],
     ids=['id_asc', 'id_desc', 'priority_asc', 'priority_desc']
 )
-def test_sort_todo_by_id_or_priority_as_key(
+def test_sort_tasks_by_id_or_priority_as_key(
     todo_with_five_tasks: ToDoList,
     key: str,
     reverse: bool,
     expected_ids: list[int]
 ) -> None:
-    todo_with_five_tasks.sort_todo(key, reverse)
+    todo_with_five_tasks.sort_tasks(key, reverse)
     sorted_ids = [t.id for t in todo_with_five_tasks.tasks]
     assert sorted_ids == expected_ids
 
@@ -84,13 +84,13 @@ def test_sort_todo_by_id_or_priority_as_key(
     ],
     ids=['due_asc', 'due_desc']
 )
-def test_sort_todo_by_due_as_key(
+def test_sort_tasks_by_due_as_key(
     todo_with_five_tasks: ToDoList,
     key: str,
     reverse: bool,
     expected_ids: list[int]
 ) -> None:
-    todo_with_five_tasks.sort_todo(key, reverse)
+    todo_with_five_tasks.sort_tasks(key, reverse)
     sorted_ids = [t.id for t in todo_with_five_tasks.tasks]
     assert sorted_ids == expected_ids
 

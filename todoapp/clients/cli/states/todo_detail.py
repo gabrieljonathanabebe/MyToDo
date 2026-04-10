@@ -19,7 +19,7 @@ class ToDoDetailState(AppStateBase):
             },
             's': {
                 'label': 'Sort',
-                'handler': self._cmd_sort_todo
+                'handler': self._cmd_sort_tasks
             },
             'n': {
                 'label': 'Assign new IDs',
@@ -70,9 +70,9 @@ class ToDoDetailState(AppStateBase):
         res = app.service.delete_task(app.current_todo, task_id_input)
         app.flash('success' if res.ok else 'error', res.msg)
 
-    def _cmd_sort_todo(self, app: AppLike) -> None:
+    def _cmd_sort_tasks(self, app: AppLike) -> None:
         key_input, reverse_input = prompts.prompt_sort_key()
-        res = app.service.sort_todo(app.current_todo, key_input, reverse_input)
+        res = app.service.sort_tasks(app.current_todo, key_input, reverse_input)
         app.flash('success' if res.ok else 'error', res.msg)
 
     def _cmd_assign_new_ids(self, app: AppLike) -> None:

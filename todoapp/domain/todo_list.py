@@ -76,7 +76,7 @@ class ToDoList:
         task.status = status
         return True
     
-    def sort_todo(self, key: str, reverse: bool = False) -> None:
+    def sort_tasks(self, key: str, reverse: bool = False) -> None:
         with_value = [t for t in self.tasks if getattr(t, key) is not None]
         without_value = [t for t in self.tasks if getattr(t, key) is None]
         with_value.sort(key=lambda t: getattr(t, key), reverse=reverse)

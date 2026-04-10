@@ -147,20 +147,20 @@ def test_delete_task_invalid(
 
 
 # ===== TEST SORT TODO ====================================================
-def test_sort_todo_success(
+def test_sort_tasks_success(
     service: ToDoService, repo: FakeRepo, todo_with_five_tasks: ToDoList  
 ) -> None:
     # act
-    res = service.sort_todo(todo_with_five_tasks, key='due', reverse=False)
+    res = service.sort_tasks(todo_with_five_tasks, key='due', reverse=False)
     # assert
     assert res.code == Code.OK
     assert 'To-Do with five tasks' in repo.todos
 
-def test_sort_todo_invalid(
+def test_sort_tasks_invalid(
     service: ToDoService, repo: FakeRepo, todo_with_five_tasks: ToDoList  
 ) -> None:
     # act
-    res = service.sort_todo(
+    res = service.sort_tasks(
         todo_with_five_tasks, key='Invalid', reverse=False
     )
     # assert
