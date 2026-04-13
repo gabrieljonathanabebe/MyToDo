@@ -1,95 +1,61 @@
 // todoapp/clients/web/src/pages/LoginPage.jsx
 
-import { useState } from 'react'
-import { login, register } from '../api/auth'
-import '../styles/auth.css'
+import '../styles/features/auth.css'
 import Panel from '../components/common/Panel'
 import Button from '../components/common/Button'
+import AuthHeader from '../components/auth/AuthHeader'
+import AuthModeSwitch from '../components/auth/AuthModeSwitch'
+import { useAuthForm } from '../hooks/useAuthForm'
+import Brand from '../components/common/Brand'
 
 
 function LoginPage({ onLogin }) {
-    const [username, setUsername] = useState('')
-    const [password, setPassword] = useState('')
-    const [error, setError] = useState('')
-    const [mode, setMode] = useState('login')
+	const {
+		username,
+		setUsername,
+		password,
+		setPassword,
+		error,
+		mode,
+		handleSubmit,
+		handleToggleMode,
+	} = useAuthForm(onLogin)
 
+	return (
+		<div className='auth-shell'>
+			<Panel className='auth-card'>
+				<Brand size='lg' />
 
-    async function handleSubmit(e) {
-        e.preventDefault()
-        setError('')
-        try {
-            const user =
-                mode === 'login'
-                    ? await login(username, password)
-                    : await register(username, password)
+				<AuthHeader mode={mode} />
 
-            onLogin(user)
-        } catch (err) {
-            setError(err.message)
-        }
-    }
+				<form className='auth-form' onSubmit={handleSubmit}>
+					<input
+						className='form-control form-input'
+						type='text'
+						placeholder='Username'
+						value={username}
+						onChange={(e) => setUsername(e.target.value)}
+					/>
 
-    function handleToggleMode() {
-        setMode((prev) => (prev === 'login' ? 'register' : 'login'))
-        setError('')
-    }
+					<input
+						className='form-control form-input'
+						type='password'
+						placeholder='Password'
+						value={password}
+						onChange={(e) => setPassword(e.target.value)}
+					/>
 
-    return (
-        <div className='auth-shell'>
-            <Panel className='auth-card'>
-                <div className='auth-brand'>
-                    <span className='brand-mark' />
-                    <span className='brand-text'>MyToDo</span>
-                </div>
-                <div className='auth-header'>
-                    <h1 className='auth-title'>
-                        {mode === 'login' ? 'Welcome back' : 'Create account'}
-                    </h1>
-                    <p className='auth-subtitle'>
-                        {mode === 'login'
-                            ? 'Sign in to continue to your workspace.'
-                            : 'Create your account to start organizing your tasks.'
-                        }
-                    </p>
-                </div>
-                <form className='auth-form' onSubmit={handleSubmit}>
-                    <input
-                        className='form-input'
-                        type='text'
-                        placeholder='Username'
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                    />
-                    <input
-                        className='form-input'
-                        type='password'
-                        placeholder='Password'
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                    {error && <p className='form-error'>{error}</p>}
-                    <Button type='submit' className='auth-submit'>
-                        {mode === 'login' ? 'Login' : 'Create account'}
-                    </Button>
-                </form>
-                <div className='auth-switch'>
-                    <span className='auth-switch-text'>
-                        {mode === 'login'
-                            ? 'No account yet?'
-                            : 'Already have an account?'}
-                    </span>
-                    <button
-                        type='button'
-                        className='auth-switch-button'
-                        onClick={handleToggleMode}
-                    >
-                        {mode === 'login' ? 'Register' : 'Login'}
-                    </button>
-                </div>
-            </Panel>
-        </div>
-    )
+					{error && <p className='form-error'>{error}</p>}
+
+					<Button type='submit' className='auth-submit'>
+						{mode === 'login' ? 'Login' : 'Create account'}
+					</Button>
+				</form>
+
+				<AuthModeSwitch mode={mode} onToggle={handleToggleMode} />
+			</Panel>
+		</div>
+	)
 }
-
 
 export default LoginPage
