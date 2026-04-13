@@ -46,7 +46,7 @@ function ToDoSummaryPage({
 
 	return (
 		<div>
-			<h1 className='page-title'>My Todos</h1>
+			<h1 className='page-title'>Summary</h1>
 			<CreateToDoForm
 				title={newTitle}
 				onTitleChange={setNewTitle}
