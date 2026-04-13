@@ -7,6 +7,7 @@ import todoapp.clients.api.adapters as api_ad
 from todoapp.clients.api.schemas import (
     CreateTaskRequest,
     UpdateTaskStatusRequest,
+    SortTasksRequest,
     TaskResponse,
     ToDoDetailResponse
 )
@@ -92,6 +93,29 @@ def update_task_status(
         todo_res.data,
         task_id=task_id,
         status=body.status.value
+    )
+    if res.ok:
+        return {'message': res.msg}
+    http_errors.raise_for_result(res)
+
+
+@router.patch(
+    '/users/{username}/todos/{todo_id}/sort',
+    status_code=status.HTTP_200_OK
+)
+def sort_tasks(
+    username: str,
+    todo_id: str,
+    body: SortTasksRequest
+) -> dict[str, str]:
+    service = deps.get_todo_service(username)
+    todo_res = service.open_todo(todo_id)
+    if not todo_res.ok or todo_res.data is None:
+        http_errors.raise_for_result(todo_res)
+    res = service.sort_tasks(
+        todo_res.data,
+        key=body.key,
+        reverse=body.reverse
     )
     if res.ok:
         return {'message': res.msg}

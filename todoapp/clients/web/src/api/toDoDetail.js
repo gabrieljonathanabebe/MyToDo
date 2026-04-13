@@ -33,3 +33,15 @@ export async function updateTaskStatus(username, todoId, taskId, status) {
     })
 }
 
+export async function sortTasks(username, todoId, key, reverse = false) {
+    return apiRequest(`/users/${username}/todos/${todoId}/sort`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            key,
+            reverse
+        })
+    })
+}

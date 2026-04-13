@@ -17,6 +17,11 @@ class UpdateTaskStatusRequest(BaseModel):
     status: Status
 
 
+class SortTasksRequest(BaseModel):
+    key: str
+    reverse: bool = False
+
+
 # ===== RESPONSES =============================================================
 class TaskResponse(BaseModel):
     id: int

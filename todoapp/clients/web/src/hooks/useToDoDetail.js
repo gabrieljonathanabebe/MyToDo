@@ -1,7 +1,9 @@
 // todoapp/clients/web/src/hooks/useToDoDetail.js
 
 import { useEffect, useState } from "react";
-import { fetchToDoDetail, createTask, deleteTask, updateTaskStatus } from "../api/toDoDetail";
+import {
+  fetchToDoDetail, createTask, deleteTask, updateTaskStatus, sortTasks
+} from "../api/toDoDetail";
 
 
 export function useToDoDetail(currentUser, currentToDo, refreshTodos) {
@@ -92,6 +94,23 @@ export function useToDoDetail(currentUser, currentToDo, refreshTodos) {
     }
   }
 
+  // ===== HANDLE SORT TASKS ==================================================
+  async function handleSortTasks(key, reverse = false) {
+    try {
+      await sortTasks(
+        currentUser.username,
+        currentToDo.id,
+        key,
+        reverse
+      )
+      await loadToDoDetail()
+      await refreshTodos?.()
+    } catch (err) {
+      setError(err.message)
+    }
+  }
+
+
   return {
     toDoDetail,
     error,
@@ -105,5 +124,6 @@ export function useToDoDetail(currentUser, currentToDo, refreshTodos) {
     handleCreateTask,
     handleDeleteTask,
     handleToggleTaskStatus,
+    handleSortTasks
   }
 }
