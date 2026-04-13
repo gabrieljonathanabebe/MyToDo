@@ -3,7 +3,7 @@
 
 function Panel({ children, className = '' }) {
   return (
-    <div className={`panel ${className}`.trim()}>
+    <div className={`panel surface-card ${className}`.trim()}>
       {children}
     </div>
   )

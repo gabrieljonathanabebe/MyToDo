@@ -9,7 +9,7 @@ function Button({
   className = '',
   disabled = false
 }) {
-  const baseClassName = variant == 'secondary' ? 'btn btn-secondary' : 'btn'
+  const baseClassName = `btn btn-${variant}`
   const finalClassName = `${baseClassName} ${className}`.trim()
 
   return (

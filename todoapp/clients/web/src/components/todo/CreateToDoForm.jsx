@@ -1,7 +1,7 @@
 // todoapp/clients/web/src/components/todo/CreateToDoForm.jsx
 
-import Panel from "../common/Panel";
-import Button from "../common/Button";
+import Panel from "../common/Panel"
+import Button from "../common/Button"
 
 
 function CreateToDoForm({ title, onTitleChange, onSubmit, error }) {
@@ -15,14 +15,16 @@ function CreateToDoForm({ title, onTitleChange, onSubmit, error }) {
         }}
       >
         <input
-          className="form-input"
+          className="form-control form-input"
           type="text"
           placeholder="New Todo"
           value={title}
           onChange={(e) => onTitleChange(e.target.value)}
         />
+
         <Button type="submit">Add</Button>
       </form>
+
       {error && <p className="form-error">{error}</p>}
     </Panel>
   )

@@ -8,7 +8,7 @@ function ErrorState({
   message = 'An unexpected error occurred. Please try again.'
 }) {
   return (
-    <div className="state-card panel">
+    <div className="state-card surface-card">
       <div className="state-icon-wrap">
         <AlertCircle
           className="state-icon state-icon-danger"

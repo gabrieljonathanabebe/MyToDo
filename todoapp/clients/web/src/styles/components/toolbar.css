@@ -1,0 +1,61 @@
+/* todoapp/clients/web/src/styles/components/toolbar.css */
+
+.page-toolbar-surface {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-6);
+  margin-bottom: var(--space-5);
+}
+
+.page-toolbar-left {
+  min-width: 0;
+  flex: 1;
+}
+
+.page-toolbar-title-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  flex-wrap: wrap;
+}
+
+.page-toolbar-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.page-toolbar-title-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  color: var(--color-primary-strong);
+  background: var(--color-primary-soft);
+  flex-shrink: 0;
+}
+
+.page-toolbar-title {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 560;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+  color: var(--color-primary-strong);
+}
+
+.page-toolbar-view-controls {
+  display: inline-flex;
+  align-items: center;
+}
+
+.page-toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-shrink: 0;
+}

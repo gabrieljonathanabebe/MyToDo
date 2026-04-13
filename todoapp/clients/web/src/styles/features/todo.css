@@ -1,4 +1,4 @@
-/* todoapp/clients/web/src/styles/todo.css */
+/* todoapp/clients/web/src/styles/features/todo.css */
 
 
 .todo-lists {
@@ -8,27 +8,7 @@
 }
 
 .todo-card {
-  padding: 18px 20px;
-  box-shadow:
-    inset 1px 1px 0 var(--edge-highlight),
-    inset -1px -1px 0 var(--edge-shadow),
-    var(--elevation-1);
-}
-
-.todo-card-hover {
-  transition:
-    transform var(--transition-fast),
-    box-shadow var(--transition-fast),
-    border-color var(--transition-fast);
-}
-
-.todo-card-hover:hover {
-  transform: translateY(-1px);
-  border-color: var(--color-border-strong);
-  box-shadow:
-    inset 1px 1px 0 var(--edge-highlight),
-    inset -1px -1px 0 var(--edge-shadow),
-    var(--elevation-2);
+  padding: var(--space-4) var(--space-5);
 }
 
 .todo-card-button {
@@ -50,27 +30,27 @@
 }
 
 .todo-card-button:focus-visible {
-  outline: 2px solid rgba(79, 140, 255, 0.35);
+  outline: 2px solid var(--color-blue-border);
   outline-offset: 2px;
 }
 
 .todo-card-left {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--space-2);
 }
 
 .todo-card-right {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 10px;
+  gap: var(--space-3);
   min-width: 120px;
 }
 
 .todo-card-title {
   margin: 0;
-  font-size: 18px;
+  font-size: var(--font-size-xl);
   font-weight: 600;
   letter-spacing: -0.02em;
   color: var(--color-text);
@@ -78,5 +58,5 @@
 
 .todo-card-meta {
   flex-wrap: wrap;
-  font-size: 12.5px;
+  font-size: var(--font-size-xs);
 }

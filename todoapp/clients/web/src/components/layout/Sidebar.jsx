@@ -14,7 +14,7 @@ function Sidebar({
   onOpenToDo,
 }) {
   return (
-    <aside className="sidebar">
+    <aside className="sidebar surface-card">
       {currentUser && (
         <p className="sidebar-user">
           Hi, {currentUser.username}

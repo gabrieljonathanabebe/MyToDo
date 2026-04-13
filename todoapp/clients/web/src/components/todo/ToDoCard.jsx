@@ -18,7 +18,7 @@ function ToDoCard({ todo, onOpenToDo, onDeleteToDo }) {
   }
 
   return (
-    <Panel className="todo-card todo-card-hover">
+    <Panel className="todo-card surface-card surface-card-hover">
       <div className="todo-card-button" onClick={handleClick}>
         <div className="todo-card-left">
           <h3 className="todo-card-title">{todo.title}</h3>
@@ -35,7 +35,7 @@ function ToDoCard({ todo, onOpenToDo, onDeleteToDo }) {
           </div>
         </div>
         <div className="todo-card-right">
-          <span className="badge badge-blue">{todo.task_count} tasks</span>
+          <span className="badge badge-purple">{todo.task_count} tasks</span>
           <button
             type='button'
             className='icon-action icon-action-danger'

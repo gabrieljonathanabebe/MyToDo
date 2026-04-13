@@ -1,0 +1,5 @@
+/* todoapp/clients/web/src/styles/components/panel.css */
+
+.panel {
+  padding: var(--space-5);
+}

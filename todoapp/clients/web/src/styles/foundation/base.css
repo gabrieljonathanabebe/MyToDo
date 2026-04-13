@@ -1,0 +1,22 @@
+/* todoapp/clients/web/src/styles/foundation/base.css */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at top left, rgba(30, 86, 207, 0.34), transparent 58%),
+    radial-gradient(circle at top right, rgba(6, 182, 212, 0.22), transparent 54%),
+    radial-gradient(circle at bottom center, rgba(30, 41, 59, 0.14), transparent 58%),
+    linear-gradient(180deg, var(--color-bg) 0%, var(--color-bg-soft) 100%);
+}

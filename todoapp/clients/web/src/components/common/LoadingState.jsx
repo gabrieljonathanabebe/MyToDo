@@ -7,7 +7,7 @@ function LoadingState({
   title = 'Loading...', message = 'Please wait a moment.'
 }) {
   return (
-    <div className="state-card panel">
+    <div className="state-card surface-card">
       <div className="state-icon-wrap">
         <LoaderCircle
           className="state-icon state-icon-spin" size={28} strokeWidth={2}

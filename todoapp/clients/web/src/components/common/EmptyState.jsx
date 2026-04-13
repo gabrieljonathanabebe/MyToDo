@@ -5,7 +5,7 @@ function EmptyState({ icon, title, description }) {
   const Icon = icon
 
   return (
-    <div className="state-card panel">
+    <div className="state-card surface-card">
       <div className="empty-state-icon-wrap">
         <Icon className="state-icon state-icon-primary" size={28} strokeWidth={2} />
       </div>
