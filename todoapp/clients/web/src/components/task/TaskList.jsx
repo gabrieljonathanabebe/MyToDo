@@ -2,10 +2,16 @@
 
 import Panel from "../common/Panel";
 import TaskCard from "./TaskCard";
-import "../../styles/task.css"
 
 
-function TaskList({ tasks, onDeleteTask, onToggleStatus }) {
+function TaskList({
+  tasks,
+  onDeleteTask,
+  onToggleStatus,
+  onUpdateTaskDescription,
+  onUpdateTaskPriority,
+  onUpdateTaskDue
+}) {
   return (
     <Panel className="task-list-panel">
       <div className="task-list-header">
@@ -26,6 +32,9 @@ function TaskList({ tasks, onDeleteTask, onToggleStatus }) {
             task={task}
             onDeleteTask={onDeleteTask}
             onToggleStatus={onToggleStatus}
+            onUpdateTaskDescription={onUpdateTaskDescription}
+            onUpdateTaskPriority={onUpdateTaskPriority}
+            onUpdateTaskDue={onUpdateTaskDue}
           />
         </div>
       ))}

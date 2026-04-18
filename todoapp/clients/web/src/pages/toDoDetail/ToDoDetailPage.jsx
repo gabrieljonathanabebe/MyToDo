@@ -2,7 +2,6 @@
 
 import {
 	Plus,
-	ArrowUpDown,
 	List,
 	LayoutGrid,
 	ClipboardList
@@ -16,6 +15,7 @@ import { usePagination } from '../../hooks/usePagination'
 import PageToolbar from '../../components/common/PageToolbar'
 import ToDoDetailListView from './ToDoDetailListView'
 import ToDoDetailGridView from './ToDoDetailGridView'
+import SortMenu from '../../components/task/SortMenu'
 
 
 function ToDoDetailPage({ currentUser, currentToDo, refreshTodos }) {
@@ -33,11 +33,18 @@ function ToDoDetailPage({ currentUser, currentToDo, refreshTodos }) {
 		handleDeleteTask,
 		handleToggleTaskStatus,
 		handleSortTasks,
+		handleUpdateTaskDescription,
+		handleUpdateTaskPriority,
+		handleUpdateTaskDue,
 	} = useToDoDetail(currentUser, currentToDo, refreshTodos)
 
 	const [showCreateTaskForm, setShowCreateTaskForm] = useState(false)
 	const [viewMode, setViewMode] = useState('list')
 	const [statusFilter, setStatusFilter] = useState('all')
+
+	const [showSortMenu, setShowSortMenu] = useState(false)
+	const [sortKey, setSortKey] = useState('due')
+	const [sortReverse, setSortReverse] = useState(false)
 
 	const tasks = toDoDetail?.tasks ?? []
 
@@ -45,6 +52,17 @@ function ToDoDetailPage({ currentUser, currentToDo, refreshTodos }) {
 		if (statusFilter === 'all') return true
 		return task.status === statusFilter
 	}))
+
+	async function handleSortSelection(key) {
+		let nextReverse = false
+		if (key === sortKey) {
+			nextReverse = !sortReverse
+		}
+		setSortKey(key)
+		setSortReverse(nextReverse)
+		await handleSortTasks(key, nextReverse)
+		setShowSortMenu(false)
+	}
 
 	const {
 		page,
@@ -109,15 +127,14 @@ function ToDoDetailPage({ currentUser, currentToDo, refreshTodos }) {
 				>
 					<Plus size={20} strokeWidth={2} />
 				</button>
-				<button
-					type="button"
-					className="icon-action icon-action-plain"
-					onClick={() => handleSortTasks('due', false)}
-					aria-label="Sort tasks"
-					title="Sort tasks"
-				>
-					<ArrowUpDown size={20} strokeWidth={2} />
-				</button>
+				<SortMenu
+					show={showSortMenu}
+					sortKey={sortKey}
+					sortReverse={sortReverse}
+					onToggle={() => setShowSortMenu((prev) => !prev)}
+					onSelect={handleSortSelection}
+					onClose={() => setShowSortMenu(false)}
+				/>
 			</PageToolbar>
 			{showCreateTaskForm && (
 				<div className='detail-create-task-wrap'>
@@ -174,6 +191,9 @@ function ToDoDetailPage({ currentUser, currentToDo, refreshTodos }) {
 						onNext={goNext}
 						onDeleteTask={handleDeleteTask}
 						onToggleStatus={handleToggleTaskStatus}
+						onUpdateTaskDescription={handleUpdateTaskDescription}
+						onUpdateTaskPriority={handleUpdateTaskPriority}
+						onUpdateTaskDue={handleUpdateTaskDue}
 					/>
 				)}
 				{viewMode === 'grid' && (
@@ -188,6 +208,9 @@ function ToDoDetailPage({ currentUser, currentToDo, refreshTodos }) {
 						onNext={goNext}
 						onDeleteTask={handleDeleteTask}
 						onToggleStatus={handleToggleTaskStatus}
+						onUpdateTaskDescription={handleUpdateTaskDescription}
+						onUpdateTaskPriority={handleUpdateTaskPriority}
+						onUpdateTaskDue={handleUpdateTaskDue}
 					/>
 				)}
 			</div>

@@ -1,10 +1,16 @@
 // todoapp/clients/web/src/components/task/TaskGrid.jsx
 
 import TaskWidgetCard from "./TaskWidgetCard";
-import '../../styles/task.css'
 
 
-function TaskGrid({ tasks, onDeleteTask, onToggleStatus }) {
+function TaskGrid({
+  tasks,
+  onDeleteTask,
+  onToggleStatus,
+  onUpdateTaskDescription,
+  onUpdateTaskPriority,
+  onUpdateTaskDue,
+}) {
   return (
     <div className="task-grid">
       {tasks.map((task) => (
@@ -13,6 +19,9 @@ function TaskGrid({ tasks, onDeleteTask, onToggleStatus }) {
           task={task}
           onDeleteTask={onDeleteTask}
           onToggleStatus={onToggleStatus}
+          onUpdateTaskDescription={onUpdateTaskDescription}
+          onUpdateTaskPriority={onUpdateTaskPriority}
+          onUpdateTaskDue={onUpdateTaskDue}
         />
       ))}
     </div>

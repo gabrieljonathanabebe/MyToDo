@@ -19,6 +19,7 @@
 @import './components/widget.css';
 @import './components/icon-actions.css';
 @import './components/segmented-controls.css';
+@import './components/dropdowns.css';
 
 
 @import './features/navigation.css';

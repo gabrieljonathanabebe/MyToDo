@@ -1,5 +1,6 @@
 /* todoapp/clients/web/src/styles/components/badge.css */
 
+
 .badge {
   display: inline-flex;
   align-items: center;
@@ -50,4 +51,21 @@
   background: var(--color-gray-soft);
   color: var(--color-gray-strong);
   border-color: var(--color-gray-border);
+}
+
+.badge-button {
+  all: unset;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: var(--radius-md);
+}
+
+.task-card-right .badge-button {
+  justify-self: center;
+}
+
+.badge-button:hover {
+  transform: translateY(-1.5px);
 }

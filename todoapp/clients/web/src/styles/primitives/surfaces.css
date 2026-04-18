@@ -10,8 +10,8 @@
     inset 1px 1px 0 var(--edge-highlight-strong),
     inset -1px -1px 0 var(--edge-shadow),
     var(--elevation-2);
-  backdrop-filter: var(--blur-md);
-  -webkit-backdrop-filter: var(--blur-md);
+  backdrop-filter: var(--blur-lg);
+  -webkit-backdrop-filter: var(--blur-lg);
   transition:
     transform var(--transition-fast),
     box-shadow var(--transition-fast),
@@ -20,7 +20,6 @@
 }
 
 .surface-card-hover:hover {
-  transform: translateY(-2px);
   border-color: var(--color-border-strong);
   box-shadow:
     inset 1px 1px 0 var(--edge-highlight-strong),
@@ -52,4 +51,16 @@
     var(--shadow-sm);
   backdrop-filter: var(--blur-sm);
   -webkit-backdrop-filter: var(--blur-sm);
+}
+
+.surface-dropdown {
+  background: rgba(255, 255, 255, 0.56);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-lg);
+  box-shadow:
+    inset 1px 1px 0 var(--edge-highlight-strong),
+    inset -1px -1px 0 var(--edge-shadow),
+    var(--elevation-3);
+  backdrop-filter: blur(44px);
+  -webkit-backdrop-filter: blur(44px);
 }

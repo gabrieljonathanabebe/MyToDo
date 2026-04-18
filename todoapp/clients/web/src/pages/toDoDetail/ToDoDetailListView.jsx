@@ -16,6 +16,9 @@ function ToDoDetailListView({
   onNext,
   onDeleteTask,
   onToggleStatus,
+  onUpdateTaskDescription,
+  onUpdateTaskPriority,
+  onUpdateTaskDue,
 }) {
   if (allTasks.length === 0) {
     return (
@@ -55,6 +58,9 @@ function ToDoDetailListView({
         tasks={paginatedTasks}
         onDeleteTask={onDeleteTask}
         onToggleStatus={onToggleStatus}
+        onUpdateTaskDescription={onUpdateTaskDescription}
+        onUpdateTaskPriority={onUpdateTaskPriority}
+        onUpdateTaskDue={onUpdateTaskDue}
       />
       <Pagination
         page={page}
