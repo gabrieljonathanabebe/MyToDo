@@ -1,7 +1,6 @@
 // todoapp/clients/web/src/components/todo/ToDoLists.jsx
 
 import ToDoCard from "./ToDoCard";
-import "../../styles/todo.css"
 
 
 function ToDoLists({ todos, onOpenToDo, onDeleteToDo }) {

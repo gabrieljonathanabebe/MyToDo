@@ -1,8 +1,6 @@
 // todoapp/clients/web/src/components/todo/ToDoCard.jsx
 
 import Panel from '../common/Panel'
-import Button from '../common/Button'
-import '../../styles/todo.css'
 import { formatRelativeDatetime } from '../../utils/formatters'
 import { CalendarDays, Clock3, Trash2 } from 'lucide-react'
 
