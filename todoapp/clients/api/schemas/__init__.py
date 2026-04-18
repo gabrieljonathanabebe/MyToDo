@@ -5,6 +5,9 @@ from .todo_summary import CreateToDoRequest, ToDoSummaryResponse
 from .todo_detail import (
     CreateTaskRequest,
     UpdateTaskStatusRequest,
+    UpdateTaskDescriptionRequest,
+    UpdateTaskPriorityRequest,
+    UpdateTaskDueRequest,
     TaskResponse,
     ToDoDetailResponse,
     SortTasksRequest

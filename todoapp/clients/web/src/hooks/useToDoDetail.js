@@ -2,7 +2,14 @@
 
 import { useEffect, useState } from "react";
 import {
-  fetchToDoDetail, createTask, deleteTask, updateTaskStatus, sortTasks
+  fetchToDoDetail,
+  createTask,
+  deleteTask,
+  updateTaskStatus,
+  sortTasks,
+  updateTaskDescription,
+  updateTaskPriority,
+  updateTaskDue,
 } from "../api/toDoDetail";
 
 
@@ -110,6 +117,57 @@ export function useToDoDetail(currentUser, currentToDo, refreshTodos) {
     }
   }
 
+  // ===== HANDLE UPDATE TASK DESCRIPTION =====================================
+  async function handleUpdateTaskDescription(taskId, description) {
+    try {
+      await updateTaskDescription(
+        currentUser.username,
+        currentToDo.id,
+        taskId,
+        description
+      )
+      await loadToDoDetail()
+      await refreshTodos?.()
+    } catch (err) {
+      setError(err.message)
+    }
+  }
+
+
+  // ===== HANDLE UPDATE TASK PRIORITY ========================================
+  async function handleUpdateTaskPriority(taskId, priority) {
+    try {
+      await updateTaskPriority(
+        currentUser.username,
+        currentToDo.id,
+        taskId,
+        priority
+      )
+      await loadToDoDetail()
+      await refreshTodos?.()
+    } catch (err) {
+      setError(err.message)
+    }
+  }
+
+
+  // ===== HANDLE UPDATE TASK DUE =============================================
+  async function handleUpdateTaskDue(taskId, newDue) {
+    try {
+      await updateTaskDue(
+        currentUser.username,
+        currentToDo.id,
+        taskId,
+        newDue
+      )
+      await loadToDoDetail()
+      await refreshTodos?.()
+    } catch (err) {
+      setError(err.message)
+    }
+  }
+
+
 
   return {
     toDoDetail,
@@ -124,6 +182,9 @@ export function useToDoDetail(currentUser, currentToDo, refreshTodos) {
     handleCreateTask,
     handleDeleteTask,
     handleToggleTaskStatus,
-    handleSortTasks
+    handleSortTasks,
+    handleUpdateTaskDescription,
+    handleUpdateTaskPriority,
+    handleUpdateTaskDue,
   }
 }

@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import datetime, date, timezone
 
 from pydantic import ValidationError
 
@@ -113,7 +113,57 @@ class ToDoService:
             return Result(Code.INVALID_INPUT, f'Key "{key}" not found.')
 
 
+    def update_task_description(
+        self, todo: ToDoList, task_id: str, description: str
+    ) -> Result[None]:
+        try:
+            ok = todo.update_task_description(int(task_id), description)
+            if not ok:
+                return Result(Code.NOT_FOUND, f'Task {task_id} not found.')
+            self._touch_and_save_todo(todo)
+            return Result(Code.OK, f'Task {task_id} updated.')
+        except ValueError:
+            return Result(
+                Code.INVALID_INPUT, f'"{task_id}" is not a valid input.'
+            )
+        except ValidationError as e:
+            first_error = e.errors()[0]
+            field = first_error['loc'][0]
+            msg = first_error['msg']
+            return Result(Code.INVALID_INPUT, f'{field.capitalize()}: {msg}')
         
+
+    def update_task_priority(
+        self, todo: ToDoList, task_id: str, priority: int
+    ) -> Result[None]:
+        try:
+            ok = todo.update_task_priority(int(task_id), priority)
+            if not ok:
+                return Result(Code.NOT_FOUND, f'Task {task_id} not found.')
+            self._touch_and_save_todo(todo)
+            return Result(Code.OK, f'Task {task_id} updated.')
+        except ValueError:
+            return Result(Code.INVALID_INPUT, f'"{task_id}" is not a valid input.')
+        
+
+    def update_task_due(
+        self, todo: ToDoList, task_id: str, due: date | None
+    ) -> Result[None]:
+        try:
+            ok = todo.update_task_due(int(task_id), due)
+            if not ok:
+                return Result(Code.NOT_FOUND, f'Task {task_id} not found.')
+            self._touch_and_save_todo(todo)
+            return Result(Code.OK, f'Task {task_id} updated.')
+        except ValueError:
+            return Result(Code.INVALID_INPUT, f'"{task_id}" is not a valid input.')
+        except ValidationError as e:
+            first_error = e.errors()[0]
+            field = first_error['loc'][0]
+            msg = first_error['msg']
+            return Result(Code.INVALID_INPUT, f'{field.capitalize()}: {msg}')
+
+
 
     
     def assign_new_ids(self, todo: ToDoList) -> Result[None]:

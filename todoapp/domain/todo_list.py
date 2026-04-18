@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Optional
 from uuid import uuid4
-from datetime import datetime, timezone
+from datetime import datetime, date, timezone
 
 from .models import ToDoSummary, Task, Status
 
@@ -22,6 +22,7 @@ class ToDoList:
         self.created_at = created_at
         self.updated_at = updated_at
 
+
     @classmethod
     def create_new(cls, title: str) -> ToDoList:
         now = datetime.now(timezone.utc)
@@ -33,6 +34,7 @@ class ToDoList:
             updated_at=now
         )
     
+
     @classmethod
     def from_summary(
         cls,
@@ -64,11 +66,13 @@ class ToDoList:
         self.tasks.append(new)
         return new
     
+
     def delete_task(self, task_id: int) -> bool:
         length_before = len(self.tasks)
         self.tasks = [t for t in self.tasks if t.id != task_id]
         return len(self.tasks) != length_before
     
+
     def set_status(self, task_id: int, status: Status) -> bool:
         task = next((t for t in self.tasks if t.id == task_id), None)
         if task is None:
@@ -76,6 +80,7 @@ class ToDoList:
         task.status = status
         return True
     
+
     def sort_tasks(self, key: str, reverse: bool = False) -> None:
         with_value = [t for t in self.tasks if getattr(t, key) is not None]
         without_value = [t for t in self.tasks if getattr(t, key) is None]
@@ -83,14 +88,40 @@ class ToDoList:
         without_value.sort(key=lambda t: t.id)
         self.tasks = with_value + without_value
 
+
     def assign_new_ids(self) -> int:
         for i, t in enumerate(self.tasks, 1):
             t.id = i
         return len(self.tasks)
     
+
     def toggle_status(self, task_id: int) -> bool:
         task = next((t for t in self.tasks if t.id == task_id), None)
         if task is None:
             return False
         task.status = Status.done if task.status == Status.open else Status.open
+        return True
+    
+
+    def update_task_description(self, task_id: int, description: str) -> bool:
+        task = next((t for t in self.tasks if t.id == task_id), None)
+        if task is None:
+            return False
+        task.description = description
+        return True
+    
+
+    def update_task_priority(self, task_id: int, priority: int) -> bool:
+        task = next((t for t in self.tasks if t.id == task_id), None)
+        if task is None:
+            return False
+        task.priority = priority
+        return True
+    
+
+    def update_task_due(self, task_id: int, due: date | None) -> bool:
+        task = next((t for t in self.tasks if t.id == task_id), None)
+        if task is None:
+            return False
+        task.due = due
         return True

@@ -22,6 +22,18 @@ class SortTasksRequest(BaseModel):
     reverse: bool = False
 
 
+class UpdateTaskDescriptionRequest(BaseModel):
+    description: str
+
+
+class UpdateTaskPriorityRequest(BaseModel):
+    priority: int
+
+
+class UpdateTaskDueRequest(BaseModel):
+    due: date | None = None
+
+
 # ===== RESPONSES =============================================================
 class TaskResponse(BaseModel):
     id: int

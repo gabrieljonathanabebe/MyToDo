@@ -2,7 +2,7 @@ from datetime import date
 from typing import Optional
 from enum import Enum
 
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, field_validator, ConfigDict
 
 
 class Priority(int, Enum):
@@ -18,6 +18,8 @@ class Status(str, Enum):
 
 
 class Task(BaseModel):
+    model_config = ConfigDict(validate_assignment=True)
+
     id: int
     description: str
     priority: Priority

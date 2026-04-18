@@ -7,9 +7,12 @@ import todoapp.clients.api.adapters as api_ad
 from todoapp.clients.api.schemas import (
     CreateTaskRequest,
     UpdateTaskStatusRequest,
+    UpdateTaskDescriptionRequest,
     SortTasksRequest,
     TaskResponse,
-    ToDoDetailResponse
+    ToDoDetailResponse,
+    UpdateTaskPriorityRequest,
+    UpdateTaskDueRequest
 )
 
 
@@ -116,6 +119,78 @@ def sort_tasks(
         todo_res.data,
         key=body.key,
         reverse=body.reverse
+    )
+    if res.ok:
+        return {'message': res.msg}
+    http_errors.raise_for_result(res)
+
+
+@router.patch(
+    '/users/{username}/todos/{todo_id}/tasks/{task_id}/description',
+    status_code=status.HTTP_200_OK
+)
+def update_task_description(
+    username: str,
+    todo_id: str,
+    task_id: str,
+    body: UpdateTaskDescriptionRequest
+) -> dict[str, str]:
+    service = deps.get_todo_service(username)
+    todo_res = service.open_todo(todo_id)
+    if not todo_res.ok or todo_res.data is None:
+        http_errors.raise_for_result(todo_res)
+    res = service.update_task_description(
+        todo_res.data,
+        task_id=task_id,
+        description=body.description
+    )
+    if res.ok:
+        return {'message': res.msg}
+    http_errors.raise_for_result(res)
+
+
+@router.patch(
+    '/users/{username}/todos/{todo_id}/tasks/{task_id}/priority',
+    status_code=status.HTTP_200_OK
+)
+def update_task_priority(
+    username: str,
+    todo_id: str,
+    task_id: str,
+    body: UpdateTaskPriorityRequest
+) -> dict[str, str]:
+    service = deps.get_todo_service(username)
+    todo_res = service.open_todo(todo_id)
+    if not todo_res.ok or todo_res.data is None:
+        http_errors.raise_for_result(todo_res)
+    res = service.update_task_priority(
+        todo_res.data,
+        task_id=task_id,
+        priority=body.priority
+    )
+    if res.ok:
+        return {'message': res.msg}
+    http_errors.raise_for_result(res)
+
+
+@router.patch(
+    '/users/{username}/todos/{todo_id}/tasks/{task_id}/due',
+    status_code=status.HTTP_200_OK
+)
+def update_task_due(
+    username: str,
+    todo_id: str,
+    task_id: str,
+    body: UpdateTaskDueRequest
+) -> dict[str, str]:
+    service = deps.get_todo_service(username)
+    todo_res = service.open_todo(todo_id)
+    if not todo_res.ok or todo_res.data is None:
+        http_errors.raise_for_result(todo_res)
+    res = service.update_task_due(
+        todo_res.data,
+        task_id=task_id,
+        due=body.due
     )
     if res.ok:
         return {'message': res.msg}
