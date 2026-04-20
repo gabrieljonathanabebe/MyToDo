@@ -16,3 +16,37 @@ export async function apiRequest(path, options = {}) {
   }
   return data
 }
+
+
+export async function postJson(path, payload) {
+  return apiRequest(path, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(payload),
+  })
+}
+
+
+export async function patchJson(path, payload) {
+  return apiRequest(path, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(payload),
+  })
+}
+
+
+export async function deleteRequest(path) {
+  return apiRequest(path, {
+    method: 'DELETE',
+  })
+}
+
+
+export async function getRequest(path) {
+  return apiRequest(path)
+}

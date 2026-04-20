@@ -1,6 +1,7 @@
 // todoapp/clients/web/src/api/toDoSummary.js
 
-import { apiRequest } from "./client"
+import { apiRequest, deleteRequest, postJson } from "./client"
+import { apiRoutes } from "./routes"
 
 
 export async function fetchToDoSummaries(username) {
@@ -8,17 +9,15 @@ export async function fetchToDoSummaries(username) {
 }
 
 export async function createToDo(username, title) {
-    return apiRequest(`/users/${username}/todos`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ title }),
-    })
+    return postJson(
+        apiRoutes.todos.create(username),
+        { title },
+    )
 }
 
+
 export async function deleteToDo(username, todoId) {
-    return apiRequest(`/users/${username}/todos/${todoId}`, {
-        method: 'DELETE'
-    })
+    return deleteRequest(
+        apiRoutes.todos.delete(username, todoId)
+    )
 }

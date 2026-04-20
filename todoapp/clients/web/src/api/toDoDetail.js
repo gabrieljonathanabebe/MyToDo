@@ -1,6 +1,7 @@
 // todoapp/clients/web/src/api/toDoDetail.js
 
-import { apiRequest } from "./client"
+import { apiRequest, deleteRequest, patchJson, postJson } from "./client"
+import { apiRoutes } from "./routes"
 
 
 export async function fetchToDoDetail(username, todoId) {
@@ -8,86 +9,57 @@ export async function fetchToDoDetail(username, todoId) {
 }
 
 export async function createTask(username, todoId, taskData) {
-	return apiRequest(`/users/${username}/todos/${todoId}/tasks`, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify(taskData)
-	})
+	return postJson(
+		apiRoutes.todos.tasks.create(username, todoId),
+		{ taskData }
+	)
 }
+
 
 export async function deleteTask(username, todoId, taskId) {
-	return apiRequest(`/users/${username}/todos/${todoId}/tasks/${taskId}`, {
-		method: 'DELETE'
-	})
+	return deleteRequest(
+		apiRoutes.todos.tasks.delete(username, todoId, taskId)
+	)
 }
+
 
 export async function updateTaskStatus(username, todoId, taskId, status) {
-	return apiRequest(`/users/${username}/todos/${todoId}/tasks/${taskId}/status`, {
-		method: 'PATCH',
-		headers: {
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify({ status }),
-	})
+	return patchJson(
+		apiRoutes.todos.tasks.updateStatus(username, todoId, taskId),
+		{ status }
+	)
 }
 
+
 export async function sortTasks(username, todoId, key, reverse = false) {
-	return apiRequest(`/users/${username}/todos/${todoId}/sort`, {
-		method: 'PATCH',
-		headers: {
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify({
-			key,
-			reverse
-		})
-	})
+	return patchJson(
+		apiRoutes.todos.sort(username, todoId),
+		{ key, reverse }
+	)
 }
 
 
 export async function updateTaskDescription(
 	username, todoId, taskId, description
 ) {
-	return apiRequest(
-		`/users/${username}/todos/${todoId}/tasks/${taskId}/description`, {
-		method: 'PATCH',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-		body: JSON.stringify({
-			description,
-		}),
-	})
+	return patchJson(
+		apiRoutes.todos.tasks.updateDescription(username, todoId, taskId),
+		{ description }
+	)
 }
 
 
-export async function updateTaskPriority(
-	username, todoId, taskId, priority
-) {
-	return apiRequest(
-		`/users/${username}/todos/${todoId}/tasks/${taskId}/priority`, {
-		method: 'PATCH',
-		headers: {
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify({
-			priority,
-		}),
-	})
+export async function updateTaskPriority(username, todoId, taskId, priority) {
+	return patchJson(
+		apiRoutes.todos.tasks.updatePriority(username, todoId, taskId),
+		{ priority }
+	)
 }
 
 
 export async function updateTaskDue(username, todoId, taskId, due) {
-	return apiRequest(
-		`/users/${username}/todos/${todoId}/tasks/${taskId}/due`, {
-		method: 'PATCH',
-		headers: {
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify({
-			due,
-		}),
-	})
+	return patchJson(
+		apiRoutes.todos.tasks.updateDue(username, todoId, taskId),
+		{ due }
+	)
 }
