@@ -1,189 +1,32 @@
-from datetime import datetime, date, timezone
+# todoapp/core/services/todo.py
 
-from pydantic import ValidationError
+from datetime import datetime, date, timezone
 
 from todoapp.domain.todo_list import ToDoList
 from todoapp.domain.models import Task, ToDoSummary, Status
 from todoapp.core.protocols import ToDoRepository
 from todoapp.core.results import Result, Code
+from todoapp.core.services.errors import (
+    NotFoundError,
+    InvalidInputError,
+    AlreadyExistsError
+)
+from todoapp.core.services.messages import ToDoMessage
+from todoapp.core.services.responses import ok, resultify, created
 
 
 class ToDoService:
     def __init__(self, repo: ToDoRepository):
         self.repo = repo
 
-
-    # ===== TODO QUERIES ===============================================
-    def list_todos(self) -> Result[list[ToDoSummary]]:
-        return Result(Code.OK, data=self.repo.list_todos())
-    
-    def open_todo(self, todo_id: str) -> Result[ToDoList]:
-        todo = self.repo.load_todo(todo_id)
-        if todo is None:
-            return Result(Code.NOT_FOUND, 'ToDo not found.')
-        return Result(Code.OK, data=todo)
-    
-    def new_todo(self, title: str) -> Result[ToDoList]:
-        existing_meta = self.repo.get_todo_summary_by_title(title)
-        if existing_meta is not None:
-            existing_todo = self.repo.load_todo(existing_meta.id)
-            if existing_todo is None:
-                return Result(Code.NOT_FOUND, 'ToDo not found.')
-            return Result(
-                Code.ALREADY_EXISTS,
-                f'{title} already exists.',
-                data=existing_todo
-            )
-        new_todo = ToDoList.create_new(title)
-        self._persist_new_todo(new_todo)
-        return Result(
-            Code.CREATED, f'{new_todo.title} created.', data=new_todo
-        )
-    
-    def delete_todo(self, todo_id: str) -> Result[None]:
-        meta = self.repo.get_todo_summary_by_id(todo_id)
-        if meta is None:
-            return Result(Code.NOT_FOUND, 'ToDo not found.')
-        if not self.repo.delete_todo(todo_id):
-            return Result(Code.NOT_FOUND, 'ToDo not found.')
-        return Result(Code.OK, f'ToDo "{meta.title}" deleted.')
-
-
-    # ===== TASK COMMANDS ===============================================
-    def add_task(
-        self, todo: ToDoList, description: str,
-        priority: str, due: str | None
-    ) -> Result[Task]:
+    # ===== PRIVATE HELPERS ===================================================
+    def _parse_task_id(self, task_id: str) -> int:
         try:
-            new_task = todo.add_task(
-                description=description,
-                priority=priority,
-                due=due
-            )
-            self._touch_and_save_todo(todo)
-            return Result(Code.OK, f'Task {new_task.id} added.', data=new_task)
-        except ValidationError as e:
-            first_error = e.errors()[0]
-            field = first_error['loc'][0]
-            msg = first_error['msg']
-            return Result(
-                Code.INVALID_INPUT, f'{field.capitalize()}: {msg}'
-            )
+            return int(task_id)
+        except ValueError:
+            raise InvalidInputError(ToDoMessage.invalid_task_id(task_id))
         
-
-    def delete_task(self, todo: ToDoList, target_id: str) -> Result[None]:
-        try:
-            ok = todo.delete_task(int(target_id))
-            if not ok:
-                return Result(Code.NOT_FOUND, f'ID {target_id} not found.')
-            self._touch_and_save_todo(todo)
-            return Result(Code.OK, f'Task {target_id} deleted.')
-        except ValueError:
-            return Result(
-                Code.INVALID_INPUT, f'"{target_id}" is not a valid input.'
-            )
-        
-
-    def set_task_status(
-        self, todo: ToDoList, task_id: str, status: str
-    ) -> Result[None]:
-        try:
-            target_id = int(task_id)
-        except ValueError:
-            return Result(Code.INVALID_INPUT, f'"{task_id}" is not a valid input.')
-        try:
-            target_status = Status(status)
-        except ValueError:
-            return Result(Code.INVALID_INPUT, f'"{status}" is not a valid status.')
-        ok = todo.set_status(target_id, target_status)
-        if not ok:
-            return Result(Code.NOT_FOUND, f'Task {task_id} not found.')
-        self._touch_and_save_todo(todo)
-        return Result(
-            Code.OK, f'Task {task_id} status updated to "{target_status.value}"'
-        )
-    
-
-    def sort_tasks(self, todo: ToDoList, key: str, reverse: bool) -> Result[None]:
-        try:
-            todo.sort_tasks(key, reverse)
-            self._touch_and_save_todo(todo)
-            return Result(Code.OK, f'Sorting by {key}')
-        except AttributeError:
-            return Result(Code.INVALID_INPUT, f'Key "{key}" not found.')
-
-
-    def update_task_description(
-        self, todo: ToDoList, task_id: str, description: str
-    ) -> Result[None]:
-        try:
-            ok = todo.update_task_description(int(task_id), description)
-            if not ok:
-                return Result(Code.NOT_FOUND, f'Task {task_id} not found.')
-            self._touch_and_save_todo(todo)
-            return Result(Code.OK, f'Task {task_id} updated.')
-        except ValueError:
-            return Result(
-                Code.INVALID_INPUT, f'"{task_id}" is not a valid input.'
-            )
-        except ValidationError as e:
-            first_error = e.errors()[0]
-            field = first_error['loc'][0]
-            msg = first_error['msg']
-            return Result(Code.INVALID_INPUT, f'{field.capitalize()}: {msg}')
-        
-
-    def update_task_priority(
-        self, todo: ToDoList, task_id: str, priority: int
-    ) -> Result[None]:
-        try:
-            ok = todo.update_task_priority(int(task_id), priority)
-            if not ok:
-                return Result(Code.NOT_FOUND, f'Task {task_id} not found.')
-            self._touch_and_save_todo(todo)
-            return Result(Code.OK, f'Task {task_id} updated.')
-        except ValueError:
-            return Result(Code.INVALID_INPUT, f'"{task_id}" is not a valid input.')
-        
-
-    def update_task_due(
-        self, todo: ToDoList, task_id: str, due: date | None
-    ) -> Result[None]:
-        try:
-            ok = todo.update_task_due(int(task_id), due)
-            if not ok:
-                return Result(Code.NOT_FOUND, f'Task {task_id} not found.')
-            self._touch_and_save_todo(todo)
-            return Result(Code.OK, f'Task {task_id} updated.')
-        except ValueError:
-            return Result(Code.INVALID_INPUT, f'"{task_id}" is not a valid input.')
-        except ValidationError as e:
-            first_error = e.errors()[0]
-            field = first_error['loc'][0]
-            msg = first_error['msg']
-            return Result(Code.INVALID_INPUT, f'{field.capitalize()}: {msg}')
-
-
-
-    
-    def assign_new_ids(self, todo: ToDoList) -> Result[None]:
-        count = todo.assign_new_ids()
-        self._touch_and_save_todo(todo)
-        return Result(Code.OK, f'Reassigned {count} IDs.')
-    
-    def toggle_status(self, todo: ToDoList, task_id: str) -> Result[None]:
-        try:
-            ok = todo.toggle_status(int(task_id))
-            if not ok:
-                return Result(Code.NOT_FOUND, f'Task {task_id} not found.')
-            self._touch_and_save_todo(todo)
-            return Result(Code.OK, f'Toggle status for Task {task_id}.')
-        except ValueError:
-            return Result(Code.INVALID_INPUT, f'"{task_id} is not a valid input.')
-
-
-    # ===== INTERNAL PERSIST HELPER ========================================
-    def _persist_new_todo(self, todo: ToDoList) -> None:
+    def _persist_create_todo(self, todo: ToDoList) -> None:
         self.repo.save_todo(todo)
         self.repo.register_todo_summary(todo)
 
@@ -191,3 +34,141 @@ class ToDoService:
         todo.updated_at = datetime.now(timezone.utc)
         self.repo.save_todo(todo)
         self.repo.update_todo_summary(todo)
+
+
+    # ===== TODO QUERIES ===============================================
+    def get_todos(self) -> Result[list[ToDoSummary]]:
+        return Result(Code.OK, data=self.repo.get_todos())
+    
+    @resultify
+    def open_todo(self, todo_id: str) -> Result[ToDoList]:
+        todo = self.repo.load_todo(todo_id)
+        if todo is None:
+            raise NotFoundError(ToDoMessage.todo_not_found())
+        return ok(data=todo)
+
+    @resultify
+    def create_todo(self, title: str) -> Result[ToDoList]:
+        existing_summary = self.repo.get_todo_summary_by_title(title)
+        if existing_summary is not None:
+            raise AlreadyExistsError(ToDoMessage.todo_already_exists(title))
+        create_todo = ToDoList.create_new(title)
+        self._persist_create_todo(create_todo)
+        return created(ToDoMessage.todo_created(create_todo.title), data=create_todo)
+    
+
+    @resultify
+    def delete_todo(self, todo_id: str) -> Result[None]:
+        summary = self.repo.get_todo_summary_by_id(todo_id)
+        if summary is None:
+            raise NotFoundError(ToDoMessage.todo_not_found())
+        if not self.repo.delete_todo(todo_id):
+            raise NotFoundError(ToDoMessage.todo_not_found())
+        return ok(ToDoMessage.todo_deleted(summary.title))
+
+
+    # ===== TASK COMMANDS ===============================================
+    @resultify
+    def create_task(
+        self, todo: ToDoList, description: str,
+        priority: str, due: str | None
+    ) -> Result[Task]:
+        new_task = todo.create_task(
+            description=description,
+            priority=priority,
+            due=due
+        )
+        self._touch_and_save_todo(todo)
+        return created(ToDoMessage.task_created(new_task.id), data=new_task)
+
+        
+    @resultify
+    def delete_task(self, todo: ToDoList, task_id: str) -> Result[None]:
+        parsed_task_id = self._parse_task_id(task_id)
+        is_deleted = todo.delete_task(parsed_task_id)
+        if not is_deleted:
+            raise NotFoundError(ToDoMessage.task_not_found(task_id))
+        self._touch_and_save_todo(todo)
+        return ok(ToDoMessage.task_deleted(task_id))
+    
+
+    @resultify
+    def sort_tasks(
+        self, todo: ToDoList, key: str, reverse: bool
+    ) -> Result[None]:
+        try:
+            todo.sort_tasks(key, reverse)
+        except AttributeError:
+            raise InvalidInputError(f'Key {key} not found.')
+        self._touch_and_save_todo(todo)
+        return ok(f'Sorting by {key}')
+        
+    
+    @resultify
+    def update_task_status(
+        self, todo: ToDoList, task_id: str, status: str
+    ) -> Result[None]:
+        parsed_task_id = self._parse_task_id(task_id)
+        try:
+            target_status = Status(status)
+        except ValueError:
+            raise InvalidInputError(ToDoMessage.invalid_status(status))
+        is_updated = todo.set_status(parsed_task_id, target_status)
+        if not is_updated:
+            raise NotFoundError(ToDoMessage.task_not_found(task_id))
+        self._touch_and_save_todo(todo)
+        return ok(
+            ToDoMessage.task_status_updated(task_id, target_status.value)
+        )
+        
+    
+    @resultify    
+    def update_task_description(
+        self, todo: ToDoList, task_id: str, description: str
+    ) -> Result[None]:
+        parsed_task_id = self._parse_task_id(task_id)
+        is_updated = todo.update_task_description(parsed_task_id, description)
+        if not is_updated:
+            raise NotFoundError(ToDoMessage.task_not_found(task_id))
+        self._touch_and_save_todo(todo)
+        return ok(ToDoMessage.task_updated(task_id))
+
+
+    @resultify
+    def update_task_due(
+        self, todo: ToDoList, task_id: str, due: date | None
+    ) -> Result[None]:
+        parsed_task_id = self._parse_task_id(task_id)
+        is_updated = todo.update_task_due(parsed_task_id, due)
+        if not is_updated:
+            raise NotFoundError(ToDoMessage.task_not_found(task_id))
+        self._touch_and_save_todo(todo)
+        return ok(ToDoMessage.task_updated(task_id))
+    
+
+    @resultify
+    def update_task_priority(
+        self, todo: ToDoList, task_id: str, priority: int
+    ) -> Result[None]:
+        parsed_task_id = self._parse_task_id(task_id)
+        is_updated = todo.update_task_priority(parsed_task_id, priority)
+        if not is_updated:
+            raise NotFoundError(ToDoMessage.task_not_found(task_id))
+        self._touch_and_save_todo(todo)
+        return ok(ToDoMessage.task_updated(task_id))
+
+    
+    def assign_new_ids(self, todo: ToDoList) -> Result[None]:
+        count = todo.assign_new_ids()
+        self._touch_and_save_todo(todo)
+        return Result(Code.OK, f'Reassigned {count} IDs.')
+    
+        
+    @resultify
+    def toggle_status(self, todo: ToDoList, task_id: str) -> Result[None]:
+        parsed_task_id = self._parse_task_id(task_id)
+        is_toggled = todo.toggle_status(parsed_task_id)
+        if not is_toggled:
+            raise NotFoundError(ToDoMessage.task_not_found(task_id))
+        self._touch_and_save_todo(todo)
+        return ok(ToDoMessage.task_status_toggled(task_id))

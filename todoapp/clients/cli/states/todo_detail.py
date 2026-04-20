@@ -11,7 +11,7 @@ class ToDoDetailState(AppStateBase):
         self.options = {
             'a': {
                 'label': 'Add Task',
-                'handler': self._cmd_add_task
+                'handler': self._cmd_create_task
             },
             'd': {
                 'label': 'Delete Task',
@@ -58,9 +58,9 @@ class ToDoDetailState(AppStateBase):
 
 
     # ===== COMMANDS ==========================================================
-    def _cmd_add_task(self, app: AppLike) -> None:
+    def _cmd_create_task(self, app: AppLike) -> None:
         description_input, priority_input, due_input = prompts.prompt_new_task()
-        res = app.service.add_task(
+        res = app.service.create_task(
             app.current_todo, description_input, priority_input, due_input
         )
         app.flash('success' if res.ok else 'error', res.msg)

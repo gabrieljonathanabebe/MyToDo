@@ -42,7 +42,7 @@ class ToDoSummaryState(AppStateBase):
     
     # ===== RENDER ============================================================
     def render(self, app: AppLike):
-        res = app.service.list_todos()
+        res = app.service.get_todos()
         self.todo_items = res.data or []
         display_table = ui.make_table(
             title=self.name,
@@ -58,7 +58,7 @@ class ToDoSummaryState(AppStateBase):
     # ===== COMMANDS ==========================================================
     def _cmd_new(self, app: AppLike) -> None:
         title = prompts.prompt_todo_title()
-        res = app.service.new_todo(title)
+        res = app.service.create_todo(title)
         if res.code == Code.ALREADY_EXISTS:
             confirmed = prompts.prompt_open_existing_list(res.msg)
             if confirmed and res.data is not None:

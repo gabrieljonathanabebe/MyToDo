@@ -48,7 +48,7 @@ def create_task(
     todo_res = service.open_todo(todo_id)
     if not todo_res.ok or todo_res.data is None:
         http_errors.raise_for_result(todo_res)
-    res = service.add_task(
+    res = service.create_task(
         todo_res.data,
         description=body.description,
         priority=str(body.priority.value),
@@ -92,7 +92,7 @@ def update_task_status(
     todo_res = service.open_todo(todo_id)
     if not todo_res.ok or todo_res.data is None:
         http_errors.raise_for_result(todo_res)
-    res = service.set_task_status(
+    res = service.update_task_status(
         todo_res.data,
         task_id=task_id,
         status=body.status.value

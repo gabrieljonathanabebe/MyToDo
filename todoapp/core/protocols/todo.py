@@ -13,7 +13,7 @@ class ToDoRepository(Protocol):
     def delete_todo(self, todo_id: str) -> bool:
         ...
     
-    def list_todos(self) -> list[ToDoSummary]:
+    def get_todos(self) -> list[ToDoSummary]:
         ...
 
     def update_todo_summary(self, todo: ToDoList) -> None:

@@ -104,6 +104,6 @@ class CsvToDoRepository:
         self._save_todo_summary(items)
         return True
 
-    def list_todos(self) -> list[ToDoSummary]:
+    def get_todos(self) -> list[ToDoSummary]:
         items = self._load_todo_summary()
         return sorted(items, key=lambda item: item.updated_at, reverse=True)
