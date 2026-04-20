@@ -3,13 +3,12 @@
 from fastapi import APIRouter, status
 
 from todoapp.clients.api import deps
-import todoapp.clients.api.http_errors as http_errors
+import todoapp.clients.api.http_results as http_results
 import todoapp.clients.api.adapters as api_ad
 from todoapp.clients.api.schemas import (
     CreateToDoRequest,
     ToDoSummaryResponse
 )
-from todoapp.core.results import Code
 from todoapp.domain.models import ToDoSummary
 
 
@@ -21,11 +20,9 @@ router = APIRouter()
     response_model=list[ToDoSummaryResponse]
 )
 def get_todos(username: str) -> list[ToDoSummaryResponse]:
-    service = deps.get_todo_services(username)
-    res = service.todos.get_todos()
-    if res.ok and res.data is not None:
-        return [api_ad.to_summary_response(summary) for summary in res.data]
-    http_errors.raise_for_result(res)
+    services = deps.get_todo_services(username)
+    summaries = http_results.unwrap_result(services.todos.get_todos())
+    return [api_ad.to_summary_response(summary) for summary in summaries]
 
 
 @router.post(
@@ -37,12 +34,10 @@ def create_todo(
     username: str,
     body: CreateToDoRequest
 ) -> ToDoSummaryResponse:
-    service = deps.get_todo_services(username)
-    res = service.todos.create_todo(body.title)
-    if res.code == Code.CREATED and res.data is not None:
-        summary = ToDoSummary.from_todo(res.data)
-        return api_ad.to_summary_response(summary)
-    http_errors.raise_for_result(res)
+    services = deps.get_todo_services(username)
+    todo = http_results.unwrap_result(services.todos.create_todo(body.title))
+    summary = ToDoSummary.from_todo(todo)
+    return api_ad.to_summary_response(summary)
 
 
 @router.delete(
@@ -53,8 +48,6 @@ def delete_todo(
     username: str,
     todo_id: str
 ) -> dict[str, str]:
-    service = deps.get_todo_services(username)
-    res = service.todos.delete_todo(todo_id)
-    if res.ok:
-        return {'message': res.msg}
-    http_errors.raise_for_result(res)
+    services = deps.get_todo_services(username)
+    res = services.todos.delete_todo(todo_id)
+    return http_results.ok_message(res)

@@ -2,7 +2,7 @@
 
 from fastapi import APIRouter, status
 
-from todoapp.clients.api import deps, http_errors
+from todoapp.clients.api import deps, http_results
 import todoapp.clients.api.adapters as api_ad
 from todoapp.clients.api.schemas import (
     CreateTaskRequest,
@@ -27,11 +27,9 @@ def get_todo_detail(
     username: str,
     todo_id: str
 ) -> ToDoDetailResponse:
-    service = deps.get_todo_services(username)
-    res = service.todos.open_todo(todo_id)
-    if res.ok and res.data is not None:
-        return api_ad.to_detail_response(res.data)
-    http_errors.raise_for_result(res)
+    services = deps.get_todo_services(username)
+    todo = http_results.unwrap_result(services.todos.open_todo(todo_id))
+    return api_ad.to_detail_response(todo)
 
 
 @router.post(
@@ -44,19 +42,17 @@ def create_task(
     todo_id: str,
     body: CreateTaskRequest
 ) -> TaskResponse:
-    service = deps.get_todo_services(username)
-    todo_res = service.todos.open_todo(todo_id)
-    if not todo_res.ok or todo_res.data is None:
-        http_errors.raise_for_result(todo_res)
-    res = service.tasks.create_task(
-        todo_res.data,
-        description=body.description,
-        priority=str(body.priority.value),
-        due=body.due.isoformat() if body.due else None
+    services, todo = deps.get_open_todo(username, todo_id)
+    task = http_results.unwrap_result(
+        services.tasks.create_task(
+            todo,
+            description=body.description,
+            priority=str(body.priority.value),
+            due=body.due.isoformat() if body.due else None
+        )
     )
-    if res.ok and res.data is not None:
-        return api_ad.to_task_response(res.data)
-    http_errors.raise_for_result(res)
+    return api_ad.to_task_response(task)
+
 
 
 @router.delete(
@@ -68,14 +64,10 @@ def delete_task(
     todo_id: str,
     task_id: str
 ) -> dict[str, str]:
+    services, todo = deps.get_open_todo(username, todo_id)
+    res = services.tasks.delete_task(todo, task_id)
     service = deps.get_todo_services(username)
-    todo_res = service.todos.open_todo(todo_id)
-    if not todo_res.ok or todo_res.data is None:
-        http_errors.raise_for_result(todo_res)
-    res = service.tasks.delete_task(todo_res.data, task_id)
-    if res.ok:
-        return {'message': res.msg}
-    http_errors.raise_for_result(res)
+    return http_results.ok_message(res)
 
 
 @router.patch(
@@ -88,18 +80,13 @@ def update_task_status(
     task_id: str,
     body: UpdateTaskStatusRequest
 ) -> dict[str, str]:
-    service = deps.get_todo_services(username)
-    todo_res = service.todos.open_todo(todo_id)
-    if not todo_res.ok or todo_res.data is None:
-        http_errors.raise_for_result(todo_res)
-    res = service.tasks.update_task_status(
-        todo_res.data,
+    services, todo = deps.get_open_todo(username, todo_id)
+    res = services.tasks.update_task_status(
+        todo,
         task_id=task_id,
         status=body.status.value
     )
-    if res.ok:
-        return {'message': res.msg}
-    http_errors.raise_for_result(res)
+    return http_results.ok_message(res)
 
 
 @router.patch(
@@ -111,18 +98,13 @@ def sort_tasks(
     todo_id: str,
     body: SortTasksRequest
 ) -> dict[str, str]:
-    service = deps.get_todo_services(username)
-    todo_res = service.todos.open_todo(todo_id)
-    if not todo_res.ok or todo_res.data is None:
-        http_errors.raise_for_result(todo_res)
-    res = service.tasks.sort_tasks(
-        todo_res.data,
+    services, todo = deps.get_open_todo(username, todo_id)
+    res = services.tasks.sort_tasks(
+        todo,
         key=body.key,
         reverse=body.reverse
     )
-    if res.ok:
-        return {'message': res.msg}
-    http_errors.raise_for_result(res)
+    return http_results.ok_message(res)
 
 
 @router.patch(
@@ -135,18 +117,13 @@ def update_task_description(
     task_id: str,
     body: UpdateTaskDescriptionRequest
 ) -> dict[str, str]:
-    service = deps.get_todo_services(username)
-    todo_res = service.todos.open_todo(todo_id)
-    if not todo_res.ok or todo_res.data is None:
-        http_errors.raise_for_result(todo_res)
-    res = service.tasks.update_task_description(
-        todo_res.data,
+    services, todo = deps.get_open_todo(username, todo_id)
+    res = services.tasks.update_task_description(
+        todo,
         task_id=task_id,
         description=body.description
     )
-    if res.ok:
-        return {'message': res.msg}
-    http_errors.raise_for_result(res)
+    return http_results.ok_message(res)
 
 
 @router.patch(
@@ -159,18 +136,13 @@ def update_task_priority(
     task_id: str,
     body: UpdateTaskPriorityRequest
 ) -> dict[str, str]:
-    service = deps.get_todo_services(username)
-    todo_res = service.todos.open_todo(todo_id)
-    if not todo_res.ok or todo_res.data is None:
-        http_errors.raise_for_result(todo_res)
-    res = service.tasks.update_task_priority(
-        todo_res.data,
+    services, todo = deps.get_open_todo(username, todo_id)
+    res = services.tasks.update_task_priority(
+        todo,
         task_id=task_id,
         priority=body.priority
     )
-    if res.ok:
-        return {'message': res.msg}
-    http_errors.raise_for_result(res)
+    return http_results.ok_message(res)
 
 
 @router.patch(
@@ -183,15 +155,10 @@ def update_task_due(
     task_id: str,
     body: UpdateTaskDueRequest
 ) -> dict[str, str]:
-    service = deps.get_todo_services(username)
-    todo_res = service.todos.open_todo(todo_id)
-    if not todo_res.ok or todo_res.data is None:
-        http_errors.raise_for_result(todo_res)
-    res = service.tasks.update_task_due(
-        todo_res.data,
+    services, todo = deps.get_open_todo(username, todo_id)
+    res = services.tasks.update_task_due(
+        todo,
         task_id=task_id,
         due=body.due
     )
-    if res.ok:
-        return {'message': res.msg}
-    http_errors.raise_for_result(res)
+    return http_results.ok_message(res)

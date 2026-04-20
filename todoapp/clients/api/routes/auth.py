@@ -2,7 +2,7 @@
 
 from fastapi import APIRouter, Depends, status
 
-from todoapp.clients.api import deps, http_errors
+from todoapp.clients.api import deps, http_results
 import todoapp.clients.api.adapters as api_ad
 from todoapp.clients.api.schemas.auth import (
     LoginRequest, RegisterRequest, UserResponse
@@ -21,7 +21,7 @@ def login(
     res = service.authenticate(body.username, body.password)
     if res.ok and res.data is not None:
         return api_ad.to_user_response(res.data)
-    http_errors.raise_for_result(res)
+    http_results.raise_http_error(res)
 
 
 @router.post(
@@ -36,4 +36,4 @@ def register(
     res = service.register_user(body.username, body.password)
     if res.ok and res.data is not None:
         return api_ad.to_user_response(res.data)
-    http_errors.raise_for_result(res)
+    http_results.raise_http_error(res)
