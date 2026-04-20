@@ -2,3 +2,4 @@
 
 from .todo import ToDoService
 from .user import UserService
+from .task import TaskService

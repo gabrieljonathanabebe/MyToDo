@@ -3,7 +3,7 @@
 from dataclasses import dataclass
 from functools import wraps
 from collections.abc import Callable
-from typing import Generic, Optional, TypeVar
+from typing import Generic, Optional, TypeVar, ParamSpec
 
 from pydantic import ValidationError
 
@@ -12,6 +12,8 @@ from todoapp.core.services.errors import ServiceError
 
 
 T = TypeVar('T')
+P = ParamSpec('P')
+
 
 @dataclass
 class Success(Generic[T]):
@@ -42,7 +44,7 @@ def result_from_validation_error(error: ValidationError) -> Result[None]:
     return Result(Code.INVALID_INPUT, f'{field.capitalize()}: {message}')
 
 
-def resultify(func: Callable) -> Callable:
+def resultify(func: Callable[P, Success[T]]) -> Callable[P, Result[T]]:
     @wraps(func)
     def wrapper(*args, **kwargs):
         try:

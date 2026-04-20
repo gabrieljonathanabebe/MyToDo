@@ -21,8 +21,8 @@ router = APIRouter()
     response_model=list[ToDoSummaryResponse]
 )
 def get_todos(username: str) -> list[ToDoSummaryResponse]:
-    service = deps.get_todo_service(username)
-    res = service.get_todos()
+    service = deps.get_todo_services(username)
+    res = service.todos.get_todos()
     if res.ok and res.data is not None:
         return [api_ad.to_summary_response(summary) for summary in res.data]
     http_errors.raise_for_result(res)
@@ -37,8 +37,8 @@ def create_todo(
     username: str,
     body: CreateToDoRequest
 ) -> ToDoSummaryResponse:
-    service = deps.get_todo_service(username)
-    res = service.create_todo(body.title)
+    service = deps.get_todo_services(username)
+    res = service.todos.create_todo(body.title)
     if res.code == Code.CREATED and res.data is not None:
         summary = ToDoSummary.from_todo(res.data)
         return api_ad.to_summary_response(summary)
@@ -53,8 +53,8 @@ def delete_todo(
     username: str,
     todo_id: str
 ) -> dict[str, str]:
-    service = deps.get_todo_service(username)
-    res = service.delete_todo(todo_id)
+    service = deps.get_todo_services(username)
+    res = service.todos.delete_todo(todo_id)
     if res.ok:
         return {'message': res.msg}
     http_errors.raise_for_result(res)

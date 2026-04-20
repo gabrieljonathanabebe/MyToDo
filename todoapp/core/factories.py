@@ -1,6 +1,15 @@
+from dataclasses import dataclass
+
 import todoapp.core.config as cfg
-from todoapp.core.services import ToDoService, UserService
+from todoapp.core.services import ToDoService, TaskService, UserService
 from todoapp.infra.repositories import CsvToDoRepository, JsonUserRepository
+
+
+@dataclass
+class ToDoServices:
+    todos: ToDoService
+    tasks: TaskService
+
 
 
 def build_user_service() -> UserService:
@@ -8,8 +17,11 @@ def build_user_service() -> UserService:
     return UserService(repo)
 
 
-def build_todo_service(username: str) -> ToDoService:
+def build_todo_services(username: str) -> ToDoServices:
     user_data_dir = cfg.get_user_data_dir(username)
     user_data_dir.mkdir(parents=True, exist_ok=True)
     repo = CsvToDoRepository(user_data_dir)
-    return ToDoService(repo)
+    return ToDoServices(
+        todos=ToDoService(repo),
+        tasks=TaskService(repo),
+    )

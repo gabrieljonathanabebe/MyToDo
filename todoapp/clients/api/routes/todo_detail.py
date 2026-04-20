@@ -27,8 +27,8 @@ def get_todo_detail(
     username: str,
     todo_id: str
 ) -> ToDoDetailResponse:
-    service = deps.get_todo_service(username)
-    res = service.open_todo(todo_id)
+    service = deps.get_todo_services(username)
+    res = service.todos.open_todo(todo_id)
     if res.ok and res.data is not None:
         return api_ad.to_detail_response(res.data)
     http_errors.raise_for_result(res)
@@ -44,11 +44,11 @@ def create_task(
     todo_id: str,
     body: CreateTaskRequest
 ) -> TaskResponse:
-    service = deps.get_todo_service(username)
-    todo_res = service.open_todo(todo_id)
+    service = deps.get_todo_services(username)
+    todo_res = service.todos.open_todo(todo_id)
     if not todo_res.ok or todo_res.data is None:
         http_errors.raise_for_result(todo_res)
-    res = service.create_task(
+    res = service.tasks.create_task(
         todo_res.data,
         description=body.description,
         priority=str(body.priority.value),
@@ -68,11 +68,11 @@ def delete_task(
     todo_id: str,
     task_id: str
 ) -> dict[str, str]:
-    service = deps.get_todo_service(username)
-    todo_res = service.open_todo(todo_id)
+    service = deps.get_todo_services(username)
+    todo_res = service.todos.open_todo(todo_id)
     if not todo_res.ok or todo_res.data is None:
         http_errors.raise_for_result(todo_res)
-    res = service.delete_task(todo_res.data, task_id)
+    res = service.tasks.delete_task(todo_res.data, task_id)
     if res.ok:
         return {'message': res.msg}
     http_errors.raise_for_result(res)
@@ -88,11 +88,11 @@ def update_task_status(
     task_id: str,
     body: UpdateTaskStatusRequest
 ) -> dict[str, str]:
-    service = deps.get_todo_service(username)
-    todo_res = service.open_todo(todo_id)
+    service = deps.get_todo_services(username)
+    todo_res = service.todos.open_todo(todo_id)
     if not todo_res.ok or todo_res.data is None:
         http_errors.raise_for_result(todo_res)
-    res = service.update_task_status(
+    res = service.tasks.update_task_status(
         todo_res.data,
         task_id=task_id,
         status=body.status.value
@@ -111,11 +111,11 @@ def sort_tasks(
     todo_id: str,
     body: SortTasksRequest
 ) -> dict[str, str]:
-    service = deps.get_todo_service(username)
-    todo_res = service.open_todo(todo_id)
+    service = deps.get_todo_services(username)
+    todo_res = service.todos.open_todo(todo_id)
     if not todo_res.ok or todo_res.data is None:
         http_errors.raise_for_result(todo_res)
-    res = service.sort_tasks(
+    res = service.tasks.sort_tasks(
         todo_res.data,
         key=body.key,
         reverse=body.reverse
@@ -135,11 +135,11 @@ def update_task_description(
     task_id: str,
     body: UpdateTaskDescriptionRequest
 ) -> dict[str, str]:
-    service = deps.get_todo_service(username)
-    todo_res = service.open_todo(todo_id)
+    service = deps.get_todo_services(username)
+    todo_res = service.todos.open_todo(todo_id)
     if not todo_res.ok or todo_res.data is None:
         http_errors.raise_for_result(todo_res)
-    res = service.update_task_description(
+    res = service.tasks.update_task_description(
         todo_res.data,
         task_id=task_id,
         description=body.description
@@ -159,11 +159,11 @@ def update_task_priority(
     task_id: str,
     body: UpdateTaskPriorityRequest
 ) -> dict[str, str]:
-    service = deps.get_todo_service(username)
-    todo_res = service.open_todo(todo_id)
+    service = deps.get_todo_services(username)
+    todo_res = service.todos.open_todo(todo_id)
     if not todo_res.ok or todo_res.data is None:
         http_errors.raise_for_result(todo_res)
-    res = service.update_task_priority(
+    res = service.tasks.update_task_priority(
         todo_res.data,
         task_id=task_id,
         priority=body.priority
@@ -183,11 +183,11 @@ def update_task_due(
     task_id: str,
     body: UpdateTaskDueRequest
 ) -> dict[str, str]:
-    service = deps.get_todo_service(username)
-    todo_res = service.open_todo(todo_id)
+    service = deps.get_todo_services(username)
+    todo_res = service.todos.open_todo(todo_id)
     if not todo_res.ok or todo_res.data is None:
         http_errors.raise_for_result(todo_res)
-    res = service.update_task_due(
+    res = service.tasks.update_task_due(
         todo_res.data,
         task_id=task_id,
         due=body.due
