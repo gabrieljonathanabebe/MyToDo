@@ -19,10 +19,7 @@ from todoapp.clients.api.schemas import (
 router = APIRouter()
 
 
-@router.get(
-    '/users/{username}/todos/{todo_id}',
-    response_model=ToDoDetailResponse
-)
+@router.get('', response_model=ToDoDetailResponse)
 def get_todo_detail(
     username: str,
     todo_id: str
@@ -33,9 +30,7 @@ def get_todo_detail(
 
 
 @router.post(
-    '/users/{username}/todos/{todo_id}/tasks',
-    response_model=TaskResponse,
-    status_code=status.HTTP_201_CREATED
+    '/tasks', response_model=TaskResponse, status_code=status.HTTP_201_CREATED
 )
 def create_task(
     username: str,
@@ -55,10 +50,7 @@ def create_task(
 
 
 
-@router.delete(
-    '/users/{username}/todos/{todo_id}/tasks/{task_id}',
-    status_code=status.HTTP_200_OK
-)
+@router.delete('/tasks/{task_id}', status_code=status.HTTP_200_OK)
 def delete_task(
     username: str,
     todo_id: str,
@@ -70,10 +62,7 @@ def delete_task(
     return http_results.ok_message(res)
 
 
-@router.patch(
-    '/users/{username}/todos/{todo_id}/tasks/{task_id}/status',
-    status_code=status.HTTP_200_OK
-)
+@router.patch('/tasks/{task_id}/status', status_code=status.HTTP_200_OK)
 def update_task_status(
     username: str,
     todo_id: str,
@@ -89,10 +78,7 @@ def update_task_status(
     return http_results.ok_message(res)
 
 
-@router.patch(
-    '/users/{username}/todos/{todo_id}/sort',
-    status_code=status.HTTP_200_OK
-)
+@router.patch('/sort', status_code=status.HTTP_200_OK)
 def sort_tasks(
     username: str,
     todo_id: str,
@@ -107,10 +93,7 @@ def sort_tasks(
     return http_results.ok_message(res)
 
 
-@router.patch(
-    '/users/{username}/todos/{todo_id}/tasks/{task_id}/description',
-    status_code=status.HTTP_200_OK
-)
+@router.patch('/tasks/{task_id}/description', status_code=status.HTTP_200_OK)
 def update_task_description(
     username: str,
     todo_id: str,
@@ -126,10 +109,7 @@ def update_task_description(
     return http_results.ok_message(res)
 
 
-@router.patch(
-    '/users/{username}/todos/{todo_id}/tasks/{task_id}/priority',
-    status_code=status.HTTP_200_OK
-)
+@router.patch('/tasks/{task_id}/priority', status_code=status.HTTP_200_OK)
 def update_task_priority(
     username: str,
     todo_id: str,
@@ -145,10 +125,7 @@ def update_task_priority(
     return http_results.ok_message(res)
 
 
-@router.patch(
-    '/users/{username}/todos/{todo_id}/tasks/{task_id}/due',
-    status_code=status.HTTP_200_OK
-)
+@router.patch('/tasks/{task_id}/due', status_code=status.HTTP_200_OK)
 def update_task_due(
     username: str,
     todo_id: str,

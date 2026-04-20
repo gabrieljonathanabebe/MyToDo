@@ -15,10 +15,7 @@ from todoapp.domain.models import ToDoSummary
 router = APIRouter()
 
 
-@router.get(
-    '/users/{username}/todos',
-    response_model=list[ToDoSummaryResponse]
-)
+@router.get('',response_model=list[ToDoSummaryResponse])
 def get_todos(username: str) -> list[ToDoSummaryResponse]:
     services = deps.get_todo_services(username)
     summaries = http_results.unwrap_result(services.todos.get_todos())
@@ -26,9 +23,7 @@ def get_todos(username: str) -> list[ToDoSummaryResponse]:
 
 
 @router.post(
-    '/users/{username}/todos',
-    response_model=ToDoSummaryResponse,
-    status_code=status.HTTP_201_CREATED
+    '', response_model=ToDoSummaryResponse, status_code=status.HTTP_201_CREATED
 )
 def create_todo(
     username: str,
@@ -40,10 +35,7 @@ def create_todo(
     return api_ad.to_summary_response(summary)
 
 
-@router.delete(
-    '/users/{username}/todos/{todo_id}',
-    status_code=status.HTTP_200_OK
-)
+@router.delete('/{todo_id}', status_code=status.HTTP_200_OK)
 def delete_todo(
     username: str,
     todo_id: str

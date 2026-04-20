@@ -7,7 +7,7 @@ from todoapp.clients.api.routes import auth, todo_summary, todo_detail
 import todoapp.core.config as cfg
 
 
-app = FastAPI(title='ToDoScope')
+app = FastAPI(title='MyToDo')
 
 app.add_middleware(
     CORSMiddleware,
@@ -21,7 +21,7 @@ app.add_middleware(
 @app.get('/')
 def home() -> dict[str, str]:
     return {
-        'message': 'Welcome to ToDoScope API',
+        'message': 'Welcome to MyToDo API',
         'docs': '/docs'
     }
 
@@ -32,5 +32,13 @@ def health() -> dict[str, str]:
 
 
 app.include_router(auth.router, prefix='/auth', tags=['auth'])
-app.include_router(todo_summary.router, tags=['todo-summary'])
-app.include_router(todo_detail.router, tags=['todo-detail'])
+app.include_router(
+    todo_summary.router,
+    prefix='/users/{username}/todos',
+    tags=['todo-summary']
+)
+app.include_router(
+    todo_detail.router,
+    prefix='/users/{username}/todos/{todo_id}',
+    tags=['todo-detail']
+)
