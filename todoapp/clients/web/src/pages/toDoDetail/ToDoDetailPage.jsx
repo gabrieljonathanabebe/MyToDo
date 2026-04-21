@@ -28,6 +28,10 @@ function ToDoDetailPage({ currentUser, currentToDo, refreshTodos }) {
 		setPriority,
 		due,
 		setDue,
+		notes,
+		setNotes,
+		showNotes,
+		setShowNotes,
 		createError,
 		handleCreateTask,
 		handleDeleteTask,
@@ -145,6 +149,10 @@ function ToDoDetailPage({ currentUser, currentToDo, refreshTodos }) {
 						onPriorityChange={setPriority}
 						due={due}
 						onDueChange={setDue}
+						notes={notes}
+						onNotesChange={setNotes}
+						showNotes={showNotes}
+						onToggleNotes={() => setShowNotes((prev) => !prev)}
 						onSubmit={handleCreateTask}
 						error={createError}
 					/>

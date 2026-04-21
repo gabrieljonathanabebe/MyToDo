@@ -8,10 +8,11 @@ export async function fetchToDoDetail(username, todoId) {
 	return apiRequest(`/users/${username}/todos/${todoId}`)
 }
 
+
 export async function createTask(username, todoId, taskData) {
 	return postJson(
 		apiRoutes.todos.tasks.create(username, todoId),
-		{ taskData }
+		taskData
 	)
 }
 

@@ -19,6 +19,8 @@ export function useToDoDetail(currentUser, currentToDo, refreshTodos) {
   const [description, setDescription] = useState('')
   const [priority, setPriority] = useState('2')
   const [due, setDue] = useState('')
+  const [notes, setNotes] = useState('')
+  const [showNotes, setShowNotes] = useState(false)
   const [createError, setCreateError] = useState('')
 
   // ===== LOAD TODO DETAIL ===================================================
@@ -52,10 +54,13 @@ export function useToDoDetail(currentUser, currentToDo, refreshTodos) {
         description: description.trim(),
         priority: Number(priority),
         due: due || null,
+        notes: notes?.trim() ? notes : null
       })
       setDescription('')
       setPriority('2')
       setDue('')
+      setNotes('')
+      setShowNotes(false)
       await loadToDoDetail()
       await refreshTodos?.()
     } catch (err) {
@@ -85,7 +90,7 @@ export function useToDoDetail(currentUser, currentToDo, refreshTodos) {
       newStatus = 'open'
     }
     else {
-      newStatus === 'open'
+      newStatus = 'open'
     }
     try {
       await updateTaskStatus(
@@ -168,7 +173,6 @@ export function useToDoDetail(currentUser, currentToDo, refreshTodos) {
   }
 
 
-
   return {
     toDoDetail,
     error,
@@ -178,6 +182,10 @@ export function useToDoDetail(currentUser, currentToDo, refreshTodos) {
     setPriority,
     due,
     setDue,
+    notes,
+    setNotes,
+    showNotes,
+    setShowNotes,
     createError,
     handleCreateTask,
     handleDeleteTask,
