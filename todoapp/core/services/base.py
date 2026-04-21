@@ -14,10 +14,11 @@ class BaseToDoService:
 
 
     def _parse_task_id(self, task_id: str) -> int:
-        try:
-            return int(task_id)
-        except ValueError:
-            raise InvalidInputError(ToDoMessage.invalid_task_id(task_id))
+        if not task_id.strip():
+            raise InvalidInputError(
+                ToDoMessage.invalid_task_id(task_id)
+            )
+        return task_id
         
 
     def _persist_created_todo(self, todo: ToDoList) -> None:

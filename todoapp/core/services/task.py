@@ -15,12 +15,13 @@ class TaskService(BaseToDoService):
     @resultify
     def create_task(
         self, todo: ToDoList, description: str,
-        priority: str, due: str | None
+        priority: str, due: str | None, notes: str | None,
     ) -> Success[Task]:
         new_task = todo.create_task(
             description=description,
             priority=priority,
-            due=due
+            due=due,
+            notes=notes
         )
         self._touch_and_save_todo(todo)
         return created(ToDoMessage.task_created(new_task.id), data=new_task)

@@ -12,7 +12,12 @@ def to_task_response(task: Task) -> TaskResponse:
         priority=task.priority.name,
         status=task.status.value,
         due=task.due,
-        days_left=task.days_left
+        days_left=task.days_left,
+        created_at=task.created_at,
+        updated_at=task.updated_at,
+        completed_at=task.completed_at,
+        notes=task.notes,
+        lead_time_seconds=task.lead_time_seconds
     )
 
 def to_detail_response(todo: ToDoList) -> ToDoDetailResponse:

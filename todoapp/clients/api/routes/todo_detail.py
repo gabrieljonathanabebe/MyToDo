@@ -43,7 +43,9 @@ def create_task(
             todo,
             description=body.description,
             priority=str(body.priority.value),
-            due=body.due.isoformat() if body.due else None
+            due=body.due.isoformat() if body.due else None,
+            notes=body.notes
+            
         )
     )
     return api_ad.to_task_response(task)

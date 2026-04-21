@@ -27,13 +27,12 @@ class ToDoList:
 
     @classmethod
     def create_new(cls, title: str) -> ToDoList:
-        now = datetime.now(timezone.utc)
         return cls(
             title=title,
             todo_id=str(uuid4()),
             tasks=[],
-            created_at=now,
-            updated_at=now
+            created_at=cls._now(),
+            updated_at=cls._now()
         )
     
 
@@ -53,30 +52,36 @@ class ToDoList:
     
 
     # ===== PRIVATE HELPERS ===================================================
-    def _get_task_by_id(self, task_id: int) -> Task | None:
+    def _get_task_by_id(self, task_id: str) -> Task | None:
         return next((task for task in self.tasks if task.id == task_id), None)
     
     
-    def _next_id(self) -> int:
-        return max((task.id for task in self.tasks), default=0) + 1
+    @staticmethod
+    def _now() -> datetime:
+        return datetime.now(timezone.utc)
 
 
     # ===== TASK COMMANDS =====================================================
     def create_task(
-        self, description: str, priority: str, due: str | None
+        self, description: str, priority: str, 
+        due: str | None, notes: str | None
     ) -> Task:
         new_task = Task(
-            id=self._next_id(),
+            id=str(uuid4()),
             description=description,
             priority=priority,
             status=Status.open,
-            due=due
+            due=due,
+            created_at=self._now(),
+            updated_at=self._now(),
+            completed_at=None,
+            notes=notes
         )
         self.tasks.append(new_task)
         return new_task
     
     
-    def delete_task(self, task_id: int) -> bool:
+    def delete_task(self, task_id: str) -> bool:
         length_before = len(self.tasks)
         self.tasks = [t for t in self.tasks if t.id != task_id]
         return len(self.tasks) != length_before
@@ -87,6 +92,8 @@ class ToDoList:
         if task is None:
             return False
         task.status = status
+        task.updated_at = self._now()
+        task.completed_at = self._now() if status == Status.done else None
         return True
     
     
@@ -102,31 +109,37 @@ class ToDoList:
         task = task = self._get_task_by_id(task_id)
         if task is None:
             return False
-        task.status = Status.done if task.status == Status.open else Status.open
+        task.status = \
+            Status.done if task.status == Status.open else Status.open
+        task.updated_at = self._now()
+        task.completed_at = self._now() if task.status == Status.done else None
         return True
     
     
-    def update_task_description(self, task_id: int, description: str) -> bool:
+    def update_task_description(self, task_id: str, description: str) -> bool:
         task = task = self._get_task_by_id(task_id)
         if task is None:
             return False
         task.description = description
+        task.updated_at = self._now()
         return True
     
 
-    def update_task_priority(self, task_id: int, priority: int) -> bool:
+    def update_task_priority(self, task_id: str, priority: int) -> bool:
         task = self._get_task_by_id(task_id)
         if task is None:
             return False
         task.priority = priority
+        task.updated_at = self._now()
         return True
     
 
-    def update_task_due(self, task_id: int, due: date | None) -> bool:
+    def update_task_due(self, task_id: str, due: date | None) -> bool:
         task = self._get_task_by_id(task_id)
         if task is None:
             return False
         task.due = due
+        task.updated_at = self._now()
         return True
     
 
