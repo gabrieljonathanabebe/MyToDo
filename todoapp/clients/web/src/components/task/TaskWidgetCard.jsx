@@ -7,6 +7,10 @@ import PriorityEditor from './PriorityEditor'
 import DueDateEditor from './DueDateEditor'
 import { formatDaysLeft } from '../../utils/formatters'
 import { useEffect, useState } from 'react'
+import TaskActionMenu from './TaskActionsMenu'
+import TaskInfoPopover from './TaskInfoPopover'
+import TaskInfoModal from './TaskInfoModal'
+import TaskPriorityStars from './TaskPriorityStars'
 
 
 function TaskWidgetCard({
@@ -19,6 +23,7 @@ function TaskWidgetCard({
 }) {
   const [isEditing, setIsEditing] = useState(false)
   const [editValue, setEditValue] = useState(task.description)
+  const [showInfo, setShowInfo] = useState(false)
 
   useEffect(() => {
     setEditValue(task.description)
@@ -48,12 +53,26 @@ function TaskWidgetCard({
 
   return (
     <div className='widget surface-card surface-card-hover task-widget-card'>
+      {/* ===== TOP ROW =================================================== */}
       <div className='task-widget-top'>
+        {/* ----- STATUS TOGGLE ----- */}
         <TaskStatusToggle task={task} onToggleStatus={onToggleStatus} />
-        <TaskDeleteButton task={task} onDeleteTask={onDeleteTask} />
+        {/* ----- ACTIONS MENU + INFO POPOVER */}
+        <div className='task-card-actions'>
+          <TaskActionMenu
+            onDelete={() => onDeleteTask(task.id)}
+            onOpenInfo={() => setShowInfo(true)}
+          />
+          <TaskInfoModal
+            show={showInfo}
+            onClose={() => setShowInfo(false)}
+            task={task}
+          />
+        </div>
       </div>
-
+      {/* ===== BODY ====================================================== */}
       <div className='task-widget-body'>
+        {/* ----- TITLE / INLINE EDIT ----- */}
         {isEditing ? (
           <input
             className='task-widget-input'
@@ -77,30 +96,26 @@ function TaskWidgetCard({
           </h3>
         )}
       </div>
-
+      {/* ===== FOOTER ==================================================== */}
       <div className='task-widget-footer'>
+        {/* ----- PRIORITY EDITOR ----- */}
         <div className='task-widget-badges'>
-          <PriorityEditor
+          <TaskPriorityStars
             value={task.priority}
+            interactive
             onChange={(newPriority) =>
               onUpdateTaskPriority(task.id, newPriority)
             }
-            placement='top'
           />
         </div>
-        <div className='task-widget-meta'>
-          <span className='meta-item'>
-            <DueDateEditor
-              value={task.due}
-              onChange={(newDue) => onUpdateTaskDue(task.id, newDue)}
-            />
-          </span>
-          <span className='meta-item'>
-            {formatDaysLeft(task.days_left)}
-          </span>
-        </div>
+        <TaskMeta
+          task={task}
+          onUpdateTaskDue={onUpdateTaskDue}
+          className='task-widget-meta task-meta-row'
+          showSeparator={false}
+        />
       </div>
-    </div>
+    </div >
   )
 }
 

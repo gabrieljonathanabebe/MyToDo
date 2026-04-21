@@ -23,7 +23,6 @@
 
 .icon-action-primary {
   color: var(--color-primary);
-  background: var(--color-blue-soft);
 }
 
 .icon-action-primary:hover {

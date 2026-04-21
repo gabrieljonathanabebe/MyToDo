@@ -4,10 +4,11 @@ import { useState, useEffect } from 'react'
 import StatusBadge from './StatusBadge'
 import TaskStatusToggle from './TaskStatusToggle'
 import TaskDeleteButton from './TaskDeleteButton'
+import TaskPriorityStars from './TaskPriorityStars'
 import TaskMeta from './TaskMeta'
-import PriorityEditor from './PriorityEditor'
-import DueDateEditor from './DueDateEditor'
-import { formatDaysLeft } from '../../utils/formatters'
+import TaskActionsMenu from './TaskActionsMenu'
+import TaskInfoModal from './TaskInfoModal'
+import TaskInfoPopover from './TaskInfoPopover'
 
 
 function TaskCard({
@@ -20,6 +21,7 @@ function TaskCard({
 }) {
   const [isEditing, setIsEditing] = useState(false)
   const [editValue, setEditValue] = useState(task.description)
+  const [showInfo, setShowInfo] = useState(false)
 
   useEffect(() => {
     setEditValue(task.description)
@@ -76,31 +78,36 @@ function TaskCard({
               {task.description}
             </h3>
           )}
-          <div className='task-card-meta meta-row'>
-            <span className='meta-item'>
-              <DueDateEditor
-                value={task.due}
-                onChange={(newDue) => onUpdateTaskDue(task.id, newDue)}
-              />
-            </span>
-            <span className='meta-separator'>|</span>
-            <span className='meta-item'>
-              {formatDaysLeft(task.days_left)}
-            </span>
-          </div>
+          <TaskMeta
+            task={task}
+            onUpdateTaskDue={onUpdateTaskDue}
+            className='task-card-meta task-meta-row'
+            showSeparator={true}
+          />
         </div>
       </div>
 
       <div className='task-card-right'>
-        <PriorityEditor
+        <TaskPriorityStars
           value={task.priority}
+          interactive
           onChange={(newPriority) =>
             onUpdateTaskPriority(task.id, newPriority)
           }
-          placement='top'
         />
         <StatusBadge status={task.status} />
-        <TaskDeleteButton task={task} onDeleteTask={onDeleteTask} />
+        <div className='task-card-actions'>
+          <TaskActionsMenu
+            onDelete={() => onDeleteTask(task.id)}
+            onOpenInfo={() => setShowInfo(true)}
+          />
+
+          <TaskInfoModal
+            show={showInfo}
+            onClose={() => setShowInfo(false)}
+            task={task}
+          />
+        </div>
       </div>
     </div>
   )

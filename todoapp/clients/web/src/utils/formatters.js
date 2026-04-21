@@ -24,6 +24,18 @@ export function formatRelativeDatetime(value) {
   })
 }
 
+export function formatDuration(seconds) {
+  if (seconds == null) return '-'
+  const mins = Math.floor(seconds / 60)
+  const hours = Math.floor(seconds / 3600)
+  const days = Math.floor(seconds / 86400)
+
+  if (seconds < 60) return `${seconds}s`
+  if (mins < 60) return `${mins} min`
+  if (hours < 60) return `${hours} h`
+  return `${days} d`
+}
+
 
 export function formatDaysLeft(value) {
   if (value === null || value == undefined) return 'No deadline'
