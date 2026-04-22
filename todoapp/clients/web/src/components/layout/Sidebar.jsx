@@ -7,12 +7,13 @@ function Sidebar({
   currentUser,
   currentPage,
   currentToDo,
-  todos,
+  toDoSummaries = [],
   onGoHome,
   onGoSummary,
   onGoDashboard,
   onOpenToDo,
 }) {
+  console.log('Sidebar toDoSummaries', toDoSummaries)
   return (
     <aside className="sidebar surface-card">
       {currentUser && (
@@ -53,7 +54,7 @@ function Sidebar({
       <div className="sidebar-section sidebar-todos">
         <p className="sidebar-section-title">My Lists</p>
         <div className="sidebar-todo-list">
-          {todos.map((todo) => (
+          {toDoSummaries.map((todo) => (
             <button
               key={todo.id}
               className={`sidebar-link ${currentPage === 'detail' && currentToDo?.id === todo.id

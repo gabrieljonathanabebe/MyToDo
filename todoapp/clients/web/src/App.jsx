@@ -6,17 +6,28 @@ import HomePage from './pages/HomePage'
 import ToDoSummaryPage from './pages/ToDoSummaryPage'
 import DashboardPage from './pages/DashboardPage'
 import ToDoDetailPage from './pages/toDoDetail/ToDoDetailPage'
+import { useWorkspaceData } from './hooks/useWorkspaceData'
 import { useNavigationState } from './hooks/useNavigationState'
-import { useToDoSummaries } from './hooks/useToDoSummaries'
 import { useSessionState } from './hooks/useSessionState'
 import { useEffect } from 'react'
 
 
 function App() {
-	// ===== hooks ============================================================== 
+	// ===== HOOKS ==========================================================
 	const { currentUser, loginUser, logoutUser } = useSessionState()
 	const { page, currentToDo, navigateTo, openToDo } = useNavigationState()
-	const { todos, loading, error, loadTodos, clearTodos } = useToDoSummaries()
+
+	const {
+		toDoSummaries,
+		toDoDetails,
+		loading,
+		error,
+		loadWorkspace,
+		refreshSummaries,
+		refreshToDo,
+		getToDoDetail,
+		clearWorkspace,
+	} = useWorkspaceData()
 
 	function handleLogin(user) {
 		loginUser(user)
@@ -25,15 +36,15 @@ function App() {
 
 	function handleLogout() {
 		logoutUser()
-		clearTodos()
+		clearWorkspace()
 		navigateTo('login')
 	}
 
 	useEffect(() => {
 		if (currentUser) {
-			loadTodos(currentUser)
+			loadWorkspace(currentUser)
 		} else {
-			clearTodos()
+			clearWorkspace()
 		}
 	}, [currentUser])
 
@@ -41,42 +52,60 @@ function App() {
 		currentUser,
 		currentPage: page,
 		currentToDo,
-		sidebarToDos: todos,
+		toDoSummaries,
 		onGoHome: () => navigateTo('home'),
 		onGoSummary: () => navigateTo('summary'),
 		onGoDashboard: () => navigateTo('dashboard'),
 		onOpenToDo: openToDo,
-		onLogout: handleLogout
+		onLogout: handleLogout,
 	}
 
 	function renderPageContent() {
 		if (page === 'home') {
-			return <HomePage />
+			return (
+				<HomePage
+					currentUser={currentUser}
+					toDoSummaries={toDoSummaries}
+					toDoDetails={toDoDetails}
+				/>
+			)
 		}
+
 		if (page === 'summary') {
 			return (
 				<ToDoSummaryPage
 					currentUser={currentUser}
-					todos={todos}
+					todos={toDoSummaries}
 					loading={loading}
 					error={error}
-					loadTodos={() => loadTodos(currentUser)}
+					loadTodos={() => refreshSummaries(currentUser)}
 					onOpenToDo={openToDo}
 				/>
 			)
 		}
+
 		if (page === 'dashboard') {
-			return <DashboardPage />
+			return (
+				<DashboardPage
+					currentUser={currentUser}
+					toDoSummaries={toDoSummaries}
+					toDoDetails={toDoDetails}
+				/>
+			)
 		}
+
 		if (page === 'detail') {
 			return (
 				<ToDoDetailPage
 					currentUser={currentUser}
 					currentToDo={currentToDo}
-					refreshTodos={() => loadTodos(currentUser)}
+					initialToDoDetail={getToDoDetail(currentToDo?.id)}
+					refreshToDos={() => refreshSummaries(currentUser)}
+					refreshCurrentToDo={() => refreshToDo(currentUser, currentToDo?.id)}
 				/>
 			)
 		}
+
 		return null
 	}
 

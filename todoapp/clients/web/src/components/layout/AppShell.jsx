@@ -10,7 +10,7 @@ function AppShell({
   currentUser,
   currentPage,
   currentToDo,
-  sidebarToDos,
+  toDoSummaries = [],
   onGoHome,
   onGoSummary,
   onGoDashboard,
@@ -18,6 +18,7 @@ function AppShell({
   onLogout,
   children,
 }) {
+  console.log('AppShell toDoSummaries', toDoSummaries)
   return (
     <div className='app-shell'>
       <Header currentUser={currentUser} onLogout={onLogout} />
@@ -26,7 +27,7 @@ function AppShell({
           currentUser={currentUser}
           currentPage={currentPage}
           currentToDo={currentToDo}
-          todos={sidebarToDos}
+          toDoSummaries={toDoSummaries}
           onGoHome={onGoHome}
           onGoSummary={onGoSummary}
           onGoDashboard={onGoDashboard}

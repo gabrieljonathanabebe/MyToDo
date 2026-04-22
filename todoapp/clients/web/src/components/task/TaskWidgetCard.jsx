@@ -1,14 +1,9 @@
 // todoapp/clients/web/src/components/task/TaskWidgetCard.jsx
 
 import TaskStatusToggle from './TaskStatusToggle'
-import TaskDeleteButton from './TaskDeleteButton'
 import TaskMeta from './TaskMeta'
-import PriorityEditor from './PriorityEditor'
-import DueDateEditor from './DueDateEditor'
-import { formatDaysLeft } from '../../utils/formatters'
 import { useEffect, useState } from 'react'
 import TaskActionMenu from './TaskActionsMenu'
-import TaskInfoPopover from './TaskInfoPopover'
 import TaskInfoModal from './TaskInfoModal'
 import TaskPriorityStars from './TaskPriorityStars'
 

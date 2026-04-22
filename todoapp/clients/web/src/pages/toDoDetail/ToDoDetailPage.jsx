@@ -18,7 +18,13 @@ import ToDoDetailGridView from './ToDoDetailGridView'
 import SortMenu from '../../components/task/SortMenu'
 
 
-function ToDoDetailPage({ currentUser, currentToDo, refreshTodos }) {
+function ToDoDetailPage({
+	currentUser,
+	currentToDo,
+	initialToDoDetail,
+	refreshToDos,
+	refreshCurrentToDo,
+}) {
 	const {
 		toDoDetail,
 		error,
@@ -40,7 +46,10 @@ function ToDoDetailPage({ currentUser, currentToDo, refreshTodos }) {
 		handleUpdateTaskDescription,
 		handleUpdateTaskPriority,
 		handleUpdateTaskDue,
-	} = useToDoDetail(currentUser, currentToDo, refreshTodos)
+	} = useToDoDetail(
+		currentUser, currentToDo, initialToDoDetail,
+		refreshToDos, refreshCurrentToDo
+	)
 
 	const [showCreateTaskForm, setShowCreateTaskForm] = useState(false)
 	const [viewMode, setViewMode] = useState('list')

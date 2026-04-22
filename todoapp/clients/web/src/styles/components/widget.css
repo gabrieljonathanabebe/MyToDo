@@ -9,3 +9,36 @@
   -webkit-backdrop-filter: var(--blur-md);
   padding: var(--space-4);
 }
+
+.widget-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.widget-header-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.widget-title {
+  margin: 0;
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.widget-subtitle {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-soft);
+}
+
+.widget-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}

@@ -8,7 +8,6 @@ import TaskPriorityStars from './TaskPriorityStars'
 import TaskMeta from './TaskMeta'
 import TaskActionsMenu from './TaskActionsMenu'
 import TaskInfoModal from './TaskInfoModal'
-import TaskInfoPopover from './TaskInfoPopover'
 
 
 function TaskCard({
