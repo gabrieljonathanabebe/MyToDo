@@ -13,7 +13,7 @@ class BaseToDoService:
         self.repo = repo
 
 
-    def _parse_task_id(self, task_id: str) -> int:
+    def _parse_task_id(self, task_id: str) -> str:
         if not task_id.strip():
             raise InvalidInputError(
                 ToDoMessage.invalid_task_id(task_id)
