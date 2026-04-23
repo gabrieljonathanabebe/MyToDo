@@ -13,6 +13,7 @@ class CreateTaskRequest(BaseModel):
     due: date | None = None
     notes: str | None = None
 
+
 class UpdateTaskStatusRequest(BaseModel):
     status: Status
 

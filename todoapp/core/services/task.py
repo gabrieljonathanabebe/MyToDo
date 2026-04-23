@@ -14,19 +14,19 @@ from todoapp.core.services.responses import Success, ok, created, resultify
 class TaskService(BaseToDoService):
     @resultify
     def create_task(
-        self, todo: ToDoList, description: str,
-        priority: str, due: str | None, notes: str | None,
+        self,
+        todo: ToDoList,
+        description: str,
+        priority: str,
+        due: str | None,
+        notes: str | None,
     ) -> Success[Task]:
         new_task = todo.create_task(
-            description=description,
-            priority=priority,
-            due=due,
-            notes=notes
+            description=description, priority=priority, due=due, notes=notes
         )
         self._touch_and_save_todo(todo)
         return created(ToDoMessage.task_created(new_task.id), data=new_task)
 
-        
     @resultify
     def delete_task(self, todo: ToDoList, task_id: str) -> Success[None]:
         parsed_task_id = self._parse_task_id(task_id)
@@ -35,21 +35,17 @@ class TaskService(BaseToDoService):
             raise NotFoundError(ToDoMessage.task_not_found(task_id))
         self._touch_and_save_todo(todo)
         return ok(ToDoMessage.task_deleted(task_id))
-    
 
     @resultify
-    def sort_tasks(
-        self, todo: ToDoList, key: str, reverse: bool
-    ) -> Success[None]:
+    def sort_tasks(self, todo: ToDoList, key: str, reverse: bool) -> Success[None]:
         try:
             todo.sort_tasks(key, reverse)
         except AttributeError:
-            raise InvalidInputError(f'Key {key} not found.')
+            raise InvalidInputError(f"Key {key} not found.")
         self._touch_and_save_todo(todo)
-        return ok(f'Sorting by {key}')
-    
+        return ok(f"Sorting by {key}")
 
-    @resultify    
+    @resultify
     def update_task_description(
         self, todo: ToDoList, task_id: str, description: str
     ) -> Success[None]:
@@ -59,7 +55,6 @@ class TaskService(BaseToDoService):
             raise NotFoundError(ToDoMessage.task_not_found(task_id))
         self._touch_and_save_todo(todo)
         return ok(ToDoMessage.task_updated(task_id))
-    
 
     @resultify
     def update_task_priority(
@@ -71,7 +66,6 @@ class TaskService(BaseToDoService):
             raise NotFoundError(ToDoMessage.task_not_found(task_id))
         self._touch_and_save_todo(todo)
         return ok(ToDoMessage.task_updated(task_id))
-    
 
     @resultify
     def update_task_status(
@@ -86,10 +80,7 @@ class TaskService(BaseToDoService):
         if not is_updated:
             raise NotFoundError(ToDoMessage.task_not_found(task_id))
         self._touch_and_save_todo(todo)
-        return ok(
-            ToDoMessage.task_status_updated(task_id, target_status.value)
-        )
-    
+        return ok(ToDoMessage.task_status_updated(task_id, target_status.value))
 
     @resultify
     def update_task_due(
@@ -102,7 +93,6 @@ class TaskService(BaseToDoService):
         self._touch_and_save_todo(todo)
         return ok(ToDoMessage.task_updated(task_id))
 
-
     @resultify
     def toggle_status(self, todo: ToDoList, task_id: str) -> Success[None]:
         parsed_task_id = self._parse_task_id(task_id)
@@ -111,9 +101,8 @@ class TaskService(BaseToDoService):
             raise NotFoundError(ToDoMessage.task_not_found(task_id))
         self._touch_and_save_todo(todo)
         return ok(ToDoMessage.task_status_toggled(task_id))
-    
 
     def assign_new_ids(self, todo: ToDoList) -> Result[None]:
         count = todo.assign_new_ids()
         self._touch_and_save_todo(todo)
-        return Result(Code.OK, f'Reassigned {count} IDs.')
+        return Result(Code.OK, f"Reassigned {count} IDs.")

@@ -17,12 +17,13 @@ def to_task_response(task: Task) -> TaskResponse:
         updated_at=task.updated_at,
         completed_at=task.completed_at,
         notes=task.notes,
-        lead_time_seconds=task.lead_time_seconds
+        lead_time_seconds=task.lead_time_seconds,
     )
+
 
 def to_detail_response(todo: ToDoList) -> ToDoDetailResponse:
     return ToDoDetailResponse(
         id=todo.id,
         title=todo.title,
-        tasks=[to_task_response(task) for task in todo.tasks]
+        tasks=[to_task_response(task) for task in todo.tasks],
     )

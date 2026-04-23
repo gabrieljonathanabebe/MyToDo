@@ -108,7 +108,7 @@ function ToDoDetailPage({
 						<button
 							type="button"
 							className={
-								`segmented-control-item view-switch-button 
+								`segmented-control-item view-switch-button
 								${viewMode === 'list' ? 'is-active' : ''}`}
 							onClick={() => setViewMode('list')}
 							aria-label="List view"
@@ -120,7 +120,7 @@ function ToDoDetailPage({
 						<button
 							type="button"
 							className={
-								`segmented-control-item view-switch-button 
+								`segmented-control-item view-switch-button
 								${viewMode === 'grid' ? 'is-active' : ''}`}
 							onClick={() => setViewMode('grid')}
 							aria-label="Grid view"
@@ -171,7 +171,7 @@ function ToDoDetailPage({
 				<div className='task-filter surface-control'>
 					<button
 						className={
-							`segmented-control-item filter-pill 
+							`segmented-control-item filter-pill
 							${statusFilter === 'all' ? 'is-active' : ''}`}
 						onClick={() => setStatusFilter('all')}
 					>
@@ -179,7 +179,7 @@ function ToDoDetailPage({
 					</button>
 					<button
 						className={
-							`segmented-control-item filter-pill 
+							`segmented-control-item filter-pill
 							${statusFilter === 'open' ? 'is-active' : ''}`}
 						onClick={() => setStatusFilter('open')}
 					>
@@ -187,7 +187,7 @@ function ToDoDetailPage({
 					</button>
 					<button
 						className={
-							`segmented-control-item filter-pill 
+							`segmented-control-item filter-pill
 							${statusFilter === 'done' ? 'is-active' : ''}`}
 						onClick={() => setStatusFilter('done')}
 					>

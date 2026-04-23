@@ -1,38 +1,42 @@
-
-
 def _validate_input(raw_input: str) -> str:
-    return input(f'{raw_input} ').strip()
+    return input(f"{raw_input} ").strip()
+
 
 def prompt_new_task() -> tuple[str, str, str | None]:
-    description = _validate_input('Description:')
-    priority = _validate_input('Priority (1-3):')
-    due_raw = _validate_input('Due (YYYY-MM-DD) or empty:')
+    description = _validate_input("Description:")
+    priority = _validate_input("Priority (1-3):")
+    due_raw = _validate_input("Due (YYYY-MM-DD) or empty:")
     due = due_raw or None
     return description, priority, due
 
+
 def prompt_target_id() -> str:
-    return _validate_input('Select target id:')
+    return _validate_input("Select target id:")
+
 
 def prompt_sort_key() -> tuple[str, bool]:
-    key = _validate_input('Sort key:').lower().replace(' ', '_')
-    order = _validate_input('Sorting reverse (y/n)?')
-    reverse = True if order == 'y' else False
+    key = _validate_input("Sort key:").lower().replace(" ", "_")
+    order = _validate_input("Sorting reverse (y/n)?")
+    reverse = True if order == "y" else False
     return key, reverse
 
 
 def prompt_todo_title() -> str:
-    return _validate_input('Select title for new ToDo:')
+    return _validate_input("Select title for new ToDo:")
+
 
 def prompt_open_existing_list(message: str) -> bool:
-    confirmed = _validate_input(f'{message} Open existing list (y/n)?')
-    return confirmed == 'y'
+    confirmed = _validate_input(f"{message} Open existing list (y/n)?")
+    return confirmed == "y"
+
 
 def prompt_delete_task() -> str:
-    return _validate_input('Enter To-Do to be deleted:')
+    return _validate_input("Enter To-Do to be deleted:")
 
 
 def prompt_username() -> str:
-    return _validate_input('Username:')
+    return _validate_input("Username:")
+
 
 def prompt_password() -> str:
-    return _validate_input('Password:')
+    return _validate_input("Password:")

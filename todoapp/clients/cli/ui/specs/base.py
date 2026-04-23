@@ -6,7 +6,7 @@ from typing import Callable, Any
 class ColumnSpec:
     label: str
     width: int
-    align: str = 'left'
+    align: str = "left"
     formatter: Callable[[Any], str] | None = None
 
 
@@ -17,22 +17,22 @@ class TableSpec:
     @property
     def fields(self) -> list[str]:
         return list(self.spec.keys())
-    
+
     @property
     def labels(self) -> list[str]:
         return [col.label for col in self.spec.values()]
-    
+
     @property
     def widths(self) -> list[int]:
         return [col.width for col in self.spec.values()]
-    
+
     @property
     def aligns(self) -> list[str]:
         return [col.align for col in self.spec.values()]
-    
+
     def formatter(self, field) -> Callable[[Any], str] | None:
         return self.spec[field].formatter
-    
+
     def validate_spec(self, MODEL_FIELDS: list[str]):
         MODEL_FIELDS = set(MODEL_FIELDS)
         for field in self.spec.keys():

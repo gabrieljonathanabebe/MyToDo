@@ -23,5 +23,5 @@ class ToDoSummary(BaseModel):
             title=todo.title,
             task_count=len(todo.tasks),
             created_at=todo.created_at,
-            updated_at=todo.updated_at
+            updated_at=todo.updated_at,
         )

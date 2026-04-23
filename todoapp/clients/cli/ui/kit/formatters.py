@@ -12,7 +12,8 @@ def format_status(status: Status) -> str:
         return yellow(status.value)
     if status == Status.cancelled:
         return red(status.value)
-    
+
+
 def format_priority(priority: Priority) -> str:
     if priority == Priority.low:
         return green(priority.value)
@@ -20,7 +21,8 @@ def format_priority(priority: Priority) -> str:
         return yellow(priority.value)
     if priority == Priority.high:
         return red(priority.value)
-    
+
+
 # ===== TODO FORRMATTER ========================================
 def format_title(title: str) -> str:
     return title[:1].upper() + title[1:] if title else title
@@ -36,15 +38,15 @@ def format_relative_datetime(dt: datetime) -> str:
     weeks = days // 7
     months = days // 30
     if total_seconds < 60:
-        return 'just now'
+        return "just now"
     if minutes < 60:
-        return f'{minutes} min ago'
+        return f"{minutes} min ago"
     if hours < 24:
-        return f'{hours} h ago'
+        return f"{hours} h ago"
     if days < 7:
-        return f'{days} d ago'
+        return f"{days} d ago"
     if weeks < 5:
-        return f'{weeks} wk ago'
+        return f"{weeks} wk ago"
     if months < 12:
-        return f'{months} mo ago'
-    return dt.strftime('%Y-%m-%d')
+        return f"{months} mo ago"
+    return dt.strftime("%Y-%m-%d")

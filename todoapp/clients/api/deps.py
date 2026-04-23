@@ -15,9 +15,7 @@ def get_todo_services(username: str) -> ToDoServices:
     return factories.build_todo_services(username)
 
 
-def get_open_todo(
-    username: str, todo_id: str
-) -> tuple[ToDoServices, ToDoList]:
+def get_open_todo(username: str, todo_id: str) -> tuple[ToDoServices, ToDoList]:
     services = get_todo_services(username)
     todo_res = services.todos.open_todo(todo_id)
     if not todo_res.ok or todo_res.data is None:

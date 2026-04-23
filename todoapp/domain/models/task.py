@@ -12,9 +12,9 @@ class Priority(int, Enum):
 
 
 class Status(str, Enum):
-    open = 'open'
-    done = 'done'
-    cancelled = 'cancelled'
+    open = "open"
+    done = "done"
+    cancelled = "cancelled"
 
 
 class Task(BaseModel):
@@ -30,20 +30,17 @@ class Task(BaseModel):
     completed_at: datetime | None = None
     notes: str | None = None
 
-
     @property
     def days_left(self) -> Optional[int]:
         if self.due is None:
             return None
         return (self.due - date.today()).days
-    
 
     @property
     def lead_time(self) -> timedelta | None:
         if self.completed_at is None:
             return None
         return self.completed_at - self.created_at
-    
 
     @property
     def lead_time_seconds(self) -> int | None:
@@ -52,8 +49,8 @@ class Task(BaseModel):
             return None
         return int(delta.total_seconds())
 
-    @field_validator('description')
+    @field_validator("description")
     def validate_description(cls, desc: str) -> str:
         if not desc.strip():
-            raise ValueError('Description must not be empty.')
+            raise ValueError("Description must not be empty.")
         return desc

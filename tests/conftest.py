@@ -11,10 +11,9 @@ from tests.fakes import FakeRepo
 import tests.factories as factories
 
 
-
 @pytest.fixture
 def todo_empty() -> ToDoList:
-    return ToDoList.create_new('To-Do empty')
+    return ToDoList.create_new("To-Do empty")
 
 
 @pytest.fixture
@@ -26,7 +25,7 @@ def todo_with_five_tasks() -> ToDoList:
         dues=[date(2026, 5, 11), None, date(2026, 4, 1)],
     )
 
-    todo = ToDoList.create_new('To-Do with five tasks')
+    todo = ToDoList.create_new("To-Do with five tasks")
     todo.tasks = tasks
     return todo
 

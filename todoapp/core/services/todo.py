@@ -4,10 +4,7 @@ from todoapp.core.services.base import BaseToDoService
 from todoapp.domain.todo_list import ToDoList
 from todoapp.domain.models import ToDoSummary
 from todoapp.core.results import Result, Code
-from todoapp.core.services.errors import (
-    NotFoundError,
-    AlreadyExistsError
-)
+from todoapp.core.services.errors import NotFoundError, AlreadyExistsError
 from todoapp.core.services.messages import ToDoMessage
 from todoapp.core.services.responses import ok, resultify, created
 
@@ -15,7 +12,7 @@ from todoapp.core.services.responses import ok, resultify, created
 class ToDoService(BaseToDoService):
     def get_todos(self) -> Result[list[ToDoSummary]]:
         return Result(Code.OK, data=self.repo.get_todos())
-    
+
     @resultify
     def open_todo(self, todo_id: str) -> Result[ToDoList]:
         todo = self.repo.load_todo(todo_id)
@@ -31,7 +28,6 @@ class ToDoService(BaseToDoService):
         create_todo = ToDoList.create_new(title)
         self._persist_created_todo(create_todo)
         return created(ToDoMessage.todo_created(create_todo.title), data=create_todo)
-    
 
     @resultify
     def delete_todo(self, todo_id: str) -> Result[None]:

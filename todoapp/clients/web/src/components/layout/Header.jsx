@@ -26,4 +26,3 @@ function Header({ currentUser, onLogout, onGoHome }) {
 }
 
 export default Header
-

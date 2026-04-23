@@ -6,5 +6,5 @@ from .base import AppStateBase, AppLike
 
 class ExitState(AppStateBase):
     def render(self, app: AppLike):
-        ui.success('Goodbye 👋')
+        ui.success("Goodbye 👋")
         app.running = False

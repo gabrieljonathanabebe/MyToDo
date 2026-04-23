@@ -7,4 +7,4 @@ def from_storage(data: list[dict[str, Any]]) -> list[User]:
 
 
 def to_storage(users: list[User]) -> list[dict[str, Any]]:
-    return [user.model_dump(mode='json') for user in users]
+    return [user.model_dump(mode="json") for user in users]

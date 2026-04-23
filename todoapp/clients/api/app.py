@@ -7,38 +7,31 @@ from todoapp.clients.api.routes import auth, todo_summary, todo_detail
 import todoapp.core.config as cfg
 
 
-app = FastAPI(title='MyToDo')
+app = FastAPI(title="MyToDo")
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=cfg.FRONTEND_ORIGINS,
     allow_credentials=True,
-    allow_methods=['*'],
-    allow_headers=['*']
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
-@app.get('/')
+@app.get("/")
 def home() -> dict[str, str]:
-    return {
-        'message': 'Welcome to MyToDo API',
-        'docs': '/docs'
-    }
+    return {"message": "Welcome to MyToDo API", "docs": "/docs"}
 
 
-@app.get('/health')
+@app.get("/health")
 def health() -> dict[str, str]:
-    return {'status': 'ok'}
+    return {"status": "ok"}
 
 
-app.include_router(auth.router, prefix='/auth', tags=['auth'])
+app.include_router(auth.router, prefix="/auth", tags=["auth"])
 app.include_router(
-    todo_summary.router,
-    prefix='/users/{username}/todos',
-    tags=['todo-summary']
+    todo_summary.router, prefix="/users/{username}/todos", tags=["todo-summary"]
 )
 app.include_router(
-    todo_detail.router,
-    prefix='/users/{username}/todos/{todo_id}',
-    tags=['todo-detail']
+    todo_detail.router, prefix="/users/{username}/todos/{todo_id}", tags=["todo-detail"]
 )

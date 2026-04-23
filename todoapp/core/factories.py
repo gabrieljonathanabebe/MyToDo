@@ -11,7 +11,6 @@ class ToDoServices:
     tasks: TaskService
 
 
-
 def build_user_service() -> UserService:
     repo = JsonUserRepository(cfg.USERS_FILE)
     return UserService(repo)

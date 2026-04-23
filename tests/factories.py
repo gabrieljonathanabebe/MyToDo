@@ -13,7 +13,7 @@ def utc_now() -> datetime:
 
 def make_task(
     id: str | None = None,
-    description: str = 'Test task',
+    description: str = "Test task",
     priority: Priority = Priority.low,
     status: Status = Status.open,
     due: Optional[date] = None,
@@ -48,22 +48,24 @@ def make_tasks(
     dues: Optional[list[Optional[date]]] = None,
 ) -> list[Task]:
     if priorities is not None and len(priorities) == 0:
-        raise ValueError('Priorities must be None or a non-empty list')
+        raise ValueError("Priorities must be None or a non-empty list")
     if statuses is not None and len(statuses) == 0:
-        raise ValueError('Statuses must be None or a non-empty list')
+        raise ValueError("Statuses must be None or a non-empty list")
     if dues is not None and len(dues) == 0:
-        raise ValueError('Dues must be None or a non-empty list')
+        raise ValueError("Dues must be None or a non-empty list")
 
     tasks: list[Task] = []
 
     for i in range(n):
-        priority = Priority.low if priorities is None else priorities[i % len(priorities)]
+        priority = (
+            Priority.low if priorities is None else priorities[i % len(priorities)]
+        )
         status = Status.open if statuses is None else statuses[i % len(statuses)]
         due = None if dues is None else dues[i % len(dues)]
 
         tasks.append(
             make_task(
-                description=f'Test task {i + 1}',
+                description=f"Test task {i + 1}",
                 priority=priority,
                 status=status,
                 due=due,

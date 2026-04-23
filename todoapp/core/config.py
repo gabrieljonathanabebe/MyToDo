@@ -10,16 +10,15 @@ load_dotenv()
 
 
 # ===== CONSTANTS =============================================================
-DATA_DIR = Path(os.getenv('DATA_DIR', './data')).expanduser().resolve()
-USERS_DIR = DATA_DIR / 'users'
-USERS_FILE = USERS_DIR / 'users.json'
+DATA_DIR = Path(os.getenv("DATA_DIR", "./data")).expanduser().resolve()
+USERS_DIR = DATA_DIR / "users"
+USERS_FILE = USERS_DIR / "users.json"
 
 FRONTEND_ORIGINS = [
     origin.strip()
     for origin in os.getenv(
-        'FRONTEND_ORIGINS',
-        'http://localhost:5173,http://127.0.0.1:5173'
-    ).split(',')
+        "FRONTEND_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173"
+    ).split(",")
 ]
 
 

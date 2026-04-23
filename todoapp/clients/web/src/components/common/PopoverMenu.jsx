@@ -24,8 +24,8 @@ function PopoverMenu({
       {show && (
         <div
           className={`
-            popover-menu 
-            surface-dropdown 
+            popover-menu
+            surface-dropdown
             ${placement === 'top' ? 'popover-menu--top' : ''}
             ${menuClassName}
             `.trim()}

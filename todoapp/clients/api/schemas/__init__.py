@@ -10,5 +10,5 @@ from .todo_detail import (
     UpdateTaskDueRequest,
     TaskResponse,
     ToDoDetailResponse,
-    SortTasksRequest
+    SortTasksRequest,
 )

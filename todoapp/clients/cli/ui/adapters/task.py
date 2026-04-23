@@ -7,5 +7,5 @@ from .base import to_display_row, to_display_value
 
 def task_to_row(task: Task) -> dict[str, str]:
     row = to_display_row(task, specs.TASK_SPEC)
-    row['days_left'] = to_display_value(task.days_left)
+    row["days_left"] = to_display_value(task.days_left)
     return row

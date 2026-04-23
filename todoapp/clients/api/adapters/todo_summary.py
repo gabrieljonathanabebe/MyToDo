@@ -10,5 +10,5 @@ def to_summary_response(item: ToDoSummary) -> ToDoSummaryResponse:
         title=item.title,
         created_at=item.created_at,
         updated_at=item.updated_at,
-        task_count=item.task_count
+        task_count=item.task_count,
     )
