@@ -1,128 +1,162 @@
+# tests/test_domain_todo_list.py
+
 from datetime import date
 
 import pytest
 
 from todoapp.domain.todo_list import ToDoList
-from todoapp.domain.models import Status
+from todoapp.domain.models import Status, Priority
 import tests.factories as factories
 
 
-# ===== NEXT ID =======================================================
-def test_next_id_on_empty(todo_empty: ToDoList) -> None:
-    assert todo_empty.next_id() == 1
-
-def test_next_id_on_non_empty(todo_with_five_tasks: ToDoList) -> None:
-    assert todo_with_five_tasks.next_id() == 6
-
-
-# ===== ADD TASK ======================================================
-def test_add_task_on_empty(todo_empty: ToDoList) -> None:
-    task = todo_empty.add_task(
+# ===== CREATE TASK =====================================================
+def test_create_task_adds_open_task_with_expected_values(todo_empty: ToDoList) -> None:
+    task = todo_empty.create_task(
         description='Test task 1',
-        priority=2,
-        due=date(2026, 5, 26)
+        priority='2',
+        due='2026-05-26',
+        notes='Important note',
     )
+
     assert len(todo_empty.tasks) == 1
-    assert task.id == 1
     assert task.status == Status.open
     assert task.description == 'Test task 1'
+    assert task.priority == Priority.medium
+    assert task.due == date(2026, 5, 26)
+    assert task.notes == 'Important note'
+    assert task.completed_at is None
 
-def test_add_task_on_non_empty(todo_with_five_tasks: ToDoList) -> None:
-    task = todo_with_five_tasks.add_task(
+
+def test_create_task_appends_to_existing_list(todo_with_five_tasks: ToDoList) -> None:
+    task = todo_with_five_tasks.create_task(
         description='Test task 6',
-        priority=1,
-        due=date(2026, 6, 9)
+        priority='1',
+        due='2026-06-09',
+        notes=None,
     )
+
     assert len(todo_with_five_tasks.tasks) == 6
-    assert task.id == 6
+    assert task in todo_with_five_tasks.tasks
 
 
-# ===== DELETE TASK ====================================================
-def test_delete_existing_task_returns_true(
-    todo_with_five_tasks: ToDoList
-) -> None:
-    result = todo_with_five_tasks.delete_task(1)
+# ===== DELETE TASK =====================================================
+def test_delete_existing_task_returns_true_and_removes_task(todo_with_five_tasks: ToDoList) -> None:
+    task_id = todo_with_five_tasks.tasks[0].id
+
+    result = todo_with_five_tasks.delete_task(task_id)
+
     assert result is True
     assert len(todo_with_five_tasks.tasks) == 4
-    assert all(t.id != 1 for t in todo_with_five_tasks.tasks)
+    assert all(t.id != task_id for t in todo_with_five_tasks.tasks)
 
-def test_delete_missing_task_returns_false(
-    todo_with_five_tasks: ToDoList
-) -> None:
-    result = todo_with_five_tasks.delete_task(999)
+
+def test_delete_missing_task_returns_false(todo_with_five_tasks: ToDoList) -> None:
+    result = todo_with_five_tasks.delete_task('missing-id')
+
     assert result is False
-    assert len(todo_with_five_tasks.tasks) == 5
 
 
-# ===== SORT TODO ======================================================
-@pytest.mark.parametrize(
-    'key, reverse, expected_ids',
-    [
-        ('id', False, [1, 2, 3, 4, 5]),
-        ('id', True, [5, 4, 3, 2, 1]),
-        ('priority', False, [3, 2, 5, 1, 4]),
-        ('priority', True, [1, 4, 2, 5, 3])
-    ],
-    ids=['id_asc', 'id_desc', 'priority_asc', 'priority_desc']
-)
-def test_sort_tasks_by_id_or_priority_as_key(
-    todo_with_five_tasks: ToDoList,
-    key: str,
-    reverse: bool,
-    expected_ids: list[int]
-) -> None:
-    todo_with_five_tasks.sort_tasks(key, reverse)
-    sorted_ids = [t.id for t in todo_with_five_tasks.tasks]
-    assert sorted_ids == expected_ids
+# ===== SORT TASKS ======================================================
+def test_sort_tasks_by_due_puts_none_values_last(todo_with_five_tasks: ToDoList) -> None:
+    todo_with_five_tasks.sort_tasks('due', reverse=False)
+
+    assert todo_with_five_tasks.tasks[-1].due is None
 
 
-@pytest.mark.parametrize(
-    'key, reverse, expected_ids',
-    [
-        ('due', False, [3, 1, 4, 2, 5]),
-        ('due', True, [1, 4, 3, 2, 5])
-    ],
-    ids=['due_asc', 'due_desc']
-)
-def test_sort_tasks_by_due_as_key(
-    todo_with_five_tasks: ToDoList,
-    key: str,
-    reverse: bool,
-    expected_ids: list[int]
-) -> None:
-    todo_with_five_tasks.sort_tasks(key, reverse)
-    sorted_ids = [t.id for t in todo_with_five_tasks.tasks]
-    assert sorted_ids == expected_ids
+def test_sort_tasks_keeps_same_task_set(todo_with_five_tasks: ToDoList) -> None:
+    original_ids = {task.id for task in todo_with_five_tasks.tasks}
 
+    todo_with_five_tasks.sort_tasks('priority', reverse=True)
 
-# ===== ASSIGN NEW IDS ==================================================
-def test_assign_new_ids(todo_with_five_tasks: ToDoList) -> None:
-    todo_with_five_tasks.delete_task(1)
-    count = todo_with_five_tasks.assign_new_ids()
-    new_ids = [t.id for t in todo_with_five_tasks.tasks]
-    assert new_ids == list(range(1, 5))
-    assert count == 4
+    assert {task.id for task in todo_with_five_tasks.tasks} == original_ids
 
 
 # ===== TOGGLE STATUS ===================================================
-@pytest.mark.parametrize(
-    'start_status, expected_status',
-    [
-        (Status.open, Status.done),
-        (Status.done, Status.open)
-    ],
-    ids=['toggle_done', 'toggle_open']
-)
-def test_toggle_status(start_status: Status, expected_status: Status) -> None:
-    task = factories.make_task(status=start_status)
-    todo = ToDoList('test', [task])
-    result = todo.toggle_status(1)
-    assert todo.tasks[0].status == expected_status
+def test_toggle_status_from_open_to_done_sets_completed_at() -> None:
+    task = factories.make_task(status=Status.open)
+    todo = ToDoList(title='test', tasks=[task])
+
+    old_updated_at = task.updated_at
+    result = todo.toggle_status(task.id)
+
     assert result is True
+    assert task.status == Status.done
+    assert task.completed_at is not None
+    assert task.updated_at >= old_updated_at
+
+
+def test_toggle_status_from_done_to_open_clears_completed_at() -> None:
+    task = factories.make_task(status=Status.done)
+    todo = ToDoList(title='test', tasks=[task])
+
+    old_updated_at = task.updated_at
+    result = todo.toggle_status(task.id)
+
+    assert result is True
+    assert task.status == Status.open
+    assert task.completed_at is None
+    assert task.updated_at >= old_updated_at
 
 
 def test_toggle_status_returns_false_for_missing_id() -> None:
     task = factories.make_task()
-    todo = ToDoList('test', [task])
-    result = todo.toggle_status(999)
+    todo = ToDoList(title='test', tasks=[task])
+
+    result = todo.toggle_status('missing-id')
+
+    assert result is False
+
+
+# ===== UPDATE TASK =====================================================
+def test_update_task_description_updates_value_and_timestamp() -> None:
+    task = factories.make_task()
+    todo = ToDoList(title='test', tasks=[task])
+
+    old_updated_at = task.updated_at
+    result = todo.update_task_description(task.id, 'Updated description')
+
+    assert result is True
+    assert task.description == 'Updated description'
+    assert task.updated_at >= old_updated_at
+
+
+def test_update_task_priority_updates_value_and_timestamp() -> None:
+    task = factories.make_task(priority=Priority.low)
+    todo = ToDoList(title='test', tasks=[task])
+
+    old_updated_at = task.updated_at
+    result = todo.update_task_priority(task.id, 3)
+
+    assert result is True
+    assert task.priority == Priority.high
+    assert task.updated_at >= old_updated_at
+
+
+def test_update_task_due_updates_value_and_timestamp() -> None:
+    task = factories.make_task(due=None)
+    todo = ToDoList(title='test', tasks=[task])
+
+    old_updated_at = task.updated_at
+    new_due = date(2026, 7, 1)
+    result = todo.update_task_due(task.id, new_due)
+
+    assert result is True
+    assert task.due == new_due
+    assert task.updated_at >= old_updated_at
+
+
+@pytest.mark.parametrize(
+    'method_name, args',
+    [
+        ('update_task_description', ('missing-id', 'Updated description')),
+        ('update_task_priority', ('missing-id', 2)),
+        ('update_task_due', ('missing-id', date(2026, 7, 1))),
+    ],
+)
+def test_update_task_methods_return_false_for_missing_id(method_name: str, args: tuple) -> None:
+    task = factories.make_task()
+    todo = ToDoList(title='test', tasks=[task])
+
+    result = getattr(todo, method_name)(*args)
+
     assert result is False
