@@ -4,10 +4,20 @@ import Button from "../common/Button"
 import Brand from "../common/Brand"
 
 
-function Header({ currentUser, onLogout }) {
+function Header({ currentUser, onLogout, onGoHome }) {
   return (
     <header className="app-header surface-card surface-strong">
-      <Brand />
+      {/* ===== BRAND ===================================================== */}
+      <button
+        type="button"
+        className="app-brand-button"
+        onClick={onGoHome}
+        aria-label="Go to home"
+        title="Go to home"
+      >
+        <Brand />
+      </button>
+      {/* ===== ACTIONS =================================================== */}
       {currentUser && (
         <Button onClick={onLogout}>Logout</Button>
       )}

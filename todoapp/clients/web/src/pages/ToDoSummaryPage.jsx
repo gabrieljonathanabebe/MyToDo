@@ -9,6 +9,7 @@ import CreateToDoForm from '../components/todo/CreateToDoForm.jsx'
 import Pagination from '../components/common/Pagination.jsx'
 import { usePagination } from '../hooks/usePagination.js'
 import { useToDoSummaryActions } from '../hooks/useToDoSummaryActions.js'
+import PageHeader from '../components/common/PageHeader.jsx'
 
 
 function ToDoSummaryPage({
@@ -46,7 +47,7 @@ function ToDoSummaryPage({
 
 	return (
 		<div>
-			<h1 className='page-title'>Summary</h1>
+			<PageHeader title='Summary' icon={ListTodo} />
 			<CreateToDoForm
 				title={newTitle}
 				onTitleChange={setNewTitle}

@@ -80,7 +80,7 @@ function CreateTaskForm({
             <div className='create-task-meta-group create-task-due-group'>
               <button
                 type='button'
-                className='icon-action icon-action-pla'
+                className='icon-action icon-action-primary'
                 onClick={handleOpenDatePicker}
                 aria-label='Choose due date'
                 title='Choose due date'

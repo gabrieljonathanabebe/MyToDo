@@ -15,7 +15,9 @@ import { useEffect } from 'react'
 function App() {
 	// ===== HOOKS ==========================================================
 	const { currentUser, loginUser, logoutUser } = useSessionState()
-	const { page, currentToDo, navigateTo, openToDo } = useNavigationState()
+	const {
+		page, currentToDoId, navigateTo, openToDo, clearNavigation
+	} = useNavigationState()
 
 	const {
 		toDoSummaries,
@@ -28,6 +30,9 @@ function App() {
 		getToDoDetail,
 		clearWorkspace,
 	} = useWorkspaceData()
+
+	const currentToDo =
+		toDoSummaries.find((toDo) => toDo.id === currentToDoId) ?? null
 
 	function handleLogin(user) {
 		loginUser(user)

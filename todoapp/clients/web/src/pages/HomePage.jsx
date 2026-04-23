@@ -11,6 +11,8 @@ import {
   formatDaysLeft,
   formatRelativeDatetime,
 } from '../utils/formatters'
+import { House } from 'lucide-react'
+import PageHeader from '../components/common/PageHeader'
 
 
 function HomePage({
@@ -26,10 +28,7 @@ function HomePage({
   return (
     <div className='home-page'>
       {/* ===== PAGE TITLE ================================================= */}
-      <div className='home-page-header'>
-        <h1 className='page-title'>Home</h1>
-      </div>
-
+      <PageHeader title='Home' icon={House} />
       {/* ===== HOME GRID ================================================== */}
       <div className='home-grid'>
         {/* ===== WELCOME ================================================== */}
@@ -75,7 +74,7 @@ function HomePage({
             {/* ----- TOTAL TODOS ----- */}
             <div className='home-stat-card'>
               <span className='home-stat-label'>To-do lists</span>
-              <strong className='home-stat-value'>{overview.totalTodos}</strong>
+              <strong className='home-stat-value'>{overview.totalToDos}</strong>
             </div>
           </div>
         </Widget>
@@ -91,7 +90,7 @@ function HomePage({
           ) : (
             <div className='home-list'>
               {upcomingTasks.map((task) => (
-                <div key={task.id} className='home-list-item'>
+                <div key={`${task.toDoId}-${task.id}`} className='home-list-item'>
                   <div className='home-list-main'>
                     <div className='home-list-title'>{task.description}</div>
                     <div className='home-list-subtitle'>

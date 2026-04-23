@@ -10,6 +10,7 @@ html,
 body,
 #root {
   min-height: 100%;
+  --app-panel-min-height: 700px;
 }
 
 body {

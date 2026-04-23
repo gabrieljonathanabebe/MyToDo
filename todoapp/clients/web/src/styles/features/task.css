@@ -67,6 +67,7 @@
   justify-content: space-between;
   align-items: center;
   gap: var(--space-4);
+  animation: riseInSubtle 280ms ease both;
 }
 
 .task-card-left {
@@ -145,6 +146,7 @@
   height: 245px;
   position: relative;
   z-index: 1;
+  animation: riseInSoft 280ms ease both;
 }
 
 .task-widget-top {
@@ -376,6 +378,7 @@
   padding: var(--space-4);
   background: rgba(255, 255, 255, 0.06);
   backdrop-filter: blur(5px);
+  animation: fadeInSoft 180ms ease both;
 }
 
 .task-info-modal {
@@ -384,6 +387,7 @@
   overflow-y: auto;
   padding: var(--space-4);
   border-radius: var(--radius-xl);
+  animation: scaleInSoft 220ms ease both;
 }
 
 .task-info-modal-header {
@@ -427,6 +431,15 @@
   flex-wrap: wrap;
 }
 
+.create-task-notes-row {
+  display: flex;
+}
+
+.create-task-meta-row,
+.create-task-notes-row {
+  animation: riseInSoft 220ms ease both;
+}
+
 .create-task-meta-group {
   display: inline-flex;
   align-items: center;
@@ -466,10 +479,6 @@
   pointer-events: none;
   width: 0;
   height: 0;
-}
-
-.create-task-notes-row {
-  display: flex;
 }
 
 .create-task-notes {

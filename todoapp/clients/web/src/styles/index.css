@@ -6,6 +6,7 @@
 
 @import './primitives/layout.css';
 @import './primitives/surfaces.css';
+@import './primitives/animations.css';
 
 
 @import './components/toolbar.css';
@@ -28,3 +29,4 @@
 @import './features/auth.css';
 @import './features/todo-detail.css';
 @import './features/home.css';
+@import './features/dashboard.css';

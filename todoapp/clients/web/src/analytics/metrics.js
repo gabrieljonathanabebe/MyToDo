@@ -26,7 +26,14 @@ export function getOverviewStats(toDoSummaries = [], toDoDetails = []) {
 
 
 export function getUpcomingTasks(toDoDetails = [], limit = 3) {
-  return getAllTasks(toDoDetails)
+  return toDoDetails
+    .flatMap((toDo) =>
+      (toDo.tasks ?? []).map((task) => ({
+        ...task,
+        toDoId: toDo.id,
+        toDoTitle: toDo.title,
+      }))
+    )
     .filter((task) => task.status === 'open' && task.due)
     .sort((a, b) => new Date(a.due) - new Date(b.due))
     .slice(0, limit)
@@ -64,4 +71,46 @@ export function getStatusBreakdown(toDoDetails = []) {
     open: allTasks.filter((task) => task.status === 'open').length,
     done: allTasks.filter((task) => task.status === 'done').length
   }
+}
+
+
+// ===== AVERAGE LEAD TIME ===============================================
+export function getAverageLeadTime(toDoDetails = []) {
+  const allTasks = getAllTasks(toDoDetails)
+  const completedTasks = allTasks.filter(
+    (task) => task.status === 'done' && task.lead_time_seconds != null
+  )
+  if (completedTasks.length === 0) {
+    return null
+  }
+  const totalLeadTimeSeconds = completedTasks.reduce(
+    (sum, task) => sum + task.lead_time_seconds,
+    0
+  )
+
+  return Math.round(totalLeadTimeSeconds / completedTasks.length)
+}
+
+
+// ===== MOST ACTIVE TODOS ====================================================
+export function getMostActiveToDos(toDoDetails = [], limit = 4) {
+  return [...toDoDetails]
+    .map((toDo) => {
+      const tasks = toDo.tasks ?? []
+      const openTasks = tasks.filter((task) => task.status === 'open').length
+      const totalTasks = tasks.length
+      const overdueTasks = tasks.filter(
+        (task) => task.status !== 'done' && (task.days_left ?? 0) < 0
+      ).length
+
+      return {
+        id: toDo.id,
+        title: toDo.title,
+        openTasks,
+        totalTasks,
+        overdueTasks,
+      }
+    })
+    .sort((a, b) => b.openTasks - a.openTasks)
+    .slice(0, limit)
 }

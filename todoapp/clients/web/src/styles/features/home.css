@@ -6,7 +6,6 @@
 .home-page {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
 }
 
 .home-page-header {
@@ -21,20 +20,28 @@
   gap: var(--space-4);
 }
 
+.home-widget {
+  animation: riseInSoft 280ms ease both;
+}
+
 .home-widget-welcome {
+  animation-delay: 0ms;
   grid-column: span 12;
 }
 
 .home-widget-overview {
+  animation-delay: 40ms;
   grid-column: span 6;
 }
 
 .home-widget-upcoming {
   grid-column: span 6;
+  animation-delay: 80ms;
 }
 
 .home-widget-recent {
   grid-column: span 12;
+  animation-delay: 120ms;
 }
 
 .home-overview-stats {

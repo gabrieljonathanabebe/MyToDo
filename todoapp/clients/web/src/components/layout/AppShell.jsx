@@ -21,7 +21,11 @@ function AppShell({
   console.log('AppShell toDoSummaries', toDoSummaries)
   return (
     <div className='app-shell'>
-      <Header currentUser={currentUser} onLogout={onLogout} />
+      <Header
+        currentUser={currentUser}
+        onLogout={onLogout}
+        onGoHome={onGoHome}
+      />
       <div className='app-body'>
         <Sidebar
           currentUser={currentUser}
