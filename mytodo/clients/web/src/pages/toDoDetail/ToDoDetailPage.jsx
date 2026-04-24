@@ -83,7 +83,7 @@ function ToDoDetailPage({
 		paginatedItems: paginatedTasks,
 		goPrevious,
 		goNext,
-	} = usePagination(filteredTasks, 6)
+	} = usePagination(filteredTasks, 7)
 
 	if (error) {
 		return <ErrorState message={error} />
