@@ -1,0 +1,132 @@
+/* mytodo/clients/web/src/styles/components/dropdowns.css */
+
+
+.popover-anchor {
+  position: relative;
+  display: inline-flex;
+}
+
+.popover-menu {
+  position: absolute;
+  top: calc(100% + var(--space-2));
+  right: 0;
+  z-index: 30;
+  padding: var(--space-2);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.popover-menu--top {
+  top: auto;
+  bottom: calc(100% + var(--space-1));
+}
+
+.sort-menu-item {
+  all: unset;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  color: var(--color-text);
+  font-size: var(--font-size-sm);
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.sort-menu-item:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.sort-menu-item.is-active {
+  color: var(--color-primary);
+  background: var(--color-primary-soft);
+}
+
+.sort-menu-label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.sort-menu-label svg {
+  color: var(--color-text-soft);
+  flex-shrink: 0;
+}
+
+.sort-menu-item.is-active .sort-menu-label svg {
+  color: var(--color-primary);
+}
+
+.sort-menu-order {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--color-text-soft);
+}
+
+.sort-menu-item.is-active .sort-menu-order {
+  color: var(--color-primary);
+}
+
+.priority-menu-popover {
+  width: max-content;
+  min-width: unset;
+  padding: var(--space-2);
+}
+
+.priority-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.priority-menu-item {
+  all: unset;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition:
+    background var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.priority-menu-item:hover {
+  background: rgba(255, 255, 255, 0.18);
+  transform: translateY(-2px);
+}
+
+.priority-menu-item.is-active {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.priority-menu-check-slot {
+  width: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.priority-menu-check {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--color-primary);
+  line-height: 1;
+}
+
+.priority-menu-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.priority-menu-check-icon {
+  color: var(--color-primary);
+}

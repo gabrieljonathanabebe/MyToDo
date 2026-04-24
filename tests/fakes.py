@@ -1,7 +1,7 @@
 # tests/fakes.py
 
-from todoapp.domain.todo_list import ToDoList
-from todoapp.domain.models import ToDoSummary
+from mytodo.domain.todo_list import ToDoList
+from mytodo.domain.models import ToDoSummary
 
 
 class FakeRepo:

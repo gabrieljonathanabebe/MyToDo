@@ -1,0 +1,32 @@
+/* mytodo/clients/web/src/styles/index.css */
+
+@import './foundation/tokens.css';
+@import './foundation/base.css';
+@import './foundation/typography.css';
+
+@import './primitives/layout.css';
+@import './primitives/surfaces.css';
+@import './primitives/animations.css';
+
+
+@import './components/toolbar.css';
+@import './components/buttons.css';
+@import './components/badges.css';
+@import './components/states.css';
+@import './components/pagination.css';
+@import './components/panel.css';
+@import './components/forms.css';
+@import './components/meta.css';
+@import './components/widget.css';
+@import './components/icon-actions.css';
+@import './components/segmented-controls.css';
+@import './components/dropdowns.css';
+
+
+@import './features/navigation.css';
+@import './features/task.css';
+@import './features/todo.css';
+@import './features/auth.css';
+@import './features/todo-detail.css';
+@import './features/home.css';
+@import './features/dashboard.css';

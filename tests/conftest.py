@@ -4,9 +4,9 @@ from datetime import date
 
 import pytest
 
-from todoapp.domain.todo_list import ToDoList
-from todoapp.core.services import ToDoService, TaskService
-from todoapp.domain.models import Priority, Status
+from mytodo.domain.todo_list import ToDoList
+from mytodo.core.services import ToDoService, TaskService
+from mytodo.domain.models import Priority, Status
 from tests.fakes import FakeRepo
 import tests.factories as factories
 

@@ -1,8 +1,8 @@
 # tests/test_service.py
 
-from todoapp.core.results import Code
-from todoapp.domain.todo_list import ToDoList
-from todoapp.core.services import ToDoService, TaskService
+from mytodo.core.results import Code
+from mytodo.domain.todo_list import ToDoList
+from mytodo.core.services import ToDoService, TaskService
 from tests.fakes import FakeRepo
 
 

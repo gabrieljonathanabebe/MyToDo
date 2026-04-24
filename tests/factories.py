@@ -4,7 +4,7 @@ from datetime import date, datetime, timezone, timedelta
 from typing import Optional
 from uuid import uuid4
 
-from todoapp.domain.models import Task, Priority, Status
+from mytodo.domain.models import Task, Priority, Status
 
 
 def utc_now() -> datetime:

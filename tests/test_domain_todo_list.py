@@ -4,8 +4,8 @@ from datetime import date
 
 import pytest
 
-from todoapp.domain.todo_list import ToDoList
-from todoapp.domain.models import Status, Priority
+from mytodo.domain.todo_list import ToDoList
+from mytodo.domain.models import Status, Priority
 import tests.factories as factories
 
 

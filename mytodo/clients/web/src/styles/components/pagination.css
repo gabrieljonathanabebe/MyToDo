@@ -1,0 +1,15 @@
+/* mytodo/clients/web/src/styles/components/pagination.css */
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+}
+
+.pagination-info {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--color-text-soft);
+}

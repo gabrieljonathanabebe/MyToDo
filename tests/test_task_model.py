@@ -5,7 +5,7 @@ from datetime import date, timedelta, datetime, timezone
 import pytest
 from pydantic import ValidationError
 
-from todoapp.domain.models import Task, Status, Priority
+from mytodo.domain.models import Task, Status, Priority
 import tests.factories as factories
 
 
