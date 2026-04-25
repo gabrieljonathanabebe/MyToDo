@@ -1,0 +1,16 @@
+.git
+.gitignore
+.venv
+__pycache__
+.pytest_cache
+.mypy_cache
+.DS_Store
+
+mytodo/clients/web/node_modules
+mytodo/clients/web/dist
+
+docs/images/screenshots
+docs/images/diagrams
+
+README.md
+tests
