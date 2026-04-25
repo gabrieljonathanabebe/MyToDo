@@ -33,6 +33,16 @@ export function useToDoDetail(
     setToDoDetail(initialToDoDetail ?? null)
   }, [initialToDoDetail])
 
+
+  // ===== FALLBACK FOR NEW TODO WITHOUT DETAIL DATA =====================
+  useEffect(() => {
+    if (!currentToDo?.id) return
+    if (initialToDoDetail) return
+
+    refreshCurrentToDo?.()
+  }, [currentToDo?.id, initialToDoDetail, refreshCurrentToDo])
+
+
   // ===== HANDLE CREATE TASK ============================================
   async function handleCreateTask() {
     setCreateError('')

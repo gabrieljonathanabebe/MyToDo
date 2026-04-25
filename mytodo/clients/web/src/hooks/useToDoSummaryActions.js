@@ -4,7 +4,7 @@ import { useState } from "react";
 import { createToDo, deleteToDo } from "../api/toDoSummary";
 
 
-export function useToDoSummaryActions(currentUser, loadTodos) {
+export function useToDoSummaryActions(currentUser, loadTodos, onOpenToDo) {
   const [error, setError] = useState('')
   const [newTitle, setNewTitle] = useState('')
   const [createError, setCreateError] = useState('')
@@ -16,9 +16,10 @@ export function useToDoSummaryActions(currentUser, loadTodos) {
       return
     }
     try {
-      await createToDo(currentUser.username, newTitle.trim())
+      const createdToDo = await createToDo(currentUser.username, newTitle.trim())
       setNewTitle('')
       await loadTodos()
+      onOpenToDo?.(createdToDo)
     } catch (err) {
       setCreateError(err.message)
     }

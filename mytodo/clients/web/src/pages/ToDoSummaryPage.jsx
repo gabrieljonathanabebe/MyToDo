@@ -22,7 +22,7 @@ function ToDoSummaryPage({
 		createError,
 		handleCreateToDo,
 		handleDeleteToDo,
-	} = useToDoSummaryActions(currentUser, loadTodos)
+	} = useToDoSummaryActions(currentUser, loadTodos, onOpenToDo)
 
 	const {
 		page,
