@@ -1,4 +1,4 @@
-from my_utils import ansi
+from . import ansi
 
 
 # ===== FONT STYLES ==============================
